@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Known — Work</title>
+<meta name="description" content="Known is a brand incubator. Brand, SEO and product design.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=9">
+</head>
+<body>
+
+<!-- Hero H03C "Bitmap composite": white ground + FigJam dot grid, three print layers on one clock (hero.js) -->
+<div class="stage">
+  <div class="wrap">
+    <header class="top">
+      <a class="logo" href="#" aria-label="Known, home"></a>
+      <nav>
+        <a href="#work">Work</a>
+        <a href="#side">Play</a>
+        <a href="#brands">Brands</a>
+        <a href="#now">Now</a>
+        <a href="mailto:info@knownand.com">Connect</a>
+      </nav>
+    </header>
+
+    <section class="hero" aria-label="Introduction">
+      <h1>
+        <span class="hero-static">Known, and</span>
+        <span class="hero-field">
+          <canvas id="heroEcho" aria-hidden="true"></canvas>
+          <canvas id="particleWord" aria-hidden="true"></canvas>
+          <span class="sr-only" id="particleWordAccessible">trusted</span>
+        </span>
+      </h1>
+      <button class="hero-pause" id="heroPause" type="button" aria-pressed="false"><span data-label>Pause motion</span></button>
+    </section>
+  </div>
+</div>
+
+<div id="site" class="wrap">
+  <section class="meta" aria-label="About">
+    <div class="row"><span class="cipher" data-text="Brand incubator">Brand incubator</span><span>Brand · SEO · Product design</span></div>
+    <div class="row"><span class="cipher" data-text="Local time">Local time</span><span id="clock">00:00:00</span></div>
+    <div class="row"><span class="cipher" data-text="Make it known">Make it known</span><span class="links"><a href="mailto:info@knownand.com">Email ↗</a><a href="https://www.linkedin.com/in/josephinerigali/" target="_blank" rel="noopener">LN ↗</a></span></div>
+  </section>
+
+  <section id="work">
+    <div class="sec-head">
+      <h2>Selected work</h2>
+      <div class="seg" role="group" aria-label="How much detail">
+        <button data-view="full" class="on">Full file</button>
+        <button data-view="quick">30-second version</button>
+      </div>
+    </div>
+    <div id="work-list"></div>
+  </section>
+
+  <section id="more">
+    <div class="sec-head"><h2>More work</h2><span class="sec-note">Short mentions. Ask for the files.</span></div>
+    <div class="more-head" aria-hidden="true"><span></span><span>Project</span><span>Company</span><span>Involvement</span><span>Year</span></div>
+    <div id="more-list"></div>
+  </section>
+
+  <section id="side">
+    <div class="sec-head"><h2>Online games + side quests</h2><span class="sec-note">Hackathons and games I build outside client work.</span></div>
+    <div id="side-list"></div>
+  </section>
+</div>
+
+<section id="brands" aria-labelledby="brands-h">
+  <div class="wrap">
+    <div class="brands-top">
+      <h2 id="brands-h">Brands</h2>
+      <p>Before Known: 10+ years designing inside beauty, retail, education and AI brands.</p>
+    </div>
+    <ul id="brand-list"></ul>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <section id="now">
+    <div class="sec-head">
+      <h2>Now</h2>
+      <div class="chips" id="now-chips"></div>
+    </div>
+    <div id="now-list"></div>
+  </section>
+
+  <footer>
+    <span>© 2026 Known</span>
+    <span>Make it known.</span>
+  </footer>
+</div>
+
+<!-- Figma-style file viewer -->
+<div id="viewer" class="fv" hidden>
+  <aside class="fv-left">
+    <div class="fv-file">
+      <button class="fv-back" title="Back to all work (Esc)" aria-label="Back to all work"></button>
+      <div class="fv-filemeta"><div class="fv-name"></div><div class="fv-sub">Known · Case study</div></div>
+    </div>
+    <div class="fv-tabs"><span class="on">File</span><span>Assets</span></div>
+    <div class="fv-h">Pages</div>
+    <ul class="fv-pages"></ul>
+    <div class="fv-h">Layers</div>
+    <ul class="fv-layers"></ul>
+  </aside>
+
+  <main class="fv-canvas" tabindex="0" aria-label="Canvas">
+    <div class="fv-world"></div>
+    <div class="fv-toolbar">
+      <button class="tool on" title="Move" data-tool="move"><svg viewBox="0 0 24 24"><path d="M6 3l12 9-5.2 1.1L15.6 20l-2.4 1-2.8-6.8L6 18z"/></svg></button>
+      <button class="tool" title="Show or hide comments" data-tool="comment"><svg viewBox="0 0 24 24"><path d="M12 4a8 8 0 0 1 0 16H4v-8a8 8 0 0 1 8-8z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+      <span class="sep"></span>
+      <button class="tool" title="Previous page" data-tool="prev">‹</button>
+      <span class="fv-pagename"></span>
+      <button class="tool" title="Next page" data-tool="next">›</button>
+    </div>
+  </main>
+
+  <aside class="fv-right">
+    <div class="fv-rtop">
+      <span class="ava" title="Josie">J</span>
+      <button class="fv-share">Share</button>
+      <div class="fv-zoomctl"><button data-z="out" aria-label="Zoom out">−</button><button class="fv-zoom" data-z="fit" title="Zoom to fit (Shift+1)">100%</button><button data-z="in" aria-label="Zoom in">+</button></div>
+    </div>
+    <div class="fv-tabs"><span class="on">Design</span><span>Prototype</span></div>
+    <div class="fv-inspect"></div>
+  </aside>
+
+  <div class="fv-mobilebar">
+    <button class="fv-back" aria-label="Back to all work"></button>
+    <select class="fv-pagesel" aria-label="Page"></select>
+  </div>
+</div>
+
+<script src="projects.js?v=9"></script>
+<script src="pm-screens.js?v=9"></script>
+<script src="app.js?v=9"></script>
+<script src="halftone.js?v=9"></script>
+<script src="pixelhero.js?v=9"></script>
+<script src="hero.js?v=9"></script>
+</body>
+</html>
