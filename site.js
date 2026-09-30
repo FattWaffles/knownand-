@@ -107,7 +107,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     }
   }
   $('#pill-name').textContent = S.name;
-  $('#pill-role').innerHTML = `<b>${S.studio}</b><span class="dot">·</span>${scr(S.role)}`;
+  $('#pill-role').innerHTML = scr(S.role);   /* role only; "Known, and" came out of the pill (Josie, 2026-09-30) */
   $('#h1').textContent = S.headline;
   $('#sub').innerHTML = S.sub;
   const cta = $('#cta'); cta.href = S.cta.url; $('span', cta).textContent = S.cta.label;
