@@ -282,7 +282,7 @@ window.ABOUT = {
   eyebrow: 'About me',
   title: 'I build brands as systems, and show the work as it happens.',
   paras: [
-    'I am Josie Rigali, the Brand Systems Designer and Creative Technologist behind Known, and. I design brands that behave like products: identity, interfaces, motion, 3D, research and emerging technology as one system.',
+    'I am Josie Rigali, the brand incubator and systems design engineer behind Known, and. I design brands that behave like products: identity, interfaces, motion, 3D, research and emerging technology as one system.',
     'Before Known, and I spent 10+ years designing inside beauty, retail, education and AI companies, from email and motion to UX research and design systems. Off the clock I build games and hackathon projects.',
   ],
   /* `n` can be a string or 'auto:building' / 'auto:brands' (counted live) */

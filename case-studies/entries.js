@@ -34,7 +34,7 @@ window.SITE = {
   /* Hero, copied from rosekuan.com: a grey name line over a dark role line in
      tight tracking, a long pause, then three hairline rows of small caps.
      The left labels decode in from *$&%# glyphs on load. */
-  hero: { name: 'Josie Rigali', role: 'Brand Systems Designer + Creative Technologist' },
+  hero: { name: 'Josie Rigali', role: 'Brand incubator and systems design engineer' },
   /* Rows, left label then right value:
      - `value`  plain text
      - `clock`  a live HH:MM:SS. Put an IANA zone here ('America/New_York') and
