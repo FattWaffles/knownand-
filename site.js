@@ -98,11 +98,11 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
   /* program icon tiles: rounded squares in the lattice's style, placed and
      moved by the simulation below (hero coordinates) */
   const hero = document.querySelector('.hero');
-  hero.insertAdjacentHTML('beforeend', S.stack.map((b, i) => {
+  hero.insertAdjacentHTML('beforeend', '<div class="tiles" aria-hidden="true">' + S.stack.map((b, i) => {
     const ic = ICONS[b.icon] || { bg: '#151515', fg: '#fff', text: b.label.slice(0, 2) };
     const tilt = ((i * 37) % 24) - 12;
-    return `<span class="badge" data-side="${b.side}" title="${b.label}" aria-hidden="true" style="--tilt:${tilt}deg;background:${ic.bg};color:${ic.fg || '#fff'}">${ic.svg || ic.text}</span>`;
-  }).join(''));
+    return `<span class="badge" data-side="${b.side}" title="${b.label}" style="--tilt:${tilt}deg;background:${ic.bg};color:${ic.fg || '#fff'}">${ic.svg || ic.text}</span>`;
+  }).join('') + '</div>');
   $('#stack-list').textContent = 'Programs: ' + S.stack.map((b) => b.label).join(', ') + '.';
 
   /* currently building */
@@ -252,7 +252,10 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     const R = 24, FLEE = 150, MAXV = 4.2;
     let bodies = [], W = 0, H = 0, obs = null, running = false, lastT = 0, active = false, inView = true;
     const mouse = { x: -1e4, y: -1e4 }, grav = { x: 0, y: 0 };
-    const visible = () => getComputedStyle(els[0]).display !== 'none';
+    /* Wide screens: the tiles roam (the .tiles box is absolute over the hero).
+       Narrow screens: CSS lays them out as a static strip under the sign-up. */
+    const tilesBox = hero.querySelector('.tiles');
+    const visible = () => getComputedStyle(tilesBox).position === 'absolute';
     const rnd = (a, b) => a + Math.random() * (b - a);
 
     function measure() {
@@ -263,7 +266,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     }
     function layout() {
       active = visible();
-      if (!active) return;
+      if (!active) { els.forEach((el) => { el.style.transform = ''; el.style.removeProperty('--sp'); }); return; }
       measure();
       if (!bodies.length) {
         const L = els.filter((e) => e.dataset.side === 'l'), Rr = els.filter((e) => e.dataset.side !== 'l');
