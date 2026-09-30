@@ -395,3 +395,25 @@ h2 {
 .tree .ic-folder .sq:nth-child(3) { --sqd: 5.5s; animation-delay: -2.2s; }
 .tree .ic-folder .sq:nth-child(4) { --sqd: 7.1s; animation-delay: -0.7s; }
 @media (prefers-reduced-motion: reduce) { .tree .ic-folder .sq { animation: none; } }
+
+/* ---- readability + colour pass (Josie, 2026-09-30: "this is hard to read
+   and can we add pops of brand color in with the type") ---- */
+:root { --veil: rgba(5, 5, 5, .72); }
+:root[data-theme="light"] { --veil: rgba(255, 255, 255, .9); --node-alpha: .18; --grid: #ECECEC; }
+/* a veil behind the reading column so the lattice sits in the margins and only faintly under the type */
+main { position: relative; isolation: isolate; }
+main::before { content: ""; position: absolute; inset: -24px -32px; background: var(--veil); border-radius: 8px; z-index: -1; pointer-events: none; }
+/* small mono labels: heavier */
+.hero .row, .brands .tag, .filter .tag, .entry .date, .brands .k, .caption { font-weight: 600; }
+/* pops of the palette in the type: blue name and links, vermilion labels and dates, magenta brands key */
+.hero .name { color: var(--blue); }
+.hero .k { color: var(--verm); }
+.hero .v a { color: var(--blue); }
+.hero .v a:hover { color: var(--fg); }
+.intro a { text-decoration-color: var(--blue); }
+.brands .k { color: var(--mag); }
+.entry .date { color: var(--verm); }
+.filter .tag.on { background: var(--blue); border-color: var(--blue); color: #fff; }
+.filter .tag:hover { color: var(--blue); border-color: var(--blue); }
+.tree .folder > .row .lbl { color: var(--fg); }
+@media (max-width: 720px) { main::before { inset: -12px -16px; } }
