@@ -35,9 +35,6 @@ window.SITE = {
     { label: 'Work', url: '#work' },
     { label: 'Security', url: '#security' },
     { label: 'About', url: '#about' },
-    /* Pricing left the nav and footer 2026-09-30 (Josie: "hide the pricing
-       from the main site"). The page sits at a private address, sent to
-       clients directly; see HANDOFF.md. */
     { label: 'Case studies', url: CASES },
     /* quick links (Josie, 2026-09-30): icon only, label is the tooltip + screen-reader name */
     { label: 'GitHub', url: GH, icon: 'github' },
@@ -299,8 +296,8 @@ window.NEXT = {
    researcher, illustrator, motion designer, sales. Each is a contract role,
    brought in per project. `code` is the mark in the black circle, `kind`
    the small magenta label top right. Remove a role from `roles` to take it
-   off the page; the pricing page's referral cell (its own data file) names
-   the same list, so keep the two in step. Apply / refer links are mailto with the role in the
+   off the page; HANDOFF.md lists other copy that names the same roles,
+   so keep them in step. Apply / refer links are mailto with the role in the
    subject, so nothing is typed on the page. The referral terms in
    `refer.items` are reasonable defaults for Josie to confirm: when the
    discount is applied (once the person is brought on) and what it applies

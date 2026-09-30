@@ -236,6 +236,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--blue); outline-
     0 calc(-1px - var(--sp, 0) * 1.2px) 1px rgba(255, 214, 10, calc(.1 + var(--sp, 0) * .3)); }   /* 36px, the lattice square's size; the tiles then match the field */
   .badge svg { width: 19px; height: 19px; }
   .hero { padding: 72px 20px 64px; }
+  /* tray off for now (Josie, 2026-09-30: "the mobile icons need to go for now. it make the scroll too long").
+     position: static tells site.js the tiles are off, so the loop never starts. Delete these two lines to bring the tray back. */
+  .tiles { display: none; position: static; }
 }
 @media (max-width: 840px) {
   .top nav { gap: 8px; letter-spacing: .04em; }
