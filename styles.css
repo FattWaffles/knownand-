@@ -8,6 +8,7 @@
   --bg: #050505; --fg: #F3EEE4; --muted: #8E8A82; --line: #262626; --card: #0B0B0B;
   --band: rgba(243, 238, 228, .035); --band2: #1C1C1C; --grid: #1E1E1E;
   --hover: rgba(243, 238, 228, .06);
+  --neu: #151515; --neu-lt: rgba(255, 255, 255, .07); --neu-dk: rgba(0, 0, 0, .85);
   --blue: #1B34F0; --blue-soft: rgba(27, 52, 240, .22); --verm: #CE280A; --mag: #B4009C;
   --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   --display: Archivo, var(--sans);
@@ -23,6 +24,7 @@
   --bg: #FFFFFF; --fg: #0A0A0A; --muted: #6B6B6B; --line: #E4E4E4; --card: #FFFFFF;
   --band: rgba(10, 10, 10, .03); --band2: #ECECEC; --grid: #E9E9E9;
   --hover: rgba(10, 10, 10, .06); --blue-soft: rgba(27, 52, 240, .10);
+  --neu: #F3F4F6; --neu-lt: #FFFFFF; --neu-dk: rgba(10, 10, 10, .14);
   --node: #0A0A0A; --node-alpha: .35; --sq: #0A0A0A; --sq-alpha: .9;
   --glint-blend: multiply; --glint-width: 1.6; --glint-alpha: .4; --glint-glow: 2.5;
   color-scheme: light;
@@ -48,6 +50,9 @@ h2 { font-size: clamp(26px, 3.4vw, 34px); }
 .top nav { display: flex; align-items: center; gap: 10px; font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .top nav span { color: var(--line); }
 .top nav a:hover { color: var(--fg); }
+.top nav a.ico { display: inline-grid; place-items: center; width: 22px; height: 22px; margin: -4px 0; border-radius: 5px; }
+.top nav a.ico svg { width: 14px; height: 14px; display: block; }
+.top nav a.ico:hover { background: var(--hover); }
 .right { display: flex; align-items: center; gap: 14px; }
 .theme { width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: var(--ri); background: transparent; color: var(--muted); cursor: pointer; padding: 0; }
 .theme:hover { color: var(--fg); background: var(--hover); }
@@ -272,3 +277,45 @@ footer { font-size: 11.5px; font-weight: 600; }
 .btn-lite { background: var(--field); border: 1px solid var(--line-strong); font-weight: 600; }
 .btn-lite:hover { background: var(--hover); }
 .nl-line:empty { display: none; }
+
+/* ---- shipped accordion (2026-09-30) ----
+   Soft-shadow ("neumorphic") arrow and panel on a surface colour (--neu) one
+   step off the card, lit from the top left (--neu-lt) with the shade at the
+   bottom right (--neu-dk). The chevron is drawn in the surface colour, so only
+   its two shadows give it shape; when the row opens it rotates 180deg, which
+   carries the shadows round with it and reads as pressed in. */
+.row.acc { display: block; padding: 0; }
+.row.acc:hover { background: transparent; }
+.acc-head { display: grid; grid-template-columns: 1fr 200px 220px 40px; gap: 24px; align-items: center; width: 100%; padding: 22px 24px; margin: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.acc-head:hover { background: var(--hover); }
+.acc-head:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+.acc-head .proj { align-items: center; }
+.arrow { width: 40px; height: 40px; display: grid; place-items: center; justify-self: end; }
+.arrow svg { width: 28px; height: 28px; fill: none; stroke: var(--neu); stroke-width: 4.6; stroke-linecap: round; stroke-linejoin: round; overflow: visible;
+  filter: drop-shadow(-2px -2px 3px var(--neu-lt)) drop-shadow(2.5px 2.5px 4px var(--neu-dk));
+  transition: transform .4s cubic-bezier(.2, .7, .2, 1), filter .25s; }
+.acc-head:hover .arrow svg { filter: drop-shadow(-3px -3px 5px var(--neu-lt)) drop-shadow(3.5px 3.5px 6px var(--neu-dk)); }
+.row.acc.open .arrow svg { transform: rotate(180deg); }
+.row.acc.open .acc-head:hover .arrow svg { filter: drop-shadow(-2px -2px 3px var(--neu-lt)) drop-shadow(2.5px 2.5px 4px var(--neu-dk)); }
+.acc-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s cubic-bezier(.2, .7, .2, 1); }
+.row.acc.open .acc-body { grid-template-rows: 1fr; }
+.acc-panel { min-height: 0; overflow: hidden; }
+.acc-box { margin: 2px 24px 26px 82px; padding: 18px 22px 20px; border-radius: 12px; background: var(--neu);
+  box-shadow: -5px -5px 12px var(--neu-lt), 6px 6px 14px var(--neu-dk), inset 0 0 0 1px var(--neu-lt);
+  opacity: 0; transform: translateY(-6px); transition: opacity .3s, transform .4s cubic-bezier(.2, .7, .2, 1); }
+.row.acc.open .acc-box { opacity: 1; transform: none; }
+.acc-box p { margin: 0; font-size: 14px; line-height: 1.6; }
+.acc-links { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 14px; }
+.acc-link { font: 600 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 4px; }
+.acc-link:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+@media (max-width: 1000px) { .acc-head { grid-template-columns: 1fr 150px 170px 40px; gap: 16px; } }
+@media (max-width: 840px) {
+  .acc-head { grid-template-columns: 1fr 40px; gap: 14px; padding: 18px 20px; }
+  .acc-head > .proj { grid-column: 1; }
+  .acc-head > .arrow { grid-column: 2; grid-row: 1; }
+  .acc-head > .kind, .acc-head > .stat { grid-column: 1 / -1; padding-left: 58px; }
+  .acc-head > .kind { flex-wrap: wrap; }
+  .acc-head > [data-label]::before { content: attr(data-label); display: block; flex: 0 0 100%; font: 500 9.5px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .acc-box { margin: 0 20px 22px; }
+}
+@media (prefers-reduced-motion: reduce) { .arrow svg, .acc-body, .acc-box { transition: none; } }

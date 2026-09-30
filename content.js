@@ -26,19 +26,22 @@ window.SITE = {
   domain: 'knownand.com',
   name: 'Josie Rigali',
   studio: 'Known, and',
-  role: 'Brand Systems Designer + Creative Technologist',
+  role: 'Brand incubator and systems design engineer',   /* Josie, 2026-09-30 */
   nav: [
     { label: 'Work', url: '#work' },
     { label: 'Security', url: '#security' },
     { label: 'About', url: '#about' },
     { label: 'Case studies', url: CASES },
+    /* quick links (Josie, 2026-09-30): icon only, label is the tooltip + screen-reader name */
+    { label: 'GitHub', url: GH, icon: 'github' },
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/josephinerigali/', icon: 'linkedin' },
   ],
   headline: 'I build brands that behave like products',
   sub: 'Identity, interfaces, motion, 3D, research and emerging technology, brought together as one system. <a href="' + CASES + '">Known, and</a> is my studio. I share the work and the numbers as I go.',
   /* Hero button. Josie, 2026-09-30: "book a meeting", leading to the
      research + development inbox. Best practice is a booking page; when one
      exists (Cal.com, Calendly), put its URL here and the button opens it. */
-  cta: { label: 'Book a meeting', url: 'mailto:rigaliresearchdevelopment@gmail.com?subject=' + encodeURIComponent('Book a meeting with Known, and') },
+  cta: { label: 'Book a meeting', url: 'https://calendly.com/rigaliresearchdevelopment' },   /* Calendly (Josie, 2026-09-30: "should open to calendly"); calendly.com/rigalij is her other page */
 
   /* Floating program icons either side of the hero. `icon` names a drawing
      in site.js (claude, figma, photoshop, illustrator, aftereffects,

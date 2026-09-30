@@ -168,9 +168,9 @@
       else right = m.value;
       return `<div class="row"><span class="k">${scr(m.label)}</span><span class="v">${right}</span></div>`;
     }).join('');
-    /* The band is the pause between heading and rows: lattice.js snaps it to the grid and fills it with turning squares */
+    /* The band of turning squares that used to sit here was removed (Josie, 2026-09-30: "these need to be removed"); the pause is now plain margin on the h1 */
     /* Heading is plain text (Josie, 2026-09-30: "turn off the hero type animation"); the row labels still decode in */
-    hero.innerHTML = `<h1><span class="name">${S.hero.name}</span> <span class="role">${S.hero.role}</span></h1><div class="band" data-rows="2" aria-hidden="true"></div><div class="meta">${rows}</div>`;
+    hero.innerHTML = `<h1><span class="name">${S.hero.name}</span> <span class="role">${S.hero.role}</span></h1><div class="meta">${rows}</div>`;
 
     const clocks = [...hero.querySelectorAll('.clock')];
     if (clocks.length) {

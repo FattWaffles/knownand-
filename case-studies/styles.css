@@ -189,13 +189,13 @@ h2 {
 /* ---------- Hero: the rosekuan.com layout ----------
    Two lines at 56px, medium, tracking -.06em: name in the muted tone, role in
    the bone with a prismatic split (red left, blue right) like the GIF's
-   edges. The 152px pause below is a "band": lattice.js fills its cells with
-   turning squares and snaps it to the grid. Then three rows of mono small
+   edges. Then a pause (plain margin; the band of turning squares that filled
+   it was removed 2026-09-30 at Josie's request), then three rows of mono small
    caps, label left and value right, split by hairlines that a prismatic
    glint runs along now and then. */
 .hero { margin: 0 0 44px; }
 .hero h1 {
-  margin: 0; padding-top: 108px;
+  margin: 0 0 112px; padding-top: 108px;
   font-family: var(--sans); font-stretch: normal; font-weight: 500;
   font-size: 56px; line-height: 1; letter-spacing: -.06em;
   display: flex; flex-direction: column;
@@ -203,7 +203,7 @@ h2 {
 .hero h1::after { content: none; }
 .hero .name { color: var(--muted); }
 .hero .role { color: var(--fg); text-shadow: -1.2px 0 rgba(255, 59, 48, .55), 1.2px 0 rgba(47, 107, 255, .55); }
-.hero .band { height: 144px; margin: 40px 0 32px; }
+.hero .band { display: none; }
 .hero .row {
   position: relative; container-type: inline-size;
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
@@ -271,10 +271,11 @@ h2 {
 .entry {
   margin-top: 24px; padding: 22px 24px 24px;
   scroll-margin-top: 16px;
-  transition: border-color .2s;
+  transition: border-color .2s, background-color .2s, box-shadow .2s;
 }
 .entry[hidden] { display: none; }
-.entry.sel { border-color: var(--fg); }
+/* selected entry: no dark outline; the same soft raised look as the tree's selected row, keeping the veil's rounded spread (Josie, 2026-09-30) */
+.entry.sel { border-color: transparent; }
 .entry .date { font: 500 12px/1.4 var(--mono); letter-spacing: .06em; color: var(--muted); margin: 0 0 10px; }
 .entry .head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 8px; }
 .entry .head .title { font-weight: 600; font-size: 17px; letter-spacing: -.01em; }
@@ -406,6 +407,11 @@ h2 {
 .tree .row:focus { outline: none; }
 .tree .row.sel, .tree .row:focus-visible { background: var(--raise-bg); box-shadow: var(--raise); }
 .tree .row.sel .lbl { font-weight: 600; }
+/* the selected log entry, raised the same way; the shadows carry the veil's spread so they show outside it */
+:root { --veil-sp: 14px; --raise-dk: rgba(0, 0, 0, .7); --raise-lt: rgba(255, 255, 255, .05); }
+:root[data-theme="light"] { --raise-dk: rgba(0, 0, 0, .09); --raise-lt: #FFFFFF; }
+@media (max-width: 720px) { :root { --veil-sp: 10px; } }
+.entry.sel { background: var(--raise-bg); box-shadow: 0 0 0 var(--veil-sp) var(--raise-bg), 6px 6px 14px var(--veil-sp) var(--raise-dk), -4px -4px 12px var(--veil-sp) var(--raise-lt); }
 @keyframes sq-turn {
   0%, 40%   { transform: rotate(0deg);  filter: drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent); }
   44%       { filter: drop-shadow(-1.2px 0 0 var(--prism-r)) drop-shadow(1.2px 0 0 var(--prism-b)); }

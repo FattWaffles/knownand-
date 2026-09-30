@@ -91,7 +91,9 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
 
   /* top + hero */
   $('#brand').textContent = S.domain;
-  $('#nav').innerHTML = S.nav.map((n) => `<a href="${n.url}">${n.label}</a>`).join('<span>·</span>');
+  $('#nav').innerHTML = S.nav.map((n) => n.icon
+    ? `<a class="ico" href="${n.url}"${ext(n.url)} aria-label="${n.label}" title="${n.label}">${SOC[n.icon] || SOC.web}</a>`
+    : `<a href="${n.url}">${n.label}</a>`).join('<span>·</span>');
   $('#pill-name').textContent = S.name;
   $('#pill-role').innerHTML = `<b>${S.studio}</b><span class="dot">·</span>${scr(S.role)}`;
   $('#h1').textContent = S.headline;
@@ -123,16 +125,41 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       </div>
     </div>`).join('');
 
-  /* shipped */
-  $('#shipped').innerHTML = D.map((d, i) => `
-    <div class="row">
-      <div class="proj"><div class="num">${i + 1}</div><div>
-        <h3>${d.url ? `<a href="${d.url}">${d.title} <span class="ext" aria-hidden="true">↗</span></a>` : d.title}${socials(d.social)}</h3>
-        <p class="meta">${d.sub}</p>
-      </div></div>
-      <div class="kind" data-label="Kind"><i></i>${d.kind}</div>
-      <div class="stat" data-label="Result"><b>${d.stat}</b><span>${d.label}</span></div>
+  /* shipped: an accordion (Josie, 2026-09-30). The newest project starts
+     open; opening another closes it. The header row is one button (title,
+     kind, result, arrow); the abstract, the case-study link and any social
+     tags sit in the raised panel underneath. The arrow is a soft-shadow
+     chevron on the surface colour; it turns and its light flips when open. */
+  const ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 9l6.5 6.5L18.5 9"/></svg>';
+  const ship = $('#shipped');
+  ship.innerHTML = D.map((d, i) => `
+    <div class="row acc${i === 0 ? ' open' : ''}">
+      <button class="acc-head" type="button" id="acc-h-${i}" aria-expanded="${i === 0}" aria-controls="acc-p-${i}">
+        <div class="proj"><div class="num">${i + 1}</div><div><h3>${d.title}</h3></div></div>
+        <div class="kind" data-label="Kind"><i></i>${d.kind}</div>
+        <div class="stat" data-label="Result"><b>${d.stat}</b><span>${d.label}</span></div>
+        <span class="arrow">${ARROW}</span>
+      </button>
+      <div class="acc-body" id="acc-p-${i}" role="region" aria-labelledby="acc-h-${i}"${i ? ' inert' : ''}>
+        <div class="acc-panel"><div class="acc-box">
+          <p>${d.sub}</p>
+          ${d.url || (d.social && d.social.length) ? `<div class="acc-links">${d.url ? `<a class="acc-link" href="${d.url}">Read the case study <span class="ext" aria-hidden="true">↗</span></a>` : ''}${socials(d.social)}</div>` : ''}
+        </div></div>
+      </div>
     </div>`).join('');
+  const setOpen = (row, on) => {
+    row.classList.toggle('open', on);
+    $('.acc-head', row).setAttribute('aria-expanded', String(on));
+    const body = $('.acc-body', row);
+    if (on) body.removeAttribute('inert'); else body.setAttribute('inert', '');
+  };
+  ship.addEventListener('click', (ev) => {
+    const head = ev.target.closest('.acc-head');
+    if (!head || !ship.contains(head)) return;
+    const row = head.parentElement, wasOpen = row.classList.contains('open');
+    ship.querySelectorAll('.row.acc.open').forEach((r) => setOpen(r, false));
+    if (!wasOpen) setOpen(row, true);
+  });
 
   /* two-column cell grids (learning, security) */
   const cells = (items, render) => {
