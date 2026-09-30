@@ -376,26 +376,6 @@ h2 {
   .hero .row + .row::before { animation: none; }
   .tree .sq, .tree .tw .ic { transition: none; }
 }
-
-/* Folder squares turn like the band (Josie, 2026-09-30: "the same animation and
-   concept as the larger ones"): each square rests, then turns 45 degrees with
-   an ease, at its own pace and phase, and its edges split red / blue while it
-   moves. Two turns per cycle end at 90 degrees, which looks like 0, so the loop
-   has no jump. Reduced motion: still. */
-@keyframes sq-turn {
-  0%, 40%   { transform: rotate(0deg);  filter: drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent); }
-  44%       { filter: drop-shadow(-1.2px 0 0 var(--prism-r)) drop-shadow(1.2px 0 0 var(--prism-b)); }
-  48%, 88%  { transform: rotate(45deg); filter: drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent); }
-  92%       { filter: drop-shadow(-1.2px 0 0 var(--prism-r)) drop-shadow(1.2px 0 0 var(--prism-b)); }
-  96%, 100% { transform: rotate(90deg); filter: drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent); }
-}
-.tree .ic-folder .sq { animation: sq-turn var(--sqd, 5.4s) cubic-bezier(.65, 0, .2, 1) infinite; }
-.tree .ic-folder .sq:nth-child(1) { --sqd: 4.8s; animation-delay: -1.3s; }
-.tree .ic-folder .sq:nth-child(2) { --sqd: 6.3s; animation-delay: -3.9s; }
-.tree .ic-folder .sq:nth-child(3) { --sqd: 5.5s; animation-delay: -2.2s; }
-.tree .ic-folder .sq:nth-child(4) { --sqd: 7.1s; animation-delay: -0.7s; }
-@media (prefers-reduced-motion: reduce) { .tree .ic-folder .sq { animation: none; } }
-
 /* ---- readability + colour pass (Josie, 2026-09-30: "this is hard to read
    and can we add pops of brand color in with the type") ---- */
 :root { --veil: rgba(5, 5, 5, .72); }
