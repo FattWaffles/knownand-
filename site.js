@@ -42,6 +42,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     solana:       { bg: '#0B0B0B', svg: svg(`<defs><linearGradient id="g-sol" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#9945FF"/><stop offset="1" stop-color="#14F195"/></linearGradient></defs><g fill="url(#g-sol)"><path d="M7 4h14l-4 3.6H3z"/><path d="M3 10.2h14l4 3.6H7z"/><path d="M7 16.4h14l-4 3.6H3z"/></g>`) },
     autocad:      { bg: '#B71C1C', fg: '#fff', text: 'A' },
     godot:        { bg: '#478CBF', svg: svg(`<rect x="10.5" y="4" width="3" height="4" rx="1" fill="#fff"/><rect x="4" y="7" width="16" height="11" rx="5.5" fill="#fff"/><circle cx="9" cy="12.5" r="1.9" fill="#478CBF"/><circle cx="15" cy="12.5" r="1.9" fill="#478CBF"/>`) },
+    blender:      { bg: '#E87D0D', svg: svg(`<path d="M3.5 7.5h7.5M2.5 12h6M5.5 3.5l5.2 4.6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="14.2" cy="14" r="5.4" fill="#265787" stroke="#fff" stroke-width="2.6"/><circle cx="14.2" cy="14" r="1.6" fill="#fff"/>`) },
     shopify:      { bg: '#96BF48', svg: svg(`<path d="M8.5 9V7.5a3.5 3.5 0 0 1 7 0V9" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M6 9h12l1 11.5H5z" fill="#fff"/><text x="12" y="17.6" font-size="7.5" font-weight="700" fill="#96BF48" text-anchor="middle" font-family="Space Grotesk, sans-serif">S</text>`) },
   };
 

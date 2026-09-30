@@ -42,7 +42,7 @@ window.SITE = {
 
   /* Floating program icons either side of the hero. `icon` names a drawing
      in site.js (claude, figma, photoshop, illustrator, aftereffects,
-     procreate, github, solana, autocad, godot, shopify). `side` l = left
+     procreate, github, solana, autocad, godot, shopify, blender). `side` l = left
      column, top to bottom; r = bottom-right cluster, outer to inner. */
   stack: [
     { label: 'Claude',        icon: 'claude',       side: 'l' },
@@ -56,6 +56,7 @@ window.SITE = {
     { label: 'AutoCAD',       icon: 'autocad',      side: 'r' },
     { label: 'Godot',         icon: 'godot',        side: 'r' },
     { label: 'Shopify',       icon: 'shopify',      side: 'r' },
+    { label: 'Blender',       icon: 'blender',      side: 'r' },
   ],
 
   links: [
