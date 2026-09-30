@@ -366,3 +366,16 @@ footer { font-size: 11.5px; font-weight: 600; }
 .bar { position: relative; height: 10px; margin-top: 10px; background: var(--neu); }
 .bar::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: var(--press-sm); pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .soc { transition: none; } }
+
+/* ---- soft states (Josie, 2026-09-30, "the select state is still the same as
+   the first"): the hover and selected blocks follow the shape sheet as well,
+   so the square rim is retired here. Hover = the block raised (top row of the
+   sheet); selected, that is an open accordion row = the same block pressed in
+   (the pressed row). Both are filled with the surface colour so the number
+   badge and pills read as shapes cut from the block they sit on. The open
+   panel is a raised block of the same kind. ---- */
+:root { --raise-lg: -5px -5px 12px var(--neu-lt), 7px 7px 16px var(--neu-dk);
+        --press-lg: inset 5px 5px 12px var(--neu-dk), inset -5px -5px 12px var(--neu-lt); }
+.row::before, .acc-head::before { border-radius: 14px; background: var(--neu); box-shadow: var(--raise-lg); transition: opacity .2s, box-shadow .25s; }
+.row.acc.open > .acc-head::before, .row.acc.open > .acc-head:hover::before { box-shadow: var(--press-lg); }
+.acc-box { border-radius: 14px; background: var(--neu); box-shadow: var(--raise-lg); }
