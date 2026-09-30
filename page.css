@@ -19,14 +19,14 @@
 .head-row .lede { margin: 0; max-width: none; }
 .head-row.solo { grid-template-columns: 1fr; width: 100%; }
 .head-row.solo .lede { max-width: calc(72px * 10 + 1px); }
-.callout { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 22px 22px 20px; background: var(--neu); box-shadow: var(--raise-lg); color: var(--fg); transition: box-shadow .15s, transform .15s; }
+.callout { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 22px 22px 20px; background: var(--blue); box-shadow: var(--raise-lg); color: #fff; transition: box-shadow .15s, transform .15s; }   /* blue block, white type (Josie, 2026-09-30: "add color, maybe the blue and white type") */
 .callout:hover { transform: translateY(-1px); }
 .callout:active { box-shadow: var(--press-lg); transform: none; }
-.callout .eyebrow { margin: 0 0 2px; }
+.callout .eyebrow { margin: 0 0 2px; color: rgba(255, 255, 255, .72); }
 .callout b { font-family: var(--display); font-stretch: 112%; font-weight: 800; font-size: 40px; line-height: 1; letter-spacing: -.03em; }
-.callout p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
-.callout .more { margin-top: auto; padding-top: 12px; font: 600 11px/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: var(--muted); }
-.callout:hover .more { text-decoration-color: currentColor; }
+.callout p { margin: 0; font-size: 13px; line-height: 1.5; color: rgba(255, 255, 255, .84); }
+.callout .more { margin-top: auto; padding-top: 12px; font: 600 11px/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: rgba(255, 255, 255, .55); }
+.callout:hover .more { text-decoration-color: #fff; }
 @media (prefers-reduced-motion: reduce) { .callout { transition: none; } }
 .page-head .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 20px; font: 600 11px/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .page-head .meta b { color: var(--fg); font-weight: 600; }
