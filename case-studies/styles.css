@@ -398,3 +398,20 @@ h2 {
 .filter .tag:hover { color: var(--blue); border-color: var(--blue); }
 .tree .folder > .row .lbl { color: var(--fg); }
 @media (max-width: 720px) { .hero h1, .hero .meta, .intro, .brands, .filter, .entry, .cv > *, .post, .posts, .blog-head { box-shadow: 0 0 0 10px var(--veil); } }
+
+/* ---- selected page in the tree (Josie, 2026-09-30): a soft raised row instead
+   of the browser's blue focus ring, and its square turns like the band ---- */
+:root { --raise-bg: #121212; --raise: 4px 4px 10px rgba(0, 0, 0, .75), -3px -3px 8px rgba(255, 255, 255, .05), inset 1px 1px 0 rgba(255, 255, 255, .06); }
+:root[data-theme="light"] { --raise-bg: #F4F4F6; --raise: 4px 4px 9px rgba(0, 0, 0, .10), -3px -3px 8px #FFFFFF, inset 1px 1px 0 rgba(255, 255, 255, .95); }
+.tree .row:focus { outline: none; }
+.tree .row.sel, .tree .row:focus-visible { background: var(--raise-bg); box-shadow: var(--raise); }
+.tree .row.sel .lbl { font-weight: 600; }
+@keyframes sq-turn {
+  0%, 40%   { transform: rotate(0deg);  filter: drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent); }
+  44%       { filter: drop-shadow(-1.2px 0 0 var(--prism-r)) drop-shadow(1.2px 0 0 var(--prism-b)); }
+  48%, 88%  { transform: rotate(45deg); filter: drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent); }
+  92%       { filter: drop-shadow(-1.2px 0 0 var(--prism-r)) drop-shadow(1.2px 0 0 var(--prism-b)); }
+  96%, 100% { transform: rotate(90deg); filter: drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent); }
+}
+.tree a.row.sel .sq { animation: sq-turn 5.4s cubic-bezier(.65, 0, .2, 1) infinite; }
+@media (prefers-reduced-motion: reduce) { .tree a.row.sel .sq { animation: none; } }
