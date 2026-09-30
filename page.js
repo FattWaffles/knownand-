@@ -1,9 +1,9 @@
-/* Shell for the secondary pages (pricing.html, terms.html, privacy.html),
+/* Shell for the secondary pages (pricing.html, roles.html, terms.html, privacy.html),
    added 2026-09-30: the same top bar, rotating mark, footer and theme switch
    as index.html, rendered from content.js. site.js expects the home page's
    hero and tables, so these pages load this file in its place. The pricing
-   page's cards come from window.PRICING (content.js). Nothing in here is
-   content. */
+   page's cards come from window.PRICING, the roles page from window.ROLES
+   (content.js). Nothing in here is content. */
 (function () {
   const $ = (s, r = document) => r.querySelector(s);
   const S = window.SITE;
@@ -71,6 +71,19 @@
   });
   paintTheme();
 
+  /* a two-column card of cells, as on the home page: index top left, an
+     optional small label top right, a glyph, name and text. `after` is extra
+     markup under the text (the roles page puts its apply / refer links there). */
+  const check = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const checkGlyph = () => `<div class="glyph check" aria-hidden="true">${check}</div>`;
+  function cells(items, glyph) {
+    const n = items.length, lastRow = n % 2 ? n - 1 : n - 2;
+    return items.map((it, i) => `<div class="cell${i >= lastRow ? ' last' : ''}${i === n - 2 && n % 2 === 0 ? ' last-md' : ''}">
+      <span class="idx">${pad(i + 1)}</span>${it.kind ? `<span class="imp">${it.kind}</span>` : ''}
+      ${glyph(it)}
+      <div><h3>${it.name}</h3><p>${it.text}</p>${it.after || ''}</div></div>`).join('');
+  }
+
   /* pricing cards (pricing.html only) */
   const P = window.PRICING, plans = $('#plans');
   if (P && plans) {
@@ -91,17 +104,32 @@
     $('#how-eyebrow').textContent = P.how.eyebrow;
     $('#how-title').textContent = P.how.title;
     $('#how-text').innerHTML = P.how.text;
-    const check = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    const n = P.how.items.length, lastRow = n % 2 ? n - 1 : n - 2;
-    $('#how').innerHTML = P.how.items.map((it, i) => `<div class="cell${i >= lastRow ? ' last' : ''}${i === n - 2 && n % 2 === 0 ? ' last-md' : ''}">
-      <span class="idx">${pad(i + 1)}</span>
-      <div class="glyph check" aria-hidden="true">${check}</div>
-      <div><h3>${it.name}</h3><p>${it.text}</p></div></div>`).join('');
+    $('#how').innerHTML = cells(P.how.items, checkGlyph);
     const cta = $('#p-cta'); cta.href = P.cta.url; cta.textContent = P.cta.label;
     $('#p-cta-text').textContent = P.ctaText || '';
     const sub = $('#p-sub');
     if (sub) { if (P.subscribe) { sub.href = P.subscribe.url; sub.textContent = P.subscribe.label; } else sub.remove(); }
     $('#p-note').textContent = priced ? (P.note || '') : '';
+  }
+
+  /* open roles (roles.html only): the role cells, the referral terms and
+     two mailto buttons; the role name goes in the subject line */
+  const R = window.ROLES, rolesBox = $('#roles');
+  if (R && rolesBox) {
+    const mail = (subject) => `mailto:${R.email}?subject=${encodeURIComponent(subject)}`;
+    $('#r-eyebrow').textContent = R.eyebrow;
+    $('#r-title').textContent = R.title;
+    $('#r-text').innerHTML = R.text;
+    rolesBox.innerHTML = cells(R.roles.map((r) => ({ ...r,
+      after: `<p class="cell-act"><a href="${mail('Role: ' + r.name)}">${R.apply}</a><a href="${mail('Referral: ' + r.name)}">${R.referLabel}</a></p>` })),
+      (r) => `<div class="glyph" aria-hidden="true">${r.code}</div>`);
+    $('#ref-eyebrow').textContent = R.refer.eyebrow;
+    $('#ref-title').textContent = R.refer.title;
+    $('#ref-text').innerHTML = R.refer.text;
+    $('#refer').innerHTML = cells(R.refer.items, checkGlyph);
+    const a = $('#r-cta'); a.href = mail(R.cta.subject); a.textContent = R.cta.label;
+    const b = $('#r-cta2'); b.href = mail(R.cta2.subject); b.textContent = R.cta2.label;
+    $('#r-cta-text').textContent = R.ctaText || '';
   }
 
   /* article: the video + paper buttons appear once their URLs are set */

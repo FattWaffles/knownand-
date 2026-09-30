@@ -1,4 +1,4 @@
-/* Secondary pages (pricing.html, terms.html, privacy.html), 2026-09-30.
+/* Secondary pages (pricing.html, roles.html, terms.html, privacy.html), 2026-09-30.
    Same tokens as styles.css; this file only adds the page header, the plan
    cards and the reading column for the legal text. Cards are one pixel wider
    than the column so their hairlines sit on the lattice's grid lines, like
@@ -40,6 +40,12 @@
 .next .btn { margin-top: 4px; }
 .ar-links { justify-content: flex-start; margin-top: 18px; }
 .ar-links p { margin: 0; font-size: 14px; }
+
+/* ---- open roles: the home page's cell grid with a mark per role ---- */
+.roles .glyph { font-size: 11px; letter-spacing: 0; }
+.cell .cell-act { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px 16px; font: 600 11px/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.roles .cell { align-items: flex-start; padding-top: 30px; }
+.roles .cell .glyph { margin-top: 2px; }
 
 /* ---- legal: contents rail + reading column on a card ---- */
 .doc { display: grid; grid-template-columns: 190px 1fr; gap: 48px; align-items: start; background: var(--card); border: 1px solid var(--line); width: calc(100% + 1px); padding: 40px 44px 48px; }

@@ -80,6 +80,7 @@ window.SITE = {
   links: [
     { label: 'Case studies', url: CASES },
     { label: 'Pricing', url: 'pricing.html' },
+    { label: 'Open roles', url: 'roles.html' },
     { label: 'Using AI', url: 'using-ai-as-a-digital-artist-and-researcher.html' },
     { label: 'Site source', url: GH + '/knownand-' },
     { label: 'LinkedIn', url: 'https://www.linkedin.com/in/josephinerigali/' },
@@ -285,7 +286,8 @@ window.NEXT = {
    Session (credited to the first sprint), $4,750 sprint, $2,750 Known Layer
    ($7,000 with a sprint), retainer $1,750 (2 days) or $3,250 (4 days). Five working days per
    fixed-price project, 24/7 human support, prices move with availability,
-   10% off the next engagement for recommending a hire. An empty `price`
+   10% off the next engagement for referring someone who fills an open
+   role (roles.html, window.ROLES below). An empty `price`
    reads "Priced per engagement" over `unit`; `note` shows only once a
    price is set.
    The `how` items state the studio's terms in one line each; the wording
@@ -294,7 +296,7 @@ window.NEXT = {
 window.PRICING = {
   eyebrow: 'Pricing',
   title: 'Four ways in.\nOne method underneath.',
-  text: 'Every engagement starts with a map of how the work moves: where it shows up, what flows between steps, what people keep, what AI does and what plain systems handle. The map decides what to design, build and automate. Each price is fixed before work starts. Projects ship in five working days. A person answers support, any hour, any day. Known, and is building a network of people who do good work. Recommend one we hire and your next engagement is 10% off.',
+  text: 'Every engagement starts with a map of how the work moves: where it shows up, what flows between steps, what people keep, what AI does and what plain systems handle. The map decides what to design, build and automate. Each price is fixed before work starts. Projects ship in five working days. A person answers support, any hour, any day. Known, and is building a network of people who do good work. Refer someone who fills one of our <a href="roles.html">open roles</a> and your next engagement is 10% off.',
   plans: [
     { name: 'The Fit Session', kind: 'Audit', price: '$750', unit: 'fixed price, credited to your first sprint', time: '2 working days',
       text: 'A short paid review of one product or workflow: where context leaks, where the experience fights the user, where AI is guessing.',
@@ -349,7 +351,7 @@ window.PRICING = {
       { name: 'AI under one rule', text: 'Client material only reaches AI models designed for data sovereignty. The rule and what it means today are in the <a href="privacy.html#ai">privacy policy</a>.' },
       { name: 'Payment', text: 'Payment terms and schedule are set in each proposal. Third-party costs such as fonts, stock, hosting and domains are passed through at cost, with your approval first.' },
       { name: 'Prices change with availability', text: 'Prices rise when the calendar is full and drop when it opens. A signed proposal keeps its price. Subscribe below for updates on new services and prices.' },
-      { name: '10% referral discount', text: 'Recommend someone we hire and your next engagement is 10% off: a RAG developer, a cybersecurity specialist, a junior designer, a junior UX researcher, or anyone who does solid work. Known, and is building a network of people who do good work. That is how the studio scales, keeps the same quality, and makes sure everyone in it gets beautiful, usable design.' },
+      { name: '10% referral discount', text: 'Refer someone who fills one of our open contract roles and your next engagement is 10% off. Open now: RAG engineer, crypto and blockchain expert, junior developer, junior UX researcher, illustrator, motion designer and sales. <a href="roles.html">See the roles</a>. Known, and is building a network of people who do good work. That is how the studio scales, keeps the same quality, and makes sure everyone in it gets beautiful, usable design.' },
     ],
   },
   cta: { label: 'Book a Fit Session', url: 'https://calendly.com/rigaliresearchdevelopment' },
@@ -358,6 +360,57 @@ window.PRICING = {
   subscribe: { label: 'Subscribe for updates', url: 'mailto:rigaliresearchdevelopment@gmail.com?subject=Subscribe%3A%20Known%2C%20and%20services%20and%20prices' },
   ctaText: 'Two working days, one map of how your work moves, and a ranked plan for what to design, build or automate first. The map is yours to keep. Prices change with availability. Subscribe for updates on new services and prices.',
   note: 'Prices in US dollars, before tax. Prices change with availability. A signed proposal keeps its price.',
+};
+
+/* Open roles page (roles.html; rendered by page.js). Josie, 2026-09-30:
+   "add the 10% discount for referral that fills a role at our dev design
+   collective... a looking to fill contractor roles page" and the seven
+   roles: RAG engineer, crypto/blockchain expert, junior dev, junior UX
+   researcher, illustrator, motion designer, sales. Each is a contract role,
+   brought in per project. `code` is the mark in the black circle, `kind`
+   the small magenta label top right. Remove a role from `roles` to take it
+   off the page; the pricing page's referral cell names the same list, so
+   keep the two in step. Apply / refer links are mailto with the role in the
+   subject, so nothing is typed on the page. The referral terms in
+   `refer.items` are reasonable defaults for Josie to confirm: when the
+   discount is applied (once the person is brought on) and what it applies
+   to (the next fixed-price engagement or retainer month). */
+window.ROLES = {
+  eyebrow: 'Open roles',
+  title: 'Contract roles,\nopen now.',
+  text: 'Known, and is a network of people who do good work, brought in per project. The studio grows by adding people who hold the same standard, so every client gets beautiful, usable design and a build that holds. The roles below are open now. Each is a contract role, scoped in writing before work starts. Know someone who fits? Refer them, and once they join, your next engagement is 10% off.',
+  email: 'rigaliresearchdevelopment@gmail.com',
+  apply: 'Apply',
+  referLabel: 'Refer someone',
+  roles: [
+    { code: 'RAG', kind: 'Engineering', name: 'RAG engineer',
+      text: 'Retrieval pipelines over client knowledge: chunking, embeddings, evaluation and the checks that keep answers grounded in the source.' },
+    { code: 'Web3', kind: 'Engineering', name: 'Crypto and blockchain expert',
+      text: 'Smart contracts, wallets and on-chain integrations for product work, with the security review that goes with them.' },
+    { code: 'Dev', kind: 'Engineering', name: 'Junior developer',
+      text: 'Front-end and automation builds from designed flows. You ship inside a five-day sprint, with review on everything.' },
+    { code: 'UXR', kind: 'Research', name: 'Junior UX researcher',
+      text: 'Interviews, usability tests and the write-up. You help build the map every engagement starts with.' },
+    { code: 'Ill', kind: 'Design', name: 'Illustrator',
+      text: 'Brand illustration and icon systems that hold together across print, screen and motion.' },
+    { code: 'Mo', kind: 'Design', name: 'Motion designer',
+      text: 'Interface motion, brand animation and social pieces. Legibility comes first and the motion serves it.' },
+    { code: 'Sales', kind: 'Growth', name: 'Sales',
+      text: 'Fit Session bookings and the conversations before them. You know design and automation well enough to scope honestly.' },
+  ],
+  refer: {
+    eyebrow: '10% referral discount',
+    title: 'Know someone who fits?',
+    text: 'Refer a person we bring on for one of these roles and your next engagement with the studio is 10% off. The short version is below; your proposal states the discount when it applies.',
+    items: [
+      { name: '10% off your next engagement', text: 'The discount comes off your next fixed-price engagement or your next retainer month, whichever you book first.' },
+      { name: 'One introduction is enough', text: 'Email us their name and the role, or have them name you when they apply. Either way counts.' },
+      { name: 'Applied once they are brought on', text: 'The discount is confirmed when the person signs their first contract with the studio. We tell you when that happens.' },
+    ],
+  },
+  cta: { label: 'Apply for a role', subject: 'Role: ' },
+  cta2: { label: 'Refer someone', subject: 'Referral: ' },
+  ctaText: 'Send a short note and a link to your work, or the name of the person you are referring and the role. A person reads every message and replies within one business day.',
 };
 
 /* Article page (using-ai-as-a-digital-artist-and-researcher.html; linked
