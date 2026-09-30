@@ -41,7 +41,7 @@ window.SITE = {
     { label: 'LinkedIn', url: 'https://www.linkedin.com/in/josephinerigali/', icon: 'linkedin' },
   ],
   headline: 'I build brands that behave like products',
-  sub: 'Identity, interfaces, motion, 3D, research and emerging technology, brought together as one system. <a href="' + CASES + '">Known, and</a> is my studio. I share the work and the numbers as I go.',
+  sub: 'Identity, interfaces, motion, 3D, research and emerging technology, brought together as one system. <a href="' + CASES + '">Known, and</a> is my lab art collective. Innovation from a unique perspective. Follow below for my active work and the numbers as I go through design and development sprint cycles.',
   /* Hero button. Josie, 2026-09-30: "book a meeting", leading to the
      research + development inbox. Best practice is a booking page; when one
      exists (Cal.com, Calendly), put its URL here and the button opens it. */
