@@ -1,0 +1,271 @@
+/* Motion previews (motion.js + anime.js). Each scene lives in a .stage inside
+   the pressed well. Animated pieces start hidden; the scene brings them in.
+   Loads after styles.css and only overrides what a scene needs. */
+
+.shot.motion { padding: 12px; }
+.shot.motion .go { display: block; position: relative; text-decoration: none; color: inherit; border-radius: 8px; }
+.shot.motion .go:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
+.shot.motion .open {
+  position: absolute; right: 12px; bottom: 12px; z-index: 2;
+  padding: 7px 10px; border-radius: 9px;
+  font-size: 11px; line-height: 1; letter-spacing: .02em; color: var(--fg);
+  background: var(--glass-bg); border: 1px solid var(--glass-edge);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  box-shadow: var(--raised-sm);
+  opacity: 0; transform: translateY(4px); transition: opacity .2s, transform .2s;
+  pointer-events: none;
+}
+.shot.motion .go:hover .open, .shot.motion .go:focus-visible .open { opacity: 1; transform: none; }
+
+.stage {
+  position: relative; overflow: hidden; border-radius: 8px;
+  aspect-ratio: 16 / 10; background: var(--box);
+  perspective: 900px;
+}
+.stage.logo { aspect-ratio: 2 / 1; background: #000; }
+.stage img { position: absolute; max-width: none; max-height: none; width: auto; height: auto; object-fit: cover; border-radius: 0; }
+.stage img.pan { inset: 0; width: 100%; height: 100%; object-position: 50% 0; transform-origin: 50% 0; will-change: transform; }
+
+/* Tiles: 24 clipped copies of one image, each flipping about its bottom edge */
+.stage .tile { position: absolute; overflow: hidden; opacity: 0; transform-origin: 50% 100%; backface-visibility: hidden; will-change: transform, opacity; }
+.stage .tile img { object-position: 50% 0; transform-origin: 50% 0; }
+
+/* Phones: three screens side by side */
+.stage.phones { display: flex; align-items: center; justify-content: center; gap: 14px; background: var(--bg); }
+.stage.phones img { position: static; height: 84%; width: auto; border-radius: 10px; box-shadow: var(--raised-sm); opacity: 0; will-change: transform, opacity; }
+
+/* Overlay card for the score and pins scenes */
+.stage .stat {
+  position: absolute; left: 14px; bottom: 14px; z-index: 1;
+  width: 200px; max-width: calc(100% - 28px); padding: 10px 12px;
+  border-radius: 12px; color: var(--fg); font-size: 11px; line-height: 1.3;
+  background: var(--glass-bg); border: 1px solid var(--glass-edge);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+  border-color: var(--line);
+  opacity: 0; will-change: transform, opacity;
+}
+:root:not([data-theme="light"]) .stage .stat { --blue: #6F86FF; }
+.stage .stat.mini { top: 14px; bottom: auto; width: auto; padding: 7px 11px; white-space: nowrap; }
+.stage .stat.mini b { font-weight: 600; }
+.stage .stat .k { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.stage .stat .k2 { margin-top: 9px; }
+.stage .stat .big { font-family: var(--display); font-weight: 800; font-size: 28px; line-height: 1; margin: 3px 0 7px; font-variant-numeric: tabular-nums; }
+.stage .stat .of { font-size: 12px; font-weight: 500; color: var(--muted); margin-left: 3px; }
+.stage .stat .bar { height: 6px; border-radius: 3px; background: var(--line); box-shadow: var(--pressed-sm); overflow: hidden; }
+.stage .stat .fill { display: block; height: 100%; width: 40%; border-radius: 3px; background: var(--blue); }
+.stage .stat .dots { display: flex; align-items: center; gap: 4px; margin-top: 5px; }
+.stage .stat .dots i { display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--blue); }
+.stage .stat .dots b { margin-left: 6px; font-family: var(--display); font-weight: 800; font-size: 16px; line-height: 1; font-variant-numeric: tabular-nums; }
+
+/* Pins: numbered dots, vermilion for high priority, with a ripple ring */
+.stage .pin {
+  --pc: var(--blue);
+  position: absolute; z-index: 1; width: 22px; height: 22px; margin: -11px 0 0 -11px;
+  border-radius: 50%; background: var(--pc); color: #fff;
+  font: 700 11px/22px var(--sans); text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .28);
+  opacity: 0; will-change: transform, opacity;
+}
+.stage .pin.hi { --pc: var(--verm); }
+.stage .pin b { position: relative; }
+.stage .pin .ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--pc); opacity: 0; }
+
+/* Rank panel (Profitmind): a soft card drawn in HTML, no screenshot */
+.stage.rank { display: grid; place-items: center; background: var(--bg); }
+.stage.rank .panel {
+  position: relative; width: 82%; max-width: 380px; padding: 14px 16px 12px;
+  border-radius: 14px; font-size: 12px; line-height: 1.35;
+  background: var(--glass-bg); border: 1px solid var(--glass-edge);
+  box-shadow: var(--raised), inset 0 1px 0 var(--glass-hi);
+  opacity: 0; will-change: transform, opacity;
+}
+.stage.rank .ph { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.stage.rank .ttl { font-weight: 600; font-size: 13px; }
+.stage.rank .chip { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.stage.rank .rrow { position: relative; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; opacity: 0; will-change: transform, opacity; }
+.stage.rank .hl { position: absolute; inset: 0; border-radius: 10px; background: var(--hover, rgba(127, 127, 127, .12)); box-shadow: var(--pressed-sm); opacity: 0; }
+.stage.rank .rk { position: relative; flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: #fff; font: 700 11px/22px var(--sans); text-align: center; }
+.stage.rank .rb { position: relative; flex: 1; min-width: 0; }
+.stage.rank .rt { display: block; font-weight: 600; }
+.stage.rank .rw { display: block; max-width: 0; overflow: hidden; white-space: nowrap; color: var(--muted); }
+.stage.rank .rbar { position: relative; flex: none; width: 46px; height: 6px; border-radius: 3px; background: var(--line); box-shadow: var(--pressed-sm); overflow: hidden; }
+.stage.rank .rbar i { display: block; height: 100%; border-radius: 3px; background: var(--mag); transform: scaleX(0); transform-origin: 0 50%; }
+.stage.rank .cur { position: absolute; left: 60%; top: 31%; width: 14px; height: 14px; border-radius: 50%; background: var(--fg); box-shadow: 0 0 0 3px rgba(255, 255, 255, .55); opacity: 0; }
+.stage.rank.still .panel, .stage.rank.still .rrow { opacity: 1; }
+.stage.rank.still .rw { max-width: none; }
+.stage.rank.still .rbar i { transform: none; }
+.stage.rank.still .cur { display: none; }
+
+/* Headshot off (Josie, 2026-09-30: "take the photo of me off"). The file
+   stays in assets/; the bitmap J shows instead. Delete this rule to bring
+   the photo back. */
+.ava img { display: none; }
+
+/* The light streaks that ran behind the nav for a while on 2026-09-30 were
+   removed the same day (Josie: "take the animation off the side nav"). */
+
+/* Frosted nav (Josie, 2026-09-30): the sidebar mists the lattice behind it.
+   Tokens are local so the reface's flat --glass aliases do not flatten it.
+   The fog is thinner than at first (Josie: "see-through more"). */
+.side {
+  z-index: 1;
+  --nav-glass: rgba(8, 8, 8, .28);
+  --nav-edge: rgba(243, 238, 228, .09);
+  background: var(--nav-glass);
+  -webkit-backdrop-filter: blur(11px) saturate(1.1);
+  backdrop-filter: blur(11px) saturate(1.1);
+  border-right: 1px solid var(--nav-edge);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, .025), 12px 0 32px -18px rgba(0, 0, 0, .6);
+}
+:root[data-theme="light"] .side { --nav-glass: rgba(250, 247, 241, .42); --nav-edge: rgba(10, 10, 10, .08); box-shadow: inset -1px 0 0 rgba(255, 255, 255, .5); }
+.tree .sq { transform-box: fill-box; transform-origin: center; } /* motion.js turns the squares about their own centres */
+@media (max-width: 720px) {
+  .side { border-right: 0; border-bottom: 1px solid var(--nav-edge); box-shadow: none; }
+}
+
+.motion-toggle {
+  margin-top: 10px; padding: 6px 0; border: 0; background: none; cursor: pointer; text-align: left;
+  font: 500 10px/1 var(--mono, ui-monospace, Menlo, monospace); letter-spacing: .16em; text-transform: uppercase; color: var(--muted);
+  display: flex; align-items: center; gap: 8px;
+}
+.motion-toggle::before { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 1px solid currentColor; }
+.motion-toggle[aria-pressed="true"]::before { background: currentColor; }
+.motion-toggle:hover { color: var(--fg); }
+.motion-toggle:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+@media (max-width: 720px) { .motion-toggle { margin: 0 0 0 8px; } }
+
+/* Liquid edge on the containers (Josie: "more of a liquid edge effect on the
+   borders of the containers and round the corners 6px"). The card's ::before
+   is the reface's corner dots, so the rim is ::after: a one-pixel ring cut
+   from a conic gradient (mask-composite) whose bright spots run around the
+   edge like light on a wet rim, softened a touch. Browsers without @property
+   show the ring still. Paused by the Motion switch and reduced motion. */
+@property --rim { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.entry, .cv section, .post { border-radius: 6px; }
+.entry, .cv section { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), inset 0 0 28px rgba(255, 255, 255, .025); }
+.entry::after, .cv section::after, .post::after {
+  content: ""; position: absolute; inset: -1px; border-radius: 7px; padding: 1.5px; pointer-events: none;
+  background: conic-gradient(from var(--rim),
+    rgba(255, 255, 255, 0) 0deg, rgba(255, 255, 255, 0) 40deg,
+    rgba(255, 255, 255, .55) 70deg, rgba(255, 170, 90, .5) 92deg, rgba(255, 255, 255, 0) 124deg,
+    rgba(255, 255, 255, 0) 210deg, rgba(180, 220, 255, .35) 240deg, rgba(255, 255, 255, .28) 262deg, rgba(255, 255, 255, 0) 296deg, rgba(255, 255, 255, 0) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  filter: blur(.35px);
+  animation: m-rim 11s linear infinite;
+}
+.entry:nth-child(even)::after { animation-duration: 14s; animation-delay: -6s; }
+@keyframes m-rim { to { --rim: 360deg; } }
+:root[data-theme="light"] .entry::after, :root[data-theme="light"] .cv section::after, :root[data-theme="light"] .post::after { opacity: .7; }
+html.motion-off .entry::after, html.motion-off .cv section::after, html.motion-off .post::after { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .entry::after, .cv section::after, .post::after { animation: none; } }
+.stage, .shot.motion .go { border-radius: 6px; }
+.stage .stat, .stage.rank .panel { border-radius: 6px; }
+
+/* Shared cursor dot for the scenes that tap things */
+.stage .cur { position: absolute; left: 0; top: 0; z-index: 3; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--fg); box-shadow: 0 0 0 3px rgba(255, 255, 255, .55); opacity: 0; pointer-events: none; will-change: transform, opacity; }
+.stage.rank .cur { left: 60%; top: 31%; margin: 0; }
+.stage.chat .cur, .stage.portal .cur { background: #111; box-shadow: 0 0 0 3px rgba(255, 255, 255, .9), 0 2px 6px rgba(0, 0, 0, .4); }
+
+/* Chat (Quote On): a drawn phone beside three step notes. The screen is
+   white with black bubbles in both themes, like the real app. */
+.stage.chat { aspect-ratio: 16 / 11; display: flex; align-items: center; justify-content: center; gap: 28px; padding: 0 16px; background: var(--bg); container-type: inline-size; }
+.stage.chat .phone { position: relative; flex: none; width: 250px; height: 90%; border-radius: 28px; background: #111; box-shadow: 0 14px 34px rgba(0, 0, 0, .35); }
+.stage.chat .scr { position: absolute; inset: 8px; border-radius: 21px; overflow: hidden; background: #fff; color: #111; font-family: var(--sans); font-size: 10.5px; line-height: 1.35; text-align: left; }
+.stage.chat .bar { position: absolute; left: 0; right: 0; top: 0; height: 38px; display: flex; align-items: center; justify-content: center; }
+.stage.chat .seg { display: flex; padding: 3px; border-radius: 999px; background: #ECEEF2; font-size: 8px; font-weight: 700; letter-spacing: .06em; }
+.stage.chat .seg span { padding: 4px 12px; border-radius: 999px; }
+.stage.chat .seg .on { background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .15); }
+.stage.chat .in { position: absolute; left: 10px; right: 10px; bottom: 10px; height: 30px; display: flex; align-items: center; padding: 0 12px; border-radius: 999px; background: #F1F2F5; color: #8A8F9A; font-size: 9.5px; }
+.stage.chat .in::after { content: ""; margin-left: auto; width: 16px; height: 16px; border-radius: 50%; background: #111; }
+.stage.chat .area { position: absolute; left: 10px; right: 10px; top: 42px; bottom: 48px; overflow: hidden; }
+.stage.chat .col { position: absolute; left: 0; right: 0; top: 0; will-change: transform; }
+.stage.chat .msg { position: relative; width: fit-content; max-width: 86%; margin: 0 0 8px; padding: 7px 9px; border-radius: 12px; opacity: 0; will-change: transform, opacity; transform-origin: 0 100%; }
+.stage.chat .msg.ai { background: #1A1A1A; color: #fff; border-bottom-left-radius: 4px; }
+.stage.chat .msg.you { margin-left: auto; background: #fff; border: 1px solid #1A1A1A; border-bottom-right-radius: 4px; transform-origin: 100% 100%; }
+.stage.chat .txt span { opacity: 0; }
+.stage.chat .chips, .stage.chat .opts { display: flex; flex-wrap: wrap; gap: 5px; margin: 0 0 8px; }
+.stage.chat .chip { font-size: 9px; font-weight: 600; padding: 5px 9px; border: 1px solid #1A1A1A; border-radius: 999px; background: #fff; color: #111; font-style: normal; opacity: 0; will-change: transform, opacity; }
+.stage.chat .chip.on { background: #1A1A1A; color: #fff; }
+.stage.chat .opt { width: 100%; text-align: center; font-size: 9.5px; font-weight: 600; font-style: normal; padding: 7px 10px; border-radius: 999px; opacity: 0; will-change: transform, opacity; }
+.stage.chat .opt.dark { background: #1A1A1A; color: #fff; }
+.stage.chat .opt.line { border: 1px solid #1A1A1A; background: #fff; color: #111; }
+.stage.chat .opt.on { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #1A1A1A; }
+.stage.chat .card { margin: 0 0 8px; padding: 9px 10px; border: 1px solid #1A1A1A; border-radius: 12px; background: #fff; font-size: 9.5px; opacity: 0; will-change: transform, opacity; }
+.stage.chat .card .id { display: flex; justify-content: space-between; align-items: center; font-size: 7.5px; letter-spacing: .08em; color: #8A8F9A; }
+.stage.chat .card .id b { padding: 1px 5px; border-radius: 999px; background: #EEE; color: #555; font-weight: 600; }
+.stage.chat .card h4 { margin: 4px 0 6px; font-size: 10.5px; font-weight: 700; line-height: 1.25; }
+.stage.chat .card .ln { display: flex; justify-content: space-between; gap: 8px; padding: 2px 0; opacity: 0; }
+.stage.chat .card .ln span { color: #555; }
+.stage.chat .card .ln b { font-variant-numeric: tabular-nums; font-weight: 600; }
+.stage.chat .card .ln.sum { margin-top: 4px; padding-top: 5px; border-top: 1px solid #DDD; }
+.stage.chat .card .ln.tot { font-size: 11px; }
+.stage.chat .card .ln.tot span { color: #111; font-weight: 700; }
+.stage.chat .card .ln.tot b { font-weight: 800; }
+.stage.chat .card .tags { display: flex; gap: 4px; margin: 6px 0 8px; }
+.stage.chat .card .tags i { font-style: normal; font-size: 7px; letter-spacing: .06em; text-transform: uppercase; padding: 2px 5px; border-radius: 4px; background: #F7E0F3; color: #8A0077; }
+.stage.chat .card .tags i + i { background: #EEE; color: #555; }
+.stage.chat .card .btns { display: flex; gap: 6px; }
+.stage.chat .card .btns i { flex: 1; text-align: center; font-style: normal; font-size: 9px; font-weight: 600; padding: 7px 4px; border-radius: 999px; opacity: 0; will-change: transform, opacity; }
+.stage.chat .card .btns .dark { background: #1A1A1A; color: #fff; }
+.stage.chat .card .btns .line { border: 1px solid #1A1A1A; }
+.stage.chat .typing { position: absolute; left: 0; bottom: 4px; display: flex; gap: 3px; padding: 9px 10px; border-radius: 12px; border-bottom-left-radius: 4px; background: #1A1A1A; opacity: 0; transform-origin: 0 100%; }
+.stage.chat .typing i { width: 4px; height: 4px; border-radius: 50%; background: #fff; animation: m-kdots 1s infinite; }
+.shot.motion:not(.playing) .typing i { animation-play-state: paused; }
+.stage.chat .typing i:nth-child(2) { animation-delay: .15s; }
+.stage.chat .typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes m-kdots { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-3px); opacity: 1; } }
+.stage.chat .steps { flex: 0 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 14px; font-size: 12.5px; line-height: 1.35; }
+@container (max-width: 400px) { .stage.chat .steps { display: none; } }
+@supports not (container-type: inline-size) { @media (max-width: 860px) { .stage.chat .steps { display: none; } } }
+@supports not (aspect-ratio: 1) {
+  .stage.pan, .stage.tiles, .stage.portal { height: 0; padding-top: 62.5%; }
+  .stage.logo { height: 0; padding-top: 50%; }
+  .stage.chat, .stage.rank, .stage.phones { min-height: 320px; }
+}
+.stage.chat .step { display: flex; gap: 10px; color: var(--muted); }
+.stage.chat .step b { flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line); box-shadow: var(--raised-sm); font: 700 10px/22px var(--sans); text-align: center; color: var(--muted); transition: background .3s, color .3s, box-shadow .3s; }
+.stage.chat .step span { padding-top: 2px; transition: color .3s; }
+.stage.chat .step.on { color: var(--fg); }
+.stage.chat .step.on b { background: var(--blue); border-color: var(--blue); color: #fff; box-shadow: none; }
+
+/* Portal (Sapphire): three screens stacked, zoomed by transform; caption cards */
+.stage.portal { background: var(--box); }
+.stage.portal .pg { position: absolute; left: 0; top: 0; width: 100%; height: auto; transform-origin: 0 0; opacity: 0; }
+.stage.portal .s0 { opacity: 1; }
+.stage .stat.feat { width: 236px; }
+.stage .stat.feat .t { font-family: var(--display); font-weight: 800; font-size: 16px; line-height: 1.15; margin: 3px 0 4px; }
+.stage .stat.feat .d { color: var(--fg); }
+
+/* Logo: a soft light band that crosses the wordmark */
+.stage .sweep { position: absolute; top: -30%; bottom: -30%; left: 0; width: 28%; pointer-events: none; will-change: transform; }
+.stage .sweep::before {
+  content: ""; position: absolute; inset: 0; transform: skewX(-18deg);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .22), rgba(255, 255, 255, 0));
+}
+
+/* Guy Fawkes mask over the robot's face plate (logo scene) */
+.stage.logo .mask { position: absolute; left: 40.5%; top: 33%; width: 19%; height: 38%; opacity: 0; transform-origin: 50% 55%; will-change: transform, opacity; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .7)); overflow: visible; }
+.stage.logo .mask .face { fill: #F6F0E4; stroke: #CFC2AA; stroke-width: 1.5; }
+.stage.logo .mask .shade { fill: #000; opacity: .06; }
+.stage.logo .mask .blush { fill: #CE280A; opacity: .28; }
+.stage.logo .mask .line { fill: none; stroke: #111; stroke-width: 2; stroke-linecap: round; }
+.stage.logo .mask .ink { fill: #111; }
+.stage.logo .mask .soft { fill: none; stroke: #CFC2AA; stroke-width: 1.4; stroke-linejoin: round; }
+
+/* Icon hop: squash and stretch from the bottom edge */
+.shot.hop img { transform-origin: 50% 100%; will-change: transform; }
+
+@media (max-width: 720px) {
+  .stage.phones { gap: 10px; }
+  .stage.chat { aspect-ratio: 3 / 4; }
+  .stage.chat .steps { display: none; }
+  .stage.chat .phone { width: 84%; max-width: 250px; }
+  .stage .stat.feat { left: 8px; right: 8px; bottom: 8px; width: auto; padding: 7px 10px; font-size: 10px; }
+  .stage .stat.feat .t { font-size: 12px; margin: 2px 0 2px; }
+  .stage .stat { left: 10px; bottom: 10px; width: 168px; padding: 8px 10px; }
+  .stage .stat.mini { top: 10px; bottom: auto; width: auto; }
+  .stage .stat .big { font-size: 22px; }
+  .stage.rank .panel { width: 92%; padding: 10px 12px 8px; }
+}
