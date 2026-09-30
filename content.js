@@ -159,40 +159,27 @@ window.LEARNING = {
   steps: ['Research', 'Design', 'Build', 'Ship'],
 };
 
-/* Security layer. Written from security-dev-outline/outline.md as a
-   description of practice, without service promises. */
+/* Security. Josie, 2026-09-30: "less sales and more telling how much I
+   understand, like custom security-first builds for crypto and vibe coded
+   software." Each cell states a threat and the design answer, drawn from
+   real work: RobotFac3's security core (its public README and the
+   "fix all 35 findings from the adversarial review" commit), the Quote On
+   guardrail, and the client baseline in security-dev-outline/outline.md. */
 window.SECURITY = {
-  eyebrow: 'Security layer',
-  title: 'Security is the baseline.',
-  text: 'Every project starts from the same baseline, from the brand system to the build. Development and security partner: Veruthia.',
+  eyebrow: 'Security',
+  title: 'Security-first builds for crypto and vibe-coded software.',
+  text: 'Most of what I build now touches wallets, agents or code an AI helped write. Each fails in its own way, and the design has to account for that before the first screen is drawn.',
   items: [
-    { name: 'Owned by the client', text: 'Domain in their name, data export at any time, their own accounts, a code licence that stays with them.' },
-    { name: 'Account protection', text: 'MFA on Google and email, domain lock, a password manager.' },
-    { name: 'Email authentication', text: 'SPF, DKIM and DMARC on every client domain.' },
-    { name: 'Isolated builds', text: 'Per-client configuration and database, vendored dependencies, secure cookie sessions.' },
-    { name: 'Backups + monitoring', text: 'Scheduled backups, alerting, a monthly check and a written incident plan.' },
-    { name: 'This site', text: 'Static pages, HTTPS, a Content Security Policy and a published security.txt.' },
+    { name: 'Wallets and signing', text: 'A person approves every signature. The app shows what a transaction does in plain words before it is signed, holds no keys and sends nothing on its own. In RobotFac3 the wallet sends; the browser only prepares.' },
+    { name: 'Agents with a payment policy', text: 'An agent that can pay gets a strict grammar for payment sentences, a leak check and an injection detector. Anything outside the grammar stops and asks a person.' },
+    { name: 'AI that asks', text: 'Quote On: with no rate on file, the AI requests one. Rules like that are designed into the flow, written down and tested like any other feature.' },
+    { name: 'Vibe-coded, then reviewed', text: 'AI-written code ships after an adversarial review and regression tests. RobotFac3 v0.2: 35 findings from one review, all fixed, each covered by a test.' },
+    { name: 'Fewer strangers in the code', text: 'Hand-written Solana layer, standard-library relay, no npm, no CDN, no web fonts. The relay allow-lists files and RPC methods, refuses wrong Host headers and cross-origin posts, and never reuses a connection.' },
+    { name: 'Client baseline', text: 'Every client build starts the same way: MFA and domain lock, SPF, DKIM and DMARC, per-client isolation, backups and a written incident plan. The client owns the domain, the data and the code.' },
   ],
   /* Certifications: add rows here and they render below the grid.
      { name: 'Name', issuer: 'Issuer', year: '2026', url: 'https://...' } */
   certs: [],
-};
-
-/* Weekly sign-up. With `action` empty the form opens the visitor's mail app
-   with a ready-made subscribe email to `mailto` (no data leaves the page).
-   When a list provider exists (Buttondown, Beehiiv, Mailchimp...), put its
-   form endpoint in `action` and its field name in `field`, and add its origin
-   to the form-action list in the Content-Security-Policy meta in index.html. */
-window.NEWSLETTER = {
-  eyebrow: 'The weekly',
-  title: 'New tech, new products, what shipped.',
-  text: 'One short email a week from Known, and: tools worth a look, products launching, and progress on the work above.',
-  placeholder: 'you@example.com',
-  button: 'Sign up',
-  action: '',
-  field: 'email',
-  mailto: 'rigaliresearchdevelopment@gmail.com',
-  note: 'Weekly. Unsubscribe by replying.',
 };
 
 window.ABOUT = {
