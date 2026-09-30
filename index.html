@@ -152,7 +152,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=12">
 <link rel="stylesheet" href="motion.css?v=14">
-<link rel="stylesheet" href="desktop.css?v=3">
 </head>
 <body>
 
@@ -185,20 +184,11 @@
   </button>
 </aside>
 
-<!-- The desktop (desktop.js). Icons are rendered into #icons; windows open in
-     #wins. The about window is here in the page so site.js fills its hero and
-     intro the way it always has; desktop.js adds its title bar and places it.
-     The old log layout is log.html. -->
-<main class="desktop" id="desktop" aria-label="Desktop">
-  <div class="icons" id="icons"></div>
-  <div class="wins" id="wins">
-    <section class="win" data-id="about" data-w="640" aria-label="about.txt">
-      <div class="body">
-        <header class="hero" id="hero"><h1>Josie Rigali</h1></header>
-        <div class="intro" id="intro"></div>
-      </div>
-    </section>
-  </div>
+<main>
+  <header class="hero" id="hero"><h1>Josie Rigali</h1></header>
+  <div class="intro" id="intro"></div>
+  <div class="filter" id="filter" role="group" aria-label="Filter by tag"></div>
+  <div id="log"></div>
 </main>
 
 <script src="lattice.js?v=11"></script>
@@ -207,6 +197,5 @@
 <script src="site.js?v=12"></script>
 <script src="vendor/anime.iife.min.js"></script>
 <script src="motion.js?v=14"></script>
-<script src="desktop.js?v=3"></script>
 </body>
 </html>
