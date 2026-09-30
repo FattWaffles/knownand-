@@ -3,7 +3,7 @@
    entry: Josie asked that the dates she worked there stay off the site.
    VIEWER points at the Figma-style case-study viewer; deep links are #/<id>. */
 
-const VIEWER = 'case-study-viewer/index.html';
+const VIEWER = '../case-study-viewer/index.html';
 const A = 'assets/';
 
 window.SITE = {
@@ -17,6 +17,17 @@ window.SITE = {
     { label: 'LinkedIn', short: 'LN', url: 'https://www.linkedin.com/in/josephinerigali/' },
     { label: 'GitHub', short: 'GH', url: 'https://github.com/FattWaffles' },
     { label: 'Email', short: 'Mail', url: 'mailto:info@knownand.com' },
+  ],
+
+  /* Brand call-outs (Josie, 2026-09-30: "a list of all brand call outs that
+     I worked for"). Shown under the intro as one row of small-caps names,
+     in this order. The courseware publisher is left out on purpose: its
+     entry says the name is withheld. */
+  brands: [
+    'Estée Lauder', 'Clinique', 'Neutrogena', 'Kenvue', 'Bath & Body Works',
+    'L\'Oréal USA', 'SalonCentric', 'Conversant', 'AdParlor',
+    'It\'s a 10 Haircare', 'Ascent Protein', 'Dr Brew Kombucha', 'FoodKick',
+    'Selig Group', 'Sapphire Studios', 'Profitmind',
   ],
 
   /* Hero, copied from rosekuan.com: a grey name line over a dark role line in
@@ -37,23 +48,20 @@ window.SITE = {
 
 /* Tag colours use only the palette: blue, vermilion, magenta and black. */
 window.TAGS = [
+  { id: 'web3', label: 'web3 + blockchain', color: 'solid' },
   { id: 'product', label: 'product design', color: 'blue' },
   { id: 'research', label: 'research', color: 'mag' },
   { id: 'brand', label: 'brand', color: 'verm' },
   { id: 'web', label: 'web', color: 'ink' },
-  { id: 'web3', label: 'web3 + blockchain', color: 'solid' },
 ];
 
-/* Newest first. `img` is one image; `imgs` is a row of phone screens.
+/* Newest first, except the web3 projects, which sit at the top (Josie,
+   2026-09-30: "put web3 projects at the top"). `img` is one image; `imgs` is a row of phone screens.
    `small` shows an icon at its natural size instead of full width.
    `motion` names the animated preview scene built by motion.js (chat, portal,
    tiles, phones, score, pins, rank, logo, icon); leave it out for a plain image.
    `shots` holds extra screenshots a scene needs beyond `img`. */
 window.ENTRIES = [
-  {
-    date: '2026–27', tag: 'brand', title: 'NFC cards, then a booth',
-    text: 'Tap-to-open business cards first. The long game is a walk-in brand booth.',
-  },
   {
     date: 'September 2026', tag: 'web3', title: 'RobotFac3',   /* static logo: Josie undid the 'logo' motion preview 2026-09-30 */
     text: 'A browser concept for the web, Web3 and AI agents, with one set of security rules for all three. I lead product vision, UI direction and community on a team of three. The built-in agent is scripted for now, and a person approves every signature. Entries for the hackathon close Oct 12.',
@@ -64,6 +72,10 @@ window.ENTRIES = [
     date: 'September 2026', tag: 'web3', title: 'Cat in a Box', motion: 'icon',
     text: 'A relaxing block puzzle made of cats I drew. Drag cat pieces onto an 8x8 grid to clear rows and columns; when a line cuts through a big cat, the leftover cells break into kittens. I designed the game, drew the art and built it in Godot with AI help. It is a signed Android test build, not on a store yet.',
     img: { src: A + 'catblast-icon.png', alt: 'App icon: a grumpy orange and purple cat in an open cardboard box.', w: 560, h: 560, small: true },
+  },
+  {
+    date: '2026–27', tag: 'brand', title: 'NFC cards, then a booth',
+    text: 'Tap-to-open business cards first. The long game is a walk-in brand booth.',
   },
   {
     date: 'September 2026', tag: 'web', title: 'Websites + CRM with Veruthia',
@@ -120,10 +132,6 @@ window.ENTRIES = [
   {
     date: '2020–22', tag: 'brand', title: 'Salon pro campaigns',
     text: 'Art direction, email and motion for SalonCentric (L\'Oréal USA): emails, web, social, decks and motion for the professional salon market, tuned with analytics.',
-  },
-  {
-    date: '2018–23', tag: 'product', title: 'Freelance UX/UI',
-    text: 'Research, personas, responsive wireframes, prototypes and A/B tests for It\'s a 10 Haircare, Ascent Protein and Dr Brew Kombucha.',
   },
   {
     date: '2017–20', tag: 'brand', title: 'Beauty email + landing pages',

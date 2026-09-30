@@ -157,7 +157,7 @@
         if (!still) {
           const Q = 4 + 9 * hash(i, j, 1);
           const u = ((t / 1000 + Q * hash(i, j, 2)) % Q) / 1.5;
-          if (u < 1) { const s = Math.sin(Math.PI * u); r = 1.2 + 1.4 * s; a = col.nodeA + (1 - col.nodeA) * s * .7; }  /* home page: smaller swell (Josie, 2026-09-30) */
+          if (u < 1) { const s = Math.sin(Math.PI * u); r = 1.2 + 3.4 * s; a = col.nodeA + (1 - col.nodeA) * s; }
         }
         ctx.fillStyle = rgba(col.node, a);
         ctx.beginPath(); ctx.arc(x + .5, y + .5, r, 0, Math.PI * 2); ctx.fill();
