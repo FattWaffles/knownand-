@@ -392,9 +392,8 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
         if (b.y < R) { b.y = R; b.vy = Math.abs(b.vy) * REST; }
         if (b.y > H - R) { b.y = H - R; b.vy = -Math.abs(b.vy) * REST; }
         bounceRect(b);
-        b.va = b.va * (tray ? .85 : .92) + b.vx * .25;
-        if (tray) b.va -= b.a * home * 2 * k;   // straighten up when back home
-        b.a += b.va * k;
+        if (tray) b.a += (Math.max(-14, Math.min(14, b.vx * 4)) - b.a) * Math.min(1, .2 * k);   // lean into the slide, straight at rest
+        else { b.va = b.va * .92 + b.vx * .25; b.a += b.va * k; }
       }
       for (let i = 0; i < bodies.length; i++) for (let j = i + 1; j < bodies.length; j++) {
         const a = bodies[i], c = bodies[j];
@@ -409,6 +408,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
           }
         }
       }
+      if (tray) bodies.forEach((b) => { b.x = Math.max(R, Math.min(W - R, b.x)); b.y = Math.max(R, Math.min(H - R, b.y)); });   // bumps never push a tile through the tray wall
       bodies.forEach((b) => place(b, Math.hypot(b.vx, b.vy)));
     }
     /* tray, tilt off: everything back in its slot and still, so the loop can stop */
