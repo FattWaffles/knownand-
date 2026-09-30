@@ -401,8 +401,9 @@ h2 {
 :root { --veil: rgba(5, 5, 5, .72); }
 :root[data-theme="light"] { --veil: rgba(255, 255, 255, .9); --node-alpha: .18; --grid: #ECECEC; }
 /* a veil behind the reading column so the lattice sits in the margins and only faintly under the type */
-main { position: relative; isolation: isolate; }
-main::before { content: ""; position: absolute; inset: -24px -32px; background: var(--veil); border-radius: 8px; z-index: -1; pointer-events: none; }
+/* the veil hugs each text block (background + spread shadow), so the band of
+   turning squares and the margins keep the full lattice */
+.hero h1, .hero .meta, .intro, .brands, .filter, .entry, .cv > *, .post, .posts, .blog-head { position: relative; background: var(--veil); box-shadow: 0 0 0 14px var(--veil); border-radius: 3px; }
 /* small mono labels: heavier */
 .hero .row, .brands .tag, .filter .tag, .entry .date, .brands .k, .caption { font-weight: 600; }
 /* pops of the palette in the type: blue name and links, vermilion labels and dates, magenta brands key */
@@ -416,4 +417,4 @@ main::before { content: ""; position: absolute; inset: -24px -32px; background: 
 .filter .tag.on { background: var(--blue); border-color: var(--blue); color: #fff; }
 .filter .tag:hover { color: var(--blue); border-color: var(--blue); }
 .tree .folder > .row .lbl { color: var(--fg); }
-@media (max-width: 720px) { main::before { inset: -12px -16px; } }
+@media (max-width: 720px) { .hero h1, .hero .meta, .intro, .brands, .filter, .entry, .cv > *, .post, .posts, .blog-head { box-shadow: 0 0 0 10px var(--veil); } }
