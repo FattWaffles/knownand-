@@ -24,6 +24,29 @@
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const FPS = 30;
 
+  /* Light mode starts plain white. A grid button next to the theme switch
+     turns the field on, and only the visitor turns it on (Josie, 2026-09-30).
+     Dark mode always shows it. The choice is remembered (known-lattice-light). */
+  const root = document.documentElement;
+  const hidden = () => root.dataset.theme === 'light' && root.dataset.lattice !== 'on';
+  try { if (localStorage.getItem('known-lattice-light') === 'on') root.dataset.lattice = 'on'; } catch (e) {}
+  const tbtn = document.getElementById('theme');
+  if (tbtn) {
+    const lb = document.createElement('button');
+    lb.className = 'theme lat'; lb.type = 'button';
+    lb.setAttribute('aria-label', 'Show background grid'); lb.title = 'Background grid';
+    lb.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M2 2h12v12H2zM6 2v12M10 2v12M2 6h12M2 10h12"/></svg>';
+    const paint = () => lb.setAttribute('aria-pressed', String(root.dataset.lattice === 'on'));
+    lb.addEventListener('click', () => {
+      const on = root.dataset.lattice !== 'on';
+      if (on) root.dataset.lattice = 'on'; else delete root.dataset.lattice;
+      try { localStorage.setItem('known-lattice-light', on ? 'on' : 'off'); } catch (e) {}
+      paint();
+    });
+    paint();
+    tbtn.before(lb);
+  }
+
   let W = 0, H = 0, dpr = 1, C = 72, ox = 0, col = {};   // ox: the grid's x origin, so a line lands on the text column's left edge
   let bands = [], bandTick = 0;
 
@@ -207,8 +230,8 @@
   /* ---------- run ---------- */
   let last = 0;
   function loop(t) {
-    // light mode hides the canvas (styles.css), so skip the drawing too
-    if (t - last >= 1000 / FPS && document.documentElement.dataset.theme !== 'light') { last = t; draw(t); }
+    // light mode hides the canvas until the grid button is on (styles.css), so skip the drawing too
+    if (t - last >= 1000 / FPS && !hidden()) { last = t; draw(t); }
     requestAnimationFrame(loop);
   }
   resize();
@@ -216,7 +239,7 @@
   addEventListener('DOMContentLoaded', alignBands);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(alignBands);
   new MutationObserver(() => { readColours(); if (still) draw(0); })
-    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-lattice'] });
   if (still) {
     draw(0);
     addEventListener('scroll', () => draw(0), { passive: true });
