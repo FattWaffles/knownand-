@@ -6,6 +6,7 @@
 <title>Known | One-person brand incubator for tasteful, strong identities</title>
 <meta name="description" content="Known is a one-person brand incubator run by designer Josie Rigali, for brands that want a tasteful, strong identity. Brand identity, SEO and product design.">
 <link rel="canonical" href="https://knownand.com/">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="Josie Rigali">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -18,6 +19,7 @@
 <meta property="og:title" content="Known — a one-person brand incubator">
 <meta property="og:description" content="Tasteful, strong identities for brands that want to be recognized. Brand identity, SEO and product design by Josie Rigali.">
 <meta property="og:image" content="https://knownand.com/assets/og.png">
+<meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Known, and recognized. A one-person brand incubator.">
@@ -25,21 +27,27 @@
 <meta name="twitter:title" content="Known — a one-person brand incubator">
 <meta name="twitter:description" content="Tasteful, strong identities for brands that want to be recognized. Brand identity, SEO and product design by Josie Rigali.">
 <meta name="twitter:image" content="https://knownand.com/assets/og.png">
+<meta name="twitter:image:alt" content="Known, and recognized. A one-person brand incubator.">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "ProfessionalService",
+      "@type": "Organization",
       "@id": "https://knownand.com/#known",
       "name": "Known",
-      "alternateName": "Known, and",
+      "alternateName": ["Known, and", "Known And", "KnownAnd"],
       "url": "https://knownand.com/",
       "description": "A one-person brand incubator for brands that want a tasteful, strong identity. Brand identity, SEO and product design.",
       "slogan": "Make it known.",
       "email": "info@knownand.com",
       "founder": { "@id": "https://knownand.com/#josie" },
       "knowsAbout": ["Brand identity", "SEO", "Product design", "Design systems", "UX research"],
+      "makesOffer": [
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Brand identity", "description": "A tasteful, strong identity: name, mark, type, colour and the rules that keep it consistent." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "SEO", "description": "On-page SEO and structured data, so the brand is found by people and by AI search." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Product design", "description": "Research, flows, interfaces and prototypes for web and mobile products." } }
+      ],
       "sameAs": ["https://www.linkedin.com/in/josephinerigali/"],
       "logo": "https://knownand.com/apple-touch-icon.png",
       "image": "https://knownand.com/assets/og.png"
@@ -48,6 +56,7 @@
       "@type": "Person",
       "@id": "https://knownand.com/#josie",
       "name": "Josie Rigali",
+      "alternateName": "Josephine Rigali",
       "jobTitle": "Designer and founder, Known",
       "worksFor": { "@id": "https://knownand.com/#known" },
       "url": "https://knownand.com/",
@@ -110,15 +119,78 @@
 
   <section id="side">
     <div class="sec-head"><h2>Online games + side quests</h2><span class="sec-note">Hackathons and games I build outside client work.</span></div>
-    <div id="side-list"></div>
+    <div id="side-list"><!-- prerender:side-list --><article class="side-card">
+      <div class="side-art"><img src="assets/side/robotfac3-logo.jpg" alt="RobotFac3 wordmark around a robot head, off-white and red on black." loading="lazy"></div>
+      <div class="side-body">
+        <div class="side-meta"><span class="now-tag t-hackathon">Hackathon</span><span class="side-year">2026</span><span class="now-status">In progress</span></div>
+        <h3>RobotFac3</h3>
+        <p class="side-line">A browser concept for the web, Web3 and AI agents, with one set of security rules for all three.</p>
+        <ul class="side-points"><li>The hackathon build is the Solana part. Type a Solana name, connect Phantom only when you need it, and see each SOL payment in plain words before you sign.</li><li>A built-in agent follows the same guardrails, and a person approves every signature. For now the agent is scripted. No AI model is connected yet.</li><li>I lead product vision, UI direction and community on a team of three, with a security engineer and an ops and project lead.</li><li>It is a local web prototype with 27 passing tests, built for an online crypto hackathon. Entries close Oct 12, 2026.</li></ul>
+        <div class="side-foot"><span class="chips"><span class="chip">Solana</span><span class="chip">AI agents</span><span class="chip">Product + UI</span></span></div>
+        <p class="side-credit">Logo: AI-generated draft.</p>
+      </div>
+    </article>
+    <article class="side-card">
+      <div class="side-art is-icon"><img src="assets/side/catblast-icon.webp" alt="App icon: a grumpy orange and purple cat in an open cardboard box." loading="lazy"></div>
+      <div class="side-body">
+        <div class="side-meta"><span class="now-tag t-game">Mobile game</span><span class="side-year">2025–26</span><span class="now-status exploring">Android build</span></div>
+        <h3>Cat in a Box</h3>
+        <p class="side-line">A relaxing block puzzle made of cats I drew.</p>
+        <ul class="side-points"><li>Drag cat pieces onto an 8x8 grid to clear rows and columns. When a line cuts through a big cat, the leftover cells break into kittens.</li><li>I designed the game, drew all the art and built it in Godot with AI help.</li><li>Endless mode is playable. A Schrödinger's cat version with boxed cats and boosts is in design.</li><li>Planned for the Solana dApp Store on Seeker phones. Not published yet. For now it is a signed Android build for testing.</li></ul>
+        <div class="side-foot"><span class="chips"><span class="chip">Game design</span><span class="chip">Illustration</span><span class="chip">Godot</span><span class="chip">Android</span></span><a href="https://docs.solanamobile.com/solana-mobile-stack/dapp-store" target="_blank" rel="noopener">About the Solana dApp Store ↗</a></div>
+        
+      </div>
+    </article>
+<!-- /prerender:side-list --></div>
   </section>
 
   <section id="now">
     <div class="sec-head">
       <h2>Now</h2>
-      <div class="chips" id="now-chips"></div>
+      <div class="chips" id="now-chips"><!-- prerender:now-chips --><button class="chip on" data-tag="all">all</button><button class="chip" data-tag="hackathon">hackathon</button><button class="chip" data-tag="website">website</button><button class="chip" data-tag="product">product</button><button class="chip" data-tag="game">game</button><button class="chip" data-tag="build">build</button><button class="chip" data-tag="experiment">experiment</button>
+<!-- /prerender:now-chips --></div>
     </div>
-    <div id="now-list"></div>
+    <div id="now-list"><!-- prerender:now-list --><div class="now-item">
+        <span class="now-date">Sep 2026</span>
+        <div><h3>RobotFac3</h3><span class="now-tag t-hackathon">hackathon</span><p>A Solana browser concept where you and an agent share one set of guardrails. Entries close Oct 12.</p></div>
+        <span class="now-status ">In progress</span>
+      </div>
+      <div class="now-item">
+        <span class="now-date">Sep 2026</span>
+        <div><h3>Pet wellness launch</h3><span class="now-tag t-website">website</span><p>A custom Shopify theme built around one flagship product, a daily food topper for dogs.</p></div>
+        <span class="now-status ">In progress</span>
+      </div>
+      <div class="now-item">
+        <span class="now-date">Sep 2026</span>
+        <div><h3>Strategist website</h3><span class="now-tag t-website">website</span><p>A brand-led 2026 website for a growth and exit strategist.</p></div>
+        <span class="now-status ">In progress</span>
+      </div>
+      <div class="now-item">
+        <span class="now-date">Sep 2026</span>
+        <div><h3>The Known site</h3><span class="now-tag t-website">website</span><p>Bitmap hero, this file viewer and a plain-language services page.</p></div>
+        <span class="now-status ">In progress</span>
+      </div>
+      <div class="now-item">
+        <span class="now-date">Sep 2026</span>
+        <div><h3>Quote On</h3><span class="now-tag t-product">product</span><p>AI chat flow and job costing for an Android quoting app for tradies. <a href="#/instaquote/0" style="color:var(--blue)">See the file ↗</a></p></div>
+        <span class="now-status ">In design</span>
+      </div>
+      <div class="now-item">
+        <span class="now-date">Sep 2026</span>
+        <div><h3>Cat in a Box: Schrödinger mode</h3><span class="now-tag t-game">game</span><p>Planned cat states and boosts. Boxed cats would show two shapes until you touch them.</p></div>
+        <span class="now-status ">In design</span>
+      </div>
+      <div class="now-item">
+        <span class="now-date">Sep 2026</span>
+        <div><h3>Websites + CRM with Veruthia</h3><span class="now-tag t-build">build</span><p>Brand and design from Known, development and security from Veruthia, for contractors.</p></div>
+        <span class="now-status ">In progress</span>
+      </div>
+      <div class="now-item">
+        <span class="now-date">2026–27</span>
+        <div><h3>NFC cards, then a booth</h3><span class="now-tag t-experiment">experiment</span><p>Tap-to-open business cards first. The long game is a walk-in brand booth.</p></div>
+        <span class="now-status exploring">Exploring</span>
+      </div>
+<!-- /prerender:now-list --></div>
   </section>
 
   <section id="work">
@@ -129,13 +201,200 @@
         <button data-view="quick">30-second version</button>
       </div>
     </div>
-    <div id="work-list"></div>
+    <div id="work-list"><!-- prerender:work-list --><article class="proj" id="p-sapphire">
+      <button class="proj-row" data-open="sapphire">
+        <span class="proj-no">001</span>
+        <span><span class="proj-title">Sapphire Studios</span><span class="proj-open">Open file ↗</span><br><span class="proj-hook">The back office for an official TikTok Marketing Partner.</span><br><span class="proj-line">One portal for a creator agency: casting, campaigns, scripts and payments in one place.</span></span>
+        <span class="proj-side">Product design · Design system<br>2024–25</span>
+      </button>
+      <div class="panel desktop" role="button" tabindex="0" data-open="sapphire" aria-label="Open the Sapphire Studios file"><img src="assets/sapphire/creators-mosaic.webp" alt="Sapphire Studios agency portal: a mosaic of creator profiles used for casting." loading="lazy"><span class="panel-stat"><b>3 days → 4 hrs</b><small>to cast a campaign <i>sample</i></small></span><span class="panel-cta">Open file ↗</span></div>
+      <div class="quick">
+        <div class="quick-ba">
+          <div><small>Before</small><p>Campaigns ran across spreadsheets, email and DMs.</p></div>
+          <div class="after"><small>After</small><p>One portal where the agency casts, briefs and pays creators.</p></div>
+        </div>
+        <div class="quick-stats"><div><b>3 days → 4 hrs</b><small>to cast a campaign</small></div><div><b>+38%</b><small>creator reply rate</small></div><div><b>−52%</b><small>support DMs</small></div></div>
+        <div class="quick-foot"><span class="badge sample">Sample figures</span><button class="btn" data-open="sapphire">Open the full file</button></div>
+      </div>
+    </article>
+    <article class="proj" id="p-instaquote">
+      <button class="proj-row" data-open="instaquote">
+        <span class="proj-no">002</span>
+        <span><span class="proj-title">Quote On</span><span class="proj-open">Open file ↗</span><br><span class="proj-hook">Tradies lose 10 to 15 hours a week to admin. This gives the evenings back.</span><br><span class="proj-line">An Android app where a tradie talks through a job and gets a priced quote draft in minutes.</span></span>
+        <span class="proj-side">Product design · AI UX · Android<br>2026</span>
+      </button>
+      <div class="panel phone" role="button" tabindex="0" data-open="instaquote" aria-label="Open the Quote On file"><img src="assets/instaquote/chat-start.png" alt="Quote On Android app: chat start, photo upload, quote draft and job costing screens." loading="lazy"><img src="assets/instaquote/chat-photo.png" alt="Quote On Android app: chat start, photo upload, quote draft and job costing screens." loading="lazy"><img src="assets/instaquote/chat-draft.png" alt="Quote On Android app: chat start, photo upload, quote draft and job costing screens." loading="lazy"><img src="assets/instaquote/job-costing.png" alt="Quote On Android app: chat start, photo upload, quote draft and job costing screens." loading="lazy"><span class="panel-stat"><b>45 → 6 min</b><small>to draft a quote <i>sample</i></small></span><span class="panel-cta">Open file ↗</span></div>
+      <div class="quick">
+        <div class="quick-ba">
+          <div><small>Before</small><p>Quotes written at night, from memory, often under-priced.</p></div>
+          <div class="after"><small>After</small><p>Say the job out loud, check the draft, send it.</p></div>
+        </div>
+        <div class="quick-stats"><div><b>45 → 6 min</b><small>to draft a quote</small></div><div><b>5 steps</b><small>from install to first quote</small></div><div><b>0</b><small>prices the AI is allowed to invent</small></div></div>
+        <div class="quick-foot"><span class="badge sample">Sample figures</span><button class="btn" data-open="instaquote">Open the full file</button></div>
+      </div>
+    </article>
+    <article class="proj" id="p-profitmind">
+      <button class="proj-row" data-open="profitmind">
+        <span class="proj-no">003</span>
+        <span><span class="proj-title">Profitmind</span><span class="proj-open">Open file ↗</span><br><span class="proj-hook">The AI found the money. The redesign got people to act on it.</span><br><span class="proj-line">UX research and redesign for an AI platform that tells retailers what to stock and how to price it.</span></span>
+        <span class="proj-side">UX research · AI research · B2B SaaS<br>2025–26</span>
+      </button>
+      <div class="panel html" role="button" tabindex="0" data-open="profitmind" aria-label="Open the Profitmind file"><div class="shot-html"><div class="scaled">
+      <div class="pm">
+    <aside class="pm-side">
+      <div class="pm-brand">Assortment<br>Intelligence</div>
+      <div class="pm-nav">Executive summary</div><div class="pm-nav">Opportunities</div><div class="pm-nav">Reports</div><div class="pm-nav on">Assortment</div><div class="pm-nav">Product matching</div><div class="pm-nav">Price alerts</div><div class="pm-nav">Settings</div>
+      <div class="pm-sample">Sample data</div>
+    </aside>
+        <main class="pm-main">
+    <div class="pm-kpis">
+      <div class="pm-kpi"><small>Opportunities found</small><b>$8.2M</b><span>41 open</span></div>
+      <div class="pm-kpi"><small>Next 5 weeks</small><b>$1.9M</b><span>17 insights</span></div>
+      <div class="pm-kpi"><small>Next 52 weeks</small><b>$6.3M</b><span>24 insights</span></div>
+      <div class="pm-kpi"><small>Market matched</small><b>71%</b><span>6,180 products</span></div>
+    </div><div class="pm-tabs"><span class="on">Overview</span><span class="">Revenue</span><span class="">Profit</span><span class="">Hindsight</span></div>
+          <div class="pm-grid">
+            <section class="pm-card pm-focus">
+              <h3>Key areas to focus on <em>Quarter to date</em></h3>
+              
+                <div class="pm-f">
+                  <div class="pm-n">1</div>
+                  <div class="pm-fb"><b>Grow Lighting into white space</b>
+                    <div class="pm-chips"><i class="g">+$1.4M profit</i><i class="b">+$2.9M revenue</i></div>
+                    <p><strong>Why:</strong> Pendant and floor lamps sell through 2× faster than the rest of the range, and you carry 40% fewer than competitors.</p></div>
+                  <button>Review</button>
+                </div>
+                <div class="pm-f">
+                  <div class="pm-n">2</div>
+                  <div class="pm-fb"><b>Expand Rugs by 18 products</b>
+                    <div class="pm-chips"><i class="g">+$0.8M profit</i><i class="b">+$1.6M revenue</i></div>
+                    <p><strong>Why:</strong> Mid-price rugs are out of stock 3 weeks in 10. Shoppers leave rather than trade up.</p></div>
+                  <button>Review</button>
+                </div>
+                <div class="pm-f">
+                  <div class="pm-n">3</div>
+                  <div class="pm-fb"><b>Free up cash in Storage</b>
+                    <div class="pm-chips"><i class="g">+$610K cash</i></div>
+                    <p><strong>Why:</strong> 22% of Storage stock is older than 90 days. Marking down 31 products releases the cash with little margin loss.</p></div>
+                  <button>Review</button>
+                </div>
+            </section>
+            <section class="pm-card">
+              <h3>Opportunity value by category</h3>
+              <div class="pm-bars">
+                <div class="pm-bar"><span>Lighting</span><div><i style="width:92%"></i><i class="p" style="width:58%"></i></div></div>
+                <div class="pm-bar"><span>Rugs</span><div><i style="width:70%"></i><i class="p" style="width:40%"></i></div></div>
+                <div class="pm-bar"><span>Bedding</span><div><i style="width:38%"></i><i class="p" style="width:22%"></i></div></div>
+                <div class="pm-bar"><span>Storage</span><div><i style="width:26%"></i><i class="p" style="width:30%"></i></div></div>
+                <div class="pm-bar"><span>Decor</span><div><i style="width:18%"></i><i class="p" style="width:9%"></i></div></div>
+              </div>
+              <div class="pm-legend"><i></i>Revenue <i class="p"></i>Profit</div>
+            </section>
+          </div>
+          <div class="pm-grid two">
+            <section class="pm-card"><h3>White space</h3><div class="pm-stat">+60% <small>products in "occasion" pieces</small></div>
+              <ul><li>Material: natural fibres up 45%</li><li>Style: print holds a steady 25% lift</li></ul></section>
+            <section class="pm-card"><h3>Productivity</h3><div class="pm-stat">5.2× <small>stock turn, above the market</small></div>
+              <ul><li>$9M of stock is older than 90 days</li><li>12% overstocked, 18% understocked</li></ul></section>
+          </div>
+        </main></div></div></div><span class="panel-stat"><b>14 → 4 min</b><small>to a first decision <i>sample</i></small></span><span class="panel-cta">Open file ↗</span></div>
+      <div class="quick">
+        <div class="quick-ba">
+          <div><small>Before</small><p>The AI found the money. Buyers could not see why, so they did not act.</p></div>
+          <div class="after"><small>After</small><p>Three things to do today, the reason for each, and a human sign-off.</p></div>
+        </div>
+        <div class="quick-stats"><div><b>14 → 4 min</b><small>to a first decision</small></div><div><b>3 → 9</b><small>insights acted on per session</small></div><div><b>2.6 → 4.1</b><small>trust in AI advice (of 5)</small></div></div>
+        <div class="quick-foot"><span class="badge sample">Sample figures</span><button class="btn" data-open="profitmind">Open the full file</button></div>
+      </div>
+    </article>
+    <article class="proj" id="p-edu">
+      <button class="proj-row" data-open="edu">
+        <span class="proj-no">004</span>
+        <span><span class="proj-title">Legacy courseware turnaround</span><span class="proj-open">Open file ↗</span><br><span class="proj-hook">Three legacy platforms, one scorecard that shows leadership where learners get stuck.</span><br><span class="proj-line">Came into a learning platform built around 2010, cut the redundancy and built the scorecard that proved it worked.</span></span>
+        <span class="proj-side">UX research · Legacy software · Metrics</span>
+      </button>
+      <div class="panel doc" role="button" tabindex="0" data-open="edu" aria-label="Open the Legacy courseware turnaround file"><img src="assets/edu/scorecard-v1.jpg" alt="Legacy courseware turnaround: usability scorecard and platform detail pages." loading="lazy"><img src="assets/edu/platform-detail.jpg" alt="Legacy courseware turnaround: usability scorecard and platform detail pages." loading="lazy"><span class="panel-stat"><b>26 min → 2 s</b><small>to find a resource, 2022 → 2024</small></span><span class="panel-cta">Open file ↗</span></div>
+      <div class="quick">
+        <div class="quick-ba">
+          <div><small>Before</small><p>Eight clicks to open an eBook. Up to 26 minutes to find a resource.</p></div>
+          <div class="after"><small>After</small><p>Two clicks. Two seconds. A usability score up from 40 to 72.</p></div>
+        </div>
+        <div class="quick-stats"><div><b>26 min → 2 s</b><small>to find a resource, 2022 → 2024</small></div><div><b>8 → 2</b><small>clicks to open an eBook</small></div><div><b>10 → 5 min</b><small>to create an assignment</small></div></div>
+        <div class="quick-foot"><span class="badge real">Real figures</span><button class="btn" data-open="edu">Open the full file</button></div>
+      </div>
+    </article>
+    <article class="proj" id="p-selig">
+      <button class="proj-row" data-open="selig">
+        <span class="proj-no">005</span>
+        <span><span class="proj-title">Selig Sealing</span><span class="proj-open">Open file ↗</span><br><span class="proj-hook">A 130-year-old manufacturer whose website was costing it leads.</span><br><span class="proj-line">A page-by-page audit of a B2B lead-generation site: what is broken, how to fix it and what to do first.</span></span>
+        <span class="proj-side">UX audit · Accessibility · SEO<br>2022</span>
+      </button>
+      <div class="panel doc" role="button" tabindex="0" data-open="selig" aria-label="Open the Selig Sealing file"><img src="assets/selig/navigation.png" alt="Selig Sealing website audit: navigation, homepage and products pages with findings." loading="lazy"><img src="assets/selig/homepage.png" alt="Selig Sealing website audit: navigation, homepage and products pages with findings." loading="lazy"><img src="assets/selig/products.png" alt="Selig Sealing website audit: navigation, homepage and products pages with findings." loading="lazy"><span class="panel-stat"><b>31</b><small>findings, 12 high priority <i>sample</i></small></span><span class="panel-cta">Open file ↗</span></div>
+      <div class="quick">
+        <div class="quick-ba">
+          <div><small>Before</small><p>A lead-gen site that read as an outdated template.</p></div>
+          <div class="after"><small>After</small><p>A ranked fix list the client could hand straight to developers.</p></div>
+        </div>
+        <div class="quick-stats"><div><b>31</b><small>findings, 12 high priority</small></div><div><b>4 max</b><small>main navigation items, down from 9</small></div><div><b>6 → 3</b><small>clicks to a datasheet</small></div></div>
+        <div class="quick-foot"><span class="badge sample">Sample figures</span><button class="btn" data-open="selig">Open the full file</button></div>
+      </div>
+    </article>
+<!-- /prerender:work-list --></div>
   </section>
 
   <section id="more">
     <div class="sec-head"><h2>More work</h2><span class="sec-note">Short mentions. Ask for the files.</span></div>
     <div class="more-head" aria-hidden="true"><span></span><span>Project</span><span>Company</span><span>Involvement</span><span>Year</span></div>
-    <div id="more-list"></div>
+    <div id="more-list"><!-- prerender:more-list --><div class="more-row">
+      <span class="proj-no">006</span>
+      <span><span class="more-title">Neutrogena.com rebrand</span><span class="more-line">Lead designer for the NTG.com rebrand, built to ADA and North American brand standards.</span></span>
+      <span class="more-co">Kenvue</span>
+      <span class="more-role">Creative direction, e-commerce, design system</span>
+      <span class="more-year">2023–24</span>
+    </div>
+    <div class="more-row">
+      <span class="proj-no">007</span>
+      <span><span class="more-title">Ad-platform style guides</span><span class="more-line">Motion, icons and templates for email, social and landing pages, plus brand guides for Conversant and AdParlor.</span></span>
+      <span class="more-co">Bath &amp; Body Works</span>
+      <span class="more-role">Motion, iconography, templates</span>
+      <span class="more-year">2022–23</span>
+    </div>
+    <div class="more-row">
+      <span class="proj-no">008</span>
+      <span><span class="more-title">Salon pro campaigns</span><span class="more-line">Emails, web, social, decks and motion for the professional salon market, tuned with analytics.</span></span>
+      <span class="more-co">SalonCentric (L'Oréal USA)</span>
+      <span class="more-role">Art direction, email, motion</span>
+      <span class="more-year">2020–22</span>
+    </div>
+    <div class="more-row">
+      <span class="proj-no">009</span>
+      <span><span class="more-title">Beauty email + landing pages</span><span class="more-line">Email, landing pages and social for brand redesigns and seasonal campaigns.</span></span>
+      <span class="more-co">Estée Lauder, Clinique, FoodKick</span>
+      <span class="more-role">Email, landing pages, motion</span>
+      <span class="more-year">2017–20</span>
+    </div>
+    <div class="more-row">
+      <span class="proj-no">010</span>
+      <span><span class="more-title">Freelance UX/UI</span><span class="more-line">Research, personas, responsive wireframes, prototypes and A/B tests.</span></span>
+      <span class="more-co">It's a 10 Haircare</span>
+      <span class="more-role">Research, prototypes, A/B tests</span>
+      <span class="more-year">2018–23</span>
+    </div>
+    <div class="more-row">
+      <span class="proj-no">011</span>
+      <span><span class="more-title">Freelance UX/UI</span><span class="more-line">Research, personas, responsive wireframes, prototypes and A/B tests.</span></span>
+      <span class="more-co">Ascent Protein</span>
+      <span class="more-role">Research, prototypes, A/B tests</span>
+      <span class="more-year">2018–23</span>
+    </div>
+    <div class="more-row">
+      <span class="proj-no">012</span>
+      <span><span class="more-title">Freelance UX/UI</span><span class="more-line">Research, personas, responsive wireframes, prototypes and A/B tests.</span></span>
+      <span class="more-co">Dr Brew Kombucha</span>
+      <span class="more-role">Research, prototypes, A/B tests</span>
+      <span class="more-year">2018–23</span>
+    </div>
+<!-- /prerender:more-list --></div>
   </section>
 
 </div>
@@ -146,7 +405,8 @@
       <h2 id="brands-h">Brands</h2>
       <p>Before Known: 10+ years designing inside beauty, retail, education and AI brands.</p>
     </div>
-    <ul id="brand-list"></ul>
+    <ul id="brand-list"><!-- prerender:brand-list --><li><span>Neutrogena</span><small>Kenvue</small></li><li><span>Bath &amp; Body Works</span><small>Style guides</small></li><li><span>L'Oréal USA</span><small>SalonCentric</small></li><li><span>Estée Lauder</span><small>Email</small></li><li><span>Clinique</span><small>Campaigns</small></li><li><span>FoodKick</span><small>Campaigns</small></li><li><span>It's a 10 Haircare</span><small>Freelance</small></li><li><span>Ascent Protein</span><small>Freelance</small></li><li><span>Dr Brew Kombucha</span><small>Freelance</small></li><li><span>Sapphire Studios</span><small>Portals</small></li><li><span>Cengage</span><small>UX research</small></li><li><span>Profitmind</span><small>AI research</small></li><li><span>Selig Group</span><small>UX audit</small></li>
+<!-- /prerender:brand-list --></ul>
   </div>
 </section>
 
