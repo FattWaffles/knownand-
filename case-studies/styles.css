@@ -58,13 +58,14 @@
   --col: 600px;
 }
 :root[data-theme="light"] {
-  --bg: #F3EEE4;
+  /* white page (Josie, 2026-09-30: "this background needs to be white as well", matching the home page) */
+  --bg: #FFFFFF;
   --fg: #0A0A0A;
-  --muted: #7A756B;
-  --line: #DCD5C7;
-  --card: #FAF7F1;
+  --muted: #5C5C5C;
+  --line: #E4E4E4;
+  --card: #FAFAFA;
   --hover: rgba(10, 10, 10, .06);
-  --grid: #E3DDD0;
+  --grid: #E9E9E9;
   --node: #0A0A0A;
   --node-alpha: .35;
   --sq: #0A0A0A;
