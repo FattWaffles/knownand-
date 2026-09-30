@@ -159,10 +159,29 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
      moved by the simulation below (hero coordinates on wide screens, tray
      coordinates on narrow ones) */
   const hero = document.querySelector('.hero');
-  hero.insertAdjacentHTML('beforeend', '<div class="tiles" aria-hidden="true">' + S.stack.map((b, i) => {
+  /* Since the reshape (2026-09-30 night) the tile is a soft block in the
+     surface colour and the maker's colour is the mark: the drawing's white
+     (and any near-black glyph colour) becomes currentColor, its own tile
+     colour becomes a hole, and the mark colour is the maker's foreground if
+     it has one, else the maker's tile colour, else the page's ink when the
+     maker's colour is near-black (GitHub, Mistral). */
+  const lum = (hex) => { const h = hex.replace('#', ''), n = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16);
+    const ch = (v) => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); };
+    return .2126 * ch((n >> 16) & 255) + .7152 * ch((n >> 8) & 255) + .0722 * ch(n & 255); };
+  const isWhite = (c) => /^#(fff|ffffff)$/i.test(c) || c === 'white';
+  const markOf = (ic) => (ic.fg && !isWhite(ic.fg) && lum(ic.fg) >= .05) ? ic.fg : (lum(ic.bg) >= .05 ? ic.bg : 'var(--fg)');
+  /* a pale mark (Zcash yellow, Aleph Alpha chartreuse) fades on the light
+     tile, so the light theme gets the same hue at two thirds (--mk-lt) */
+  const shade = (hex) => '#' + hex.replace('#', '').match(/../g).map((c) => Math.round(parseInt(c, 16) * .66).toString(16).padStart(2, '0')).join('');
+  const markLt = (mk) => (mk[0] === '#' && lum(mk) > .45) ? shade(mk) : mk;
+  const artOf = (ic) => (ic.svg || ic.text)
+    .replace(new RegExp(ic.bg.replace('#', '#'), 'gi'), 'transparent')
+    .replace(/#(?:fff|ffffff)\b|\bwhite\b/gi, 'currentColor')
+    .replace(/#[0-9a-f]{6}\b|#[0-9a-f]{3}\b/gi, (m) => lum(m) < .05 ? 'currentColor' : m);
+  hero.insertAdjacentHTML('beforeend', '<div class="tiles" aria-hidden="true">' + S.stack.map((b) => {
     const ic = ICONS[b.icon] || { bg: '#151515', fg: '#fff', text: b.label.slice(0, 2) };
-    const tilt = ((i * 37) % 24) - 12;
-    return `<span class="badge" data-side="${b.side}" title="${b.label}" style="--tilt:${tilt}deg;background:${ic.bg};color:${ic.fg || '#fff'}">${ic.svg || ic.text}</span>`;
+    const mk = markOf(ic);
+    return `<span class="badge" data-side="${b.side}" title="${b.label}" style="--mk:${mk};--mk-lt:${markLt(mk)}">${artOf(ic)}</span>`;
   }).join('') + '</div>');
   $('#stack-list').textContent = 'Programs: ' + S.stack.map((b) => b.label).join(', ') + '.';
 
@@ -342,10 +361,16 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
      styles.css): no grid (Josie, 2026-09-30: "break the grid", "more reactive
      and have interesting gravity", "just for the mobile version"). The tray
      is a small system: Claude sits at the centre, four tools turn on an inner
-     orbit and seven on an outer one, the inner ring faster, each orbit
-     breathing a little so nothing lines up twice. A spring holds each tile
-     to its moving orbit point, so the whole thing keeps slowly turning while
-     the hero is on screen. Reactions, all through the same springs and bumps:
+     orbit and the rest on rings outside it, the inner ring faster. Since
+     2026-09-30 night (Josie: "more chaos gravity, less uniformity") the
+     rings are only the scaffold: every tile has its own orbit, a radius
+     pulled in or out from its ring (more in than out, so the cloud is
+     densest near the centre), an uneven share of the ring's angle (bunches
+     and gaps), its own speed (tiles lap and bump each other), its own
+     breathing and a slightly tilted ellipse, a looser or tighter spring and
+     a small resting tilt. A spring holds each tile to its moving orbit point,
+     so the whole thing keeps slowly turning while the hero is on screen.
+     Reactions, all through the same springs and bumps:
      - press and hold (or drag): the finger is a gravity well; the orbits let
        go, every tile falls toward it and swirls round it (they keep off the
        fingertip, so they ring it); lift and they fly on for a beat, then the
@@ -378,6 +403,16 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     const on = () => active !== 'off';
     const rnd = (a, b) => a + Math.random() * (b - a);
     const clamp = (v, m) => Math.max(-m, Math.min(m, v));
+    const ease = (u) => (u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+    /* the lattice's move: rest at 0 or 45, then a quarter turn that eases,
+       each tile on its own period (tp), duration (td), offset (to) and way (tdir) */
+    const spin = () => ({ tilt: Math.random() < .5 ? 45 : 0, turn: 0, ts: 0, tp: rnd(5, 13), td: rnd(.7, 1.3), to: rnd(0, 13), tdir: Math.random() < .5 ? -1 : 1 });
+    const turnOf = (b) => {
+      const tt = T + b.to, n = Math.floor(tt / b.tp), f = tt - n * b.tp;
+      let e = 0, ts = 0;
+      if (f > b.tp - b.td) { const u = (f - (b.tp - b.td)) / b.td; e = ease(u); ts = Math.abs(Math.sin(Math.PI * u)); }
+      b.turn = b.tdir * (n + e) * 45; b.ts = ts;
+    };
 
     function measure() {
       const hb = hero.getBoundingClientRect(); W = hb.width; H = hb.height;
@@ -386,7 +421,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
               y0: Math.min(...parts.map((r) => r.top)) - hb.top - 10, y1: Math.max(...parts.map((r) => r.bottom)) - hb.top + 10 };
     }
     /* tray: centre tile, an inner ring of four, then as many rings as the
-       count needs (35 tiles since the coins, 2026-09-30; a phone holds three),
+       count needs (22 tiles since the coin cut, 2026-09-30; a phone holds two or three),
        each holding what its ellipse has room for. The outermost ring sits at
        the tray's width and each ring inside steps in by a tile, so no two
        touch at the sides; rings are wider than tall while the tray allows.
@@ -396,7 +431,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       W = tilesBox.clientWidth; obs = null;
       const n = bodies.length, step = R * 2 + 6, aMax = Math.max(R * 2.9, W / 2 - R - 14);
       const perim = (a, b) => Math.PI * (3 * (a + b) - Math.sqrt((3 * a + b) * (a + 3 * b)));
-      const build = (nr) => { const rs = []; for (let k = 1; k <= nr; k++) { const ay = R * 2.3 + (k - 1) * step, ax = Math.min(aMax - (nr - k) * step, ay * 1.3); rs.push({ ax, ay, cap: k === 1 ? 4 : Math.max(1, Math.floor(perim(ax, ay) / step)), cnt: 0 }); } return rs; };
+      const build = (nr) => { const rs = []; for (let k = 1; k <= nr; k++) { const ay = R * 2.3 + (k - 1) * step, ax = Math.min(aMax - (nr - k) * step, ay * 1.5);   /* 1.5 since the coin cut: 22 tiles spread across a wide tray */ rs.push({ ax, ay, cap: k === 1 ? 4 : Math.max(1, Math.floor(perim(ax, ay) / step)), cnt: 0 }); } return rs; };
       const capOf = (rs) => rs.reduce((s, r) => s + r.cap, 0);
       const nrMax = Math.max(1, Math.floor((aMax - R * 2.6) / step) + 1);
       let nr = 1;
@@ -407,23 +442,40 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       const outerCap = capOf(rings.slice(1));
       rings.slice(1).forEach((r, i, arr) => { r.cnt = i === arr.length - 1 ? left : Math.min(left, Math.round((n - 1 - rings[0].cnt) * r.cap / outerCap)); left -= r.cnt; });
       while (last.cnt > 1 && perim(last.ax, last.ay) < last.cnt * step) last.ay += 2;   // more than the width holds: grow downward
-      tilesBox.style.height = Math.round(2 * (last.ay + R) + 36) + 'px';
-      H = tilesBox.clientHeight; cx = W / 2; cy = H / 2;
-      let i = 1;
-      bodies[0] && Object.assign(bodies[0], { ring: 0, ax: 0, ay: 0, ph: 0, w: 0 });
+      /* each tile gets its own orbit off its ring: radius scaled (inward more
+         often than out), an uneven slice of the ring's angle, its own speed,
+         breathing (wa, wf, wp), a tilted ellipse (rot) and spring (ks). The
+         x reach is capped at the tray's width; the tray's height comes from
+         the widest y reach in the cloud. */
+      let i = 1, yMax = R * 2.3;
+      bodies[0] && Object.assign(bodies[0], { ring: 0, ax: 0, ay: 0, ph: 0, w: 0, rot: 0, wa: 0, wf: 0, wp: rnd(0, Math.PI * 2), ks: 1 });
       rings.forEach((r, k) => {
         const turn = TURN_IN + (TURN_OUT - TURN_IN) * (nr > 1 ? k / (nr - 1) : 1);
-        for (let j = 0; j < r.cnt; j++, i++) Object.assign(bodies[i], { ring: k + 1, ax: r.ax, ay: r.ay, ph: .4 - .6 * k + j * Math.PI * 2 / r.cnt, w: Math.PI * 2 / turn });
+        const gaps = Array.from({ length: r.cnt }, () => rnd(.5, 1.5)), sum = gaps.reduce((a, g) => a + g, 0);
+        const lo = Math.max(.76, (R * 2.3) / r.ay);   // the inner ring never sits on the centre tile
+        let ph = rnd(0, Math.PI * 2);
+        for (let j = 0; j < r.cnt; j++, i++) {
+          ph += gaps[j] / sum * Math.PI * 2;
+          const rot = rnd(-.4, .4), wa = rnd(.05, .13), c = Math.cos(rot), sn = Math.sin(rot);
+          let rs = lo + (1.14 - lo) * Math.pow(Math.random(), 1.3);
+          const xe = Math.hypot(r.ax * c, r.ay * sn) * (1 + wa);
+          if (xe * rs > aMax) rs = aMax / xe;
+          yMax = Math.max(yMax, Math.hypot(r.ax * sn, r.ay * c) * (1 + wa) * rs);
+          Object.assign(bodies[i], { ring: k + 1, ax: r.ax * rs, ay: r.ay * rs, ph, w: Math.PI * 2 / turn * rnd(.7, 1.35), rot, wa, wf: rnd(.3, .8), wp: rnd(0, Math.PI * 2), ks: rnd(.6, 1.5) });
+        }
       });
+      tilesBox.style.height = Math.round(2 * (yMax + R) + 16) + 'px';
+      H = tilesBox.clientHeight; cx = W / 2; cy = H / 2;
       orbitHomes();
       bodies.forEach((b) => { if (b.fresh) { b.x = b.hx; b.y = b.hy; b.fresh = false; } });
     }
     /* where each tile's orbit point is right now */
     function orbitHomes() {
       for (const b of bodies) {
-        if (b.ring === 0) { b.hx = cx + Math.sin(T * .5) * 4; b.hy = cy + Math.cos(T * .37) * 3; continue; }
-        const th = b.ph + T * b.w, wob = 1 + .04 * Math.sin(T * .6 + b.ph * 3);
-        b.hx = cx + Math.cos(th) * b.ax * wob; b.hy = cy + Math.sin(th) * b.ay * wob;
+        if (b.ring === 0) { b.hx = cx + Math.sin(T * .5) * 6; b.hy = cy + Math.cos(T * .37) * 5; continue; }
+        const th = b.ph + T * b.w + .3 * Math.sin(T * .19 + b.wp), wob = 1 + b.wa * Math.sin(T * b.wf + b.wp);   // surges along the orbit, breathes in and out
+        const ex = Math.cos(th) * b.ax * wob, ey = Math.sin(th) * b.ay * wob, c = Math.cos(b.rot), sn = Math.sin(b.rot);
+        b.hx = cx + ex * c - ey * sn; b.hy = cy + ex * sn + ey * c;
       }
     }
     function layout() {
@@ -432,7 +484,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       if (!on()) { els.forEach((el) => { el.style.transform = ''; el.style.removeProperty('--sp'); }); tilesBox.style.height = ''; return; }
       R = els[0].offsetWidth / 2 || R;
       if (active === 'tray') {
-        if (!bodies.length) bodies = els.map((el) => ({ el, x: 0, y: 0, vx: 0, vy: 0, a: 0, va: 0, hx: 0, hy: 0, tilt: 0, ring: 0, ax: 0, ay: 0, ph: 0, w: 0, fresh: true }));
+        if (!bodies.length) bodies = els.map((el) => ({ el, x: 0, y: 0, vx: 0, vy: 0, a: 0, va: 0, hx: 0, hy: 0, ring: 0, ax: 0, ay: 0, ph: 0, w: 0, rot: 0, wa: 0, wf: 0, wp: 0, ks: 1, fresh: true, ...spin() }));
         trayMeasure();
       } else {
         tilesBox.style.height = '';
@@ -440,7 +492,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
         if (!bodies.length) {
           const L = els.filter((e) => e.dataset.side === 'l'), Rr = els.filter((e) => e.dataset.side !== 'l');
           /* start in short columns beside the text (as many as the side
-             room takes: 35 tiles since the coins, 2026-09-30), then roam */
+             room takes: 22 tiles since the coin cut, 2026-09-30), then roam */
           const col = (list, x0, x1) => {
             const cell = 2 * R + 10, rows = Math.max(1, Math.floor(H * .62 / cell));
             const cols = Math.max(1, Math.min(Math.ceil(list.length / rows), Math.floor((x1 - x0) / cell))), nr = Math.ceil(list.length / cols);
@@ -449,7 +501,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
               const x = Math.max(R + 4, Math.min(W - R - 4, (x0 + x1) / 2 + (c - (cols - 1) / 2) * cell + (r % 2 ? 6 : -6)));
               const y = H * (0.3 + 0.62 * (nr > 1 ? r / (nr - 1) : .5));
               const ang = rnd(0, Math.PI * 2), sp = REDUCED ? 0 : rnd(.45, .75);
-              return { el, x, y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, a: 0, va: 0, hx: 0, hy: 0, tilt: parseFloat(el.style.getPropertyValue('--tilt')) || 0 };
+              return { el, x, y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, a: 0, va: 0, hx: 0, hy: 0, ...spin() };
             });
           };
           bodies = [...col(L, 0, obs.x0), ...col(Rr, obs.x1, W)];
@@ -459,8 +511,8 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       lastY = scrollY; scrollDelta = 0; scrollV = 0;
     }
     function place(b, sp) {
-      b.el.style.transform = `translate(${(b.x - R).toFixed(1)}px, ${(b.y - R).toFixed(1)}px) rotate(${(b.tilt + b.a).toFixed(1)}deg)`;
-      b.el.style.setProperty('--sp', Math.min(1, sp / 2.4).toFixed(2));
+      b.el.style.transform = `translate(${(b.x - R).toFixed(1)}px, ${(b.y - R).toFixed(1)}px) rotate(${(b.tilt + b.turn + b.a).toFixed(1)}deg)`;
+      b.el.style.setProperty('--sp', Math.max(Math.min(1, sp / 2.4), b.ts).toFixed(2));   // the split widens with speed and mid-turn
     }
     function bounceRect(b) {   // keep the tile out of the text block
       if (!obs) return;
@@ -482,8 +534,10 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
          wind: a moving page keeps pushing. The well ramps in fast on a press
          and fades after the lift, so the tiles coast before the orbits pull. */
       let kick = 0, wind = 0, jit = 0, reach = 0;
+      T += dt;
+      for (const b of bodies) turnOf(b);
       if (tray) {
-        T += dt; orbitHomes();
+        orbitHomes();
         const v = scrollDelta / k; scrollDelta = 0;
         kick = clamp((v - scrollV) * INERTIA, KICK); scrollV = v;
         wind = clamp(v * WIND, WINDMAX);
@@ -494,7 +548,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       }
       for (const b of bodies) {
         if (tray) {
-          const spring = HOME * (1 - .97 * well.k);   // the orbit lets go while the finger holds
+          const spring = HOME * b.ks * (1 - .97 * well.k);   // the orbit lets go while the finger holds; ks: some tiles held loosely, some tight
           b.vx += (b.hx - b.x) * spring * k; b.vy += (b.hy - b.y) * spring * k;
           if (kick) { b.vy += kick * rnd(.7, 1.3); b.vx += kick * rnd(-.35, .35); }   // each tile a little different
           if (wind) b.vy += wind * k;
@@ -538,7 +592,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       }
       for (let i = 0; i < bodies.length; i++) for (let j = i + 1; j < bodies.length; j++) {
         const a = bodies[i], c = bodies[j];
-        const dx = c.x - a.x, dy = c.y - a.y, d = Math.hypot(dx, dy), min = R * 2 + 2;
+        const dx = c.x - a.x, dy = c.y - a.y, d = Math.hypot(dx, dy), min = R * 2.2 + 2;   // a little over two radii: turned tiles are wider corner to corner
         if (d < min && d > .001) {
           const nx = dx / d, ny = dy / d, ov = (min - d) / 2;
           a.x -= nx * ov; a.y -= ny * ov; c.x += nx * ov; c.y += ny * ov;

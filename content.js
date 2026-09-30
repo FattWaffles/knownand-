@@ -51,9 +51,10 @@ window.SITE = {
   /* Floating program icons either side of the hero. `icon` names a drawing
      in site.js (claude, figma, photoshop, illustrator, aftereffects,
      procreate, github, solana, autocad, godot, shopify, blender, chatgpt, mistral,
-     alephalpha, cohere, qwen, kimi, deepseek, bitcoin, ethereum, cardano, zcash,
-     monero, xrp, litecoin, dogecoin, polkadot, avalanche, chainlink, polygon,
-     bnb, tron, stellar, sui). `side` l = left column, top to bottom;
+     alephalpha, cohere, qwen, kimi, deepseek, ethereum, zcash, monero, and
+     twelve more coins that are drawn but not listed: bitcoin, cardano, xrp,
+     litecoin, dogecoin, polkadot, avalanche, chainlink, polygon, bnb, tron,
+     stellar, sui). `side` l = left column, top to bottom;
      r = bottom-right cluster, outer to inner. */
   stack: [
     { label: 'Claude',        icon: 'claude',       side: 'l' },
@@ -78,25 +79,15 @@ window.SITE = {
     { label: 'Qwen',          icon: 'qwen',         side: 'l' },
     { label: 'Kimi K3',       icon: 'kimi',         side: 'r' },
     { label: 'DeepSeek',      icon: 'deepseek',     side: 'l' },
-    /* Chains and coins (Josie, 2026-09-30: "eth, deep seek, zcash, monero,
-       ada ... basically any major crypto coin but base"). Base is left out
-       on purpose. Solana sits above with the tools. */
-    { label: 'Bitcoin',       icon: 'bitcoin',      side: 'r' },
+    /* Chains and coins. Sixteen went in 2026-09-30 ("any major crypto coin
+       but base"); the same night Josie cut it to these four ("take out a
+       lot of the crypto coins but solana, zcash, eth and monero"). The
+       other twelve drawings are still in site.js (ICONS), so any of them
+       comes back with one line here. Base is left out on purpose. Solana
+       sits above with the tools. */
     { label: 'Ethereum',      icon: 'ethereum',     side: 'l' },
-    { label: 'Cardano',       icon: 'cardano',      side: 'r' },
-    { label: 'Zcash',         icon: 'zcash',        side: 'l' },
+    { label: 'Zcash',         icon: 'zcash',        side: 'r' },
     { label: 'Monero',        icon: 'monero',       side: 'r' },
-    { label: 'XRP',           icon: 'xrp',          side: 'l' },
-    { label: 'Litecoin',      icon: 'litecoin',     side: 'r' },
-    { label: 'Dogecoin',      icon: 'dogecoin',     side: 'l' },
-    { label: 'Polkadot',      icon: 'polkadot',     side: 'r' },
-    { label: 'Avalanche',     icon: 'avalanche',    side: 'l' },
-    { label: 'Chainlink',     icon: 'chainlink',    side: 'r' },
-    { label: 'Polygon',       icon: 'polygon',      side: 'l' },
-    { label: 'BNB',           icon: 'bnb',          side: 'r' },
-    { label: 'Tron',          icon: 'tron',         side: 'l' },
-    { label: 'Stellar',       icon: 'stellar',      side: 'r' },
-    { label: 'Sui',           icon: 'sui',          side: 'l' },
   ],
 
   links: [
