@@ -163,6 +163,40 @@ html.motion-off .entry::after, html.motion-off .cv section::after, html.motion-o
 .stage, .shot.motion .go { border-radius: 6px; }
 .stage .stat, .stage.rank .panel { border-radius: 6px; }
 
+/* Light theme glints (Josie, 2026-09-30: "see the blurred colors travel down
+   the background vectors better in the light mode"). lattice.js reads these:
+   multiply instead of additive so the colours print into the paper, a wider
+   line, and a glow pass four times wider for the blur. */
+:root[data-theme="light"] { --glint-blend: multiply; --glint-width: 2.6; --glint-alpha: 1; --glint-glow: 5; }
+
+/* Folder rows take the hero's prismatic look (Josie: "the folder icons and
+   names styled that way as well"): a red/blue split on the name and the four
+   squares, and a glint that runs along the row's foot now and then. */
+.tree .folder > .row { position: relative; }
+.tree .folder > .row .lbl { text-shadow: -1px 0 rgba(255, 59, 48, .55), 1px 0 rgba(47, 107, 255, .55); }
+.tree .folder > .row .ic { filter: drop-shadow(-.7px 0 rgba(255, 59, 48, .7)) drop-shadow(.7px 0 rgba(47, 107, 255, .7)); }
+.tree .folder > .row::after {
+  content: ""; position: absolute; left: 0; bottom: 0; width: 72px; height: 1px; pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, transparent, var(--prism-r, #FF3B30), var(--prism-y, #FFD60A), var(--prism-c, #34E2FF), var(--prism-b, #2F6BFF), transparent);
+  box-shadow: 0 0 6px 1px rgba(255, 214, 10, .25);
+  animation: m-glint 13s linear infinite;
+}
+.tree .folder:nth-child(2) > .row::after { animation-delay: -2.6s; }
+.tree .folder:nth-child(3) > .row::after { animation-delay: -5.2s; }
+.tree .folder:nth-child(4) > .row::after { animation-delay: -7.8s; }
+.tree .folder:nth-child(5) > .row::after { animation-delay: -10.4s; }
+.tree .folder:nth-child(6) > .row::after { animation-delay: -1.3s; }
+.tree .folder:nth-child(7) > .row::after { animation-delay: -3.9s; }
+@keyframes m-glint {
+  0% { transform: translateX(-72px); opacity: 0; }
+  2% { opacity: 1; }
+  22% { opacity: 1; }
+  24% { transform: translateX(220px); opacity: 0; }
+  100% { transform: translateX(220px); opacity: 0; }
+}
+html.motion-off .tree .folder > .row::after { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .tree .folder > .row::after { animation: none; } }
+
 /* Shared cursor dot for the scenes that tap things */
 .stage .cur { position: absolute; left: 0; top: 0; z-index: 3; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--fg); box-shadow: 0 0 0 3px rgba(255, 255, 255, .55); opacity: 0; pointer-events: none; will-change: transform, opacity; }
 .stage.rank .cur { left: 60%; top: 31%; margin: 0; }

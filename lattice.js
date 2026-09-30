@@ -55,6 +55,12 @@
       grid: v('--grid', '#262626'), node: v('--node', '#F3EEE4'), sq: v('--sq', '#F3EEE4'),
       r: v('--prism-r', '#FF3B30'), y: v('--prism-y', '#FFD60A'), c: v('--prism-c', '#34E2FF'), b: v('--prism-b', '#2F6BFF'),
       nodeA: parseFloat(v('--node-alpha', '.55')), sqA: parseFloat(v('--sq-alpha', '1')),
+      /* Glints (motion.css sets these for the light theme, where additive
+         blending washes out on the bone page): blend mode, line width,
+         peak alpha, and a glow pass that many times wider at a third of the
+         alpha, so the colours read as a soft blur along the line. */
+      glintBlend: v('--glint-blend', 'lighter'), glintW: parseFloat(v('--glint-width', '1.6')) || 1.6,
+      glintA: parseFloat(v('--glint-alpha', '.9')), glintGlow: parseFloat(v('--glint-glow', '0')) || 0,
     };
     C = parseFloat(v('--cell', '72')) || 72;
   }
@@ -111,8 +117,8 @@
     // glints: short prismatic runs along a segment, timed per segment
     if (!still) {
       ctx.save();
-      ctx.globalCompositeOperation = 'lighter';
-      ctx.lineWidth = 1.6;
+      ctx.globalCompositeOperation = col.glintBlend;
+      ctx.lineWidth = col.glintW;
       const len = C * .42;
       for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) for (let d = 0; d < 2; d++) {
         const R = 18 + 42 * hash(i, j, 11 + d);
@@ -128,8 +134,14 @@
         const stops = flip ? [col.b, col.c, col.y, col.r] : [col.r, col.y, col.c, col.b];
         g.addColorStop(0, rgba(stops[0], 0)); g.addColorStop(.25, stops[0]); g.addColorStop(.5, stops[1]);
         g.addColorStop(.7, stops[2]); g.addColorStop(.85, stops[3]); g.addColorStop(1, rgba(stops[3], 0));
-        ctx.globalAlpha = Math.sin(Math.PI * u) * .9;
+        const a = Math.sin(Math.PI * u) * col.glintA;
         ctx.strokeStyle = g;
+        if (col.glintGlow) {   // the soft halo under the line
+          ctx.lineWidth = col.glintW * col.glintGlow; ctx.globalAlpha = a * .35;
+          ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+          ctx.lineWidth = col.glintW;
+        }
+        ctx.globalAlpha = a;
         ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
       }
       ctx.restore();
