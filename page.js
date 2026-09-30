@@ -90,6 +90,16 @@
     $('#p-eyebrow').textContent = P.eyebrow;
     $('#p-title').textContent = P.title;
     $('#p-text').innerHTML = P.text;
+    const co = $('#p-callout');
+    if (co) {
+      if (P.callout) {
+        co.href = P.callout.url;
+        $('#pc-eyebrow').textContent = P.callout.eyebrow;
+        $('#pc-big').textContent = P.callout.big;
+        $('#pc-text').textContent = P.callout.text;
+        $('#pc-more').textContent = P.callout.more;
+      } else { co.remove(); co.closest && $('.head-row') && $('.head-row').classList.add('solo'); }
+    }
     const priced = P.plans.some((p) => p.price);
     plans.innerHTML = P.plans.map((p, i) => `
       <article class="plan">

@@ -318,7 +318,12 @@ window.NEXT = {
 window.PRICING = {
   eyebrow: 'Pricing',
   title: 'Four ways in.\nOne method underneath.',
-  text: 'Every engagement starts with a map of how the work moves: where it shows up, what flows between steps, what people keep, what AI does and what plain systems handle. The map decides what to design, build and automate. Each price is fixed before work starts. Projects ship in five working days. A person answers support, any hour, any day. Known, and is building a network of people who do good work. Refer someone who fills one of our <a href="roles.html">open roles</a> and your next engagement is 10% off.',
+  text: 'Every engagement starts with a map of how the work moves: where it shows up, what flows between steps, what people keep, what AI does and what plain systems handle. The map decides what to design, build and automate. Each price is fixed before work starts. Projects ship in five working days. A person answers support, any hour, any day. Known, and is building a network of people who do good work.',
+  /* The call-out beside the lede (Josie, 2026-09-30: "there should be some
+     type of call out here on the right side of the hero"): a raised block on
+     the grid, the whole block links to `url`. Delete `callout` and the lede
+     goes back to its full ten cells. */
+  callout: { eyebrow: 'Referral', big: '10% off', text: 'Refer someone who fills one of our open roles. The discount comes off your next engagement.', more: 'See the open roles', url: 'roles.html' },
   plans: [
     { name: 'The Fit Session', kind: 'Audit', price: '$750', unit: 'fixed price, credited to your first sprint', time: '2 working days',
       text: 'A short paid review of one product or workflow: where context leaks, where the experience fights the user, where AI is guessing.',

@@ -10,6 +10,24 @@
    the cards; ten cells wide plus one pixel so the right edge is on a line. */
 .page-head .lede { max-width: calc(72px * 10 + 1px); color: var(--muted); font-size: 15px; line-height: 1.6; margin: 24px 0 0; padding: 20px 24px; background: var(--card); border: 1px solid var(--line); }
 .page-head .lede a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: var(--muted); }
+/* Lede + call-out row (pricing, 2026-09-30: Josie, "some type of call out on
+   the right side of the hero"). The row is one pixel wider than the column
+   so both boxes sit on grid lines: the lede takes what is left (nine cells
+   at full width), one cell of air, then a three-cell raised block that is
+   one link. Without a call-out (`.solo`) the lede keeps its ten cells. */
+.head-row { display: grid; grid-template-columns: 1fr calc(72px * 3 + 1px); column-gap: calc(72px - 1px); align-items: stretch; width: calc(100% + 1px); margin-top: 24px; }
+.head-row .lede { margin: 0; max-width: none; }
+.head-row.solo { grid-template-columns: 1fr; width: 100%; }
+.head-row.solo .lede { max-width: calc(72px * 10 + 1px); }
+.callout { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 22px 22px 20px; background: var(--neu); box-shadow: var(--raise-lg); color: var(--fg); transition: box-shadow .15s, transform .15s; }
+.callout:hover { transform: translateY(-1px); }
+.callout:active { box-shadow: var(--press-lg); transform: none; }
+.callout .eyebrow { margin: 0 0 2px; }
+.callout b { font-family: var(--display); font-stretch: 112%; font-weight: 800; font-size: 40px; line-height: 1; letter-spacing: -.03em; }
+.callout p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.callout .more { margin-top: auto; padding-top: 12px; font: 600 11px/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: var(--muted); }
+.callout:hover .more { text-decoration-color: currentColor; }
+@media (prefers-reduced-motion: reduce) { .callout { transition: none; } }
 .page-head .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 20px; font: 600 11px/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .page-head .meta b { color: var(--fg); font-weight: 600; }
 
@@ -95,6 +113,8 @@
 
 @media (max-width: 840px) {
   .page-head { padding: 52px 0 24px; }
+  .head-row { grid-template-columns: 1fr; row-gap: 16px; width: 100%; }
+  .callout b { font-size: 34px; }
   .plans { grid-template-columns: 1fr; }
   .plan:nth-child(odd) { border-right: 0; }
   .plan:nth-last-child(-n+2) { border-bottom: 1px solid var(--line); }
