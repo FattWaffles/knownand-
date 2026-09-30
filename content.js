@@ -188,6 +188,22 @@ window.SECURITY = {
   certs: [],
 };
 
+/* Weekly sign-up (the form beside the Book a meeting button). With `action`
+   empty the form opens the visitor's mail app with a ready-made subscribe
+   email to `mailto` (no data leaves the page). When a list provider exists
+   (Buttondown, Beehiiv, Mailchimp...), put its form endpoint in `action` and
+   its field name in `field`, and add its origin to the form-action list in
+   the Content-Security-Policy meta in index.html. */
+window.NEWSLETTER = {
+  title: 'New tech, new products, what shipped.',
+  placeholder: 'you@example.com',
+  button: 'Sign up',
+  action: '',
+  field: 'email',
+  mailto: 'rigaliresearchdevelopment@gmail.com',
+  note: 'Weekly. Unsubscribe by replying.',
+};
+
 window.ABOUT = {
   eyebrow: 'About me',
   title: 'I build brands as systems, and show the work as it happens.',

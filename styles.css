@@ -238,3 +238,32 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--blue); outline-
   .live i { animation: none; }
   .bar i, .btn { transition: none; }
 }
+
+/* ---- legibility pass (Josie, 2026-09-30: "more legible… all the tiny type on
+   desktop needs to be a bit bolder or bigger or in a pill container") ---- */
+:root { --line-strong: #3A3A3A; --field: #111111; }
+:root[data-theme="light"] { --line-strong: #B9B9B9; --field: #F3F3F3; --muted: #5C5C5C; }
+.eyebrow { font-size: 11.5px; font-weight: 600; }
+.brand { font-size: 13px; font-weight: 600; }
+.top nav { font-size: 12px; font-weight: 600; }
+.thead { font-size: 11px; font-weight: 600; }
+.live { font-size: 11px; font-weight: 600; }
+.tag { font-size: 10px; font-weight: 600; padding: 5px 9px; }
+.proj .meta { font-size: 12.5px; }
+.time span, .stat span, .pct span { font-size: 12px; }
+.time b small { font-size: 12px; }
+.kind { font-size: 12px; font-weight: 600; }
+.cell .idx { font-size: 11px; font-weight: 600; }
+.cell .imp { font-size: 10.5px; font-weight: 600; }
+.steps { font-size: 11.5px; font-weight: 600; }
+.stats span { font-size: 11px; font-weight: 600; }
+.soc { font-size: 10px; font-weight: 600; }
+.pill-lite { font-size: 11.5px; font-weight: 600; }
+.motion-btn { font-size: 11px; font-weight: 600; }
+footer { font-size: 11.5px; font-weight: 600; }
+.nl-line { display: inline-flex; align-items: center; max-width: 100%; margin: 16px auto 0; padding: 9px 14px; font-size: 11px; font-weight: 600; letter-spacing: .08em; color: var(--fg); background: var(--card); border: 1px solid var(--line-strong); border-radius: 999px; }
+.signup input { background: var(--field); border: 1px solid var(--line-strong); font-weight: 500; }
+.signup input::placeholder { color: var(--muted); opacity: 1; }
+.btn-lite { background: var(--field); border: 1px solid var(--line-strong); font-weight: 600; }
+.btn-lite:hover { background: var(--hover); }
+.nl-line:empty { display: none; }
