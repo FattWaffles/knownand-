@@ -13,7 +13,7 @@
   --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   --display: Archivo, var(--sans);
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --w: 980px; --rc: 8px; --ri: 6px;
+  --w: 976px; --rc: 8px; --ri: 6px;   /* 976 = 13 cells of 72 + the two 20px gutters (see the on-the-grid block at the end) */
   /* Lattice (lattice.js reads these; same values as the rest of the site) */
   --node: #F3EEE4; --node-alpha: .5; --sq: #F3EEE4; --sq-alpha: 1; --cell: 72;
   --prism-r: #FF3B30; --prism-y: #FFD60A; --prism-c: #34E2FF; --prism-b: #2F6BFF;
@@ -383,3 +383,19 @@ footer { font-size: 11.5px; font-weight: 600; }
 .row::before, .acc-head::before { border-radius: 0; background: var(--neu); box-shadow: var(--raise-lg); transition: opacity .2s, box-shadow .25s; }   /* square (Josie, 2026-09-30: "90 degree corners 0 curve") */
 .row.acc.open > .acc-head::before, .row.acc.open > .acc-head:hover::before { box-shadow: var(--press-lg); }
 .acc-box { border-radius: 14px; background: var(--neu); box-shadow: var(--raise-lg); }
+
+/* ---- on the grid (Josie, 2026-09-30: "the edges of the select state need to be
+   flush against the grid if they are in a grid layout format"): the lattice's
+   vertical lines register to the card column (lattice.js measures the first
+   section's .wrap), the column is a whole number of 72px cells (13 on the
+   desktop: --w 976 = 936 + the two 20px gutters; between 841 and 1015px the
+   wrap rounds down to whole cells), and each card is one pixel wider than the
+   column, so its left and right hairlines sit exactly on two grid lines. The
+   hover / selected block then fills its row edge to edge: its sides meet the
+   card's hairlines, its top and bottom meet the row hairlines. The block's
+   shade has to fall outside the card, so the card no longer clips, and since
+   the blocks are square the card is too. Rows are not snapped to the
+   horizontal lines (their heights would have to grow to whole cells). ---- */
+@media (min-width: 841px) { .wrap { max-width: min(var(--w), calc(round(down, 100% - 40px, 72px) + 40px)); } }
+.card { width: calc(100% + 1px); border-radius: 0; overflow: visible; }
+.row::before, .acc-head::before { inset: 0; }

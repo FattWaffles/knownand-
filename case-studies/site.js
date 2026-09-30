@@ -79,7 +79,7 @@
       const list = byTag[t.id] || [];
       if (list.length) html += folder(t.label, list.map(fileRow).join(''));
     });
-    html += `<li role="treeitem"><a class="row${onCv ? ' sel' : ''}" href="cv.html"><span class="tw"></span>${I.cv}<span class="lbl">CV</span></a></li>`;
+    html += `<li role="treeitem"><a class="row${onCv ? ' sel' : ''}" href="cv.html"><span class="tw"></span>${I.cv}<span class="lbl">Resume</span></a></li>`;
     /* Blog folder (posts.js): "All posts" then one row per post. On blog.html the
        rows switch posts in place; elsewhere they go to blog.html#p-<id>. */
     const posts = (window.BLOG && window.BLOG.posts) || [];

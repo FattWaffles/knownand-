@@ -73,10 +73,14 @@
     readColours();
     alignBands();
   }
-  /* The grid registers to the main column: one vertical line on its left edge.
-     On the desktop that is 288px (4 cells of 72); on phones it is the 16px gutter. */
+  /* The grid registers to the card column (Josie, 2026-09-30: the select state
+     "flush against the grid"): one vertical line on the column's left edge,
+     which is the left hairline of every card. The column is a whole number of
+     cells wide and each card one pixel wider (styles.css, "on the grid"), so
+     the right hairline sits on a line as well. Measured from the first
+     section's .wrap; main is the fallback. */
   function originX() {
-    const m = document.querySelector('main');
+    const m = document.querySelector('main .sec .wrap') || document.querySelector('main');
     if (!m) return 0;
     const left = m.getBoundingClientRect().left + parseFloat(getComputedStyle(m).paddingLeft || 0);
     return ((left % C) + C) % C;
