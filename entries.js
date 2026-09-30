@@ -9,7 +9,7 @@ const A = 'assets/';
 window.SITE = {
   name: 'Josie Rigali',
   intro: [
-    'I\'m a product and brand designer. I run <a href="' + VIEWER + '">Known</a>, a design studio for brand, SEO and product design, with AI as a tool in the kit.',
+    'I design brands that behave like products: identity, interfaces, motion, 3D, research and emerging technology, brought together as one system. <a href="' + VIEWER + '">Known</a> is my studio.',
     'Before Known I spent 10+ years designing inside beauty, retail, education and AI companies, from email and motion to UX research and design systems.',
     'Off the clock I build games and hackathon projects: a block puzzle made of cats I drew, and a browser concept for the web, Web3 and AI agents.',
   ],
@@ -22,14 +22,14 @@ window.SITE = {
   /* Hero, copied from rosekuan.com: a grey name line over a dark role line in
      tight tracking, a long pause, then three hairline rows of small caps.
      The left labels decode in from *$&%# glyphs on load. */
-  hero: { name: 'Josie Rigali', role: 'Designer and systems thinker' },
+  hero: { name: 'Josie Rigali', role: 'Brand Systems Designer + Creative Technologist' },
   /* Rows, left label then right value:
      - `value`  plain text
      - `clock`  a live HH:MM:SS. Put an IANA zone here ('America/New_York') and
                 change the label to 'In <city>'. Empty = the visitor's own zone.
      - `links`  the SITE.links above, shown by `short` with an arrow */
   meta: [
-    { label: 'One person brand incubator', value: 'Brand, SEO & product at Known' },
+    { label: 'Brand systems', value: 'Identity · Product · Motion · 3D · AI' },
     { label: 'In the studio', clock: '' },
     { label: 'Online', links: true },
   ],

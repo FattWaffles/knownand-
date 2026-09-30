@@ -49,7 +49,7 @@ main.desktop {
   outline: none;
   transition: border-color .2s;
 }
-:root[data-theme="light"] .win { --win-bg: rgba(250, 247, 241, .86); box-shadow: 0 30px 70px -30px rgba(0, 0, 0, .35), 0 2px 10px rgba(0, 0, 0, .08); }
+:root[data-theme="light"] .win { --win-bg: rgba(250, 247, 241, .93); box-shadow: 0 30px 70px -30px rgba(0, 0, 0, .35), 0 2px 10px rgba(0, 0, 0, .08); }
 .win[hidden] { display: none; }
 .win.top { border-color: var(--muted); }
 .win.max { left: 16px; top: 16px; width: calc(100% - 32px); height: calc(100% - 32px); max-width: none; }
@@ -102,6 +102,7 @@ html.motion-off .win.top::after { animation-play-state: paused; }
 .win .lt.close:hover { background: var(--prism-r); }
 .win .lt.shade:hover { background: var(--prism-y); }
 .win .lt.zoom:hover { background: var(--prism-b); }
+:root[data-theme="light"] .win .lt.close:hover, :root[data-theme="light"] .win .lt.shade:hover, :root[data-theme="light"] .win .lt.zoom:hover { background: var(--fg); }
 .win .lt:focus-visible { outline: 1px solid var(--fg); outline-offset: 2px; }
 .win .ttl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .win.top .ttl { color: var(--fg); }

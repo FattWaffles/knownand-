@@ -167,7 +167,10 @@ html.motion-off .entry::after, html.motion-off .cv section::after, html.motion-o
    the background vectors better in the light mode"). lattice.js reads these:
    multiply instead of additive so the colours print into the paper, a wider
    line, and a glow pass four times wider for the blur. */
-:root[data-theme="light"] { --glint-blend: multiply; --glint-width: 2.6; --glint-alpha: 1; --glint-glow: 5; }
+/* Dialled down later the same night (Josie: "the rainbows on the white are
+   too distracting"): narrower, half the alpha, a smaller glow. For none at
+   all in light mode set --glint-alpha: 0. */
+:root[data-theme="light"] { --glint-blend: multiply; --glint-width: 1.6; --glint-alpha: .4; --glint-glow: 2.5; }
 
 /* Folder rows take the hero's prismatic look (Josie: "the folder icons and
    names styled that way as well"): a red/blue split on the name and the four
@@ -195,6 +198,11 @@ html.motion-off .entry::after, html.motion-off .cv section::after, html.motion-o
   100% { transform: translateX(220px); opacity: 0; }
 }
 html.motion-off .tree .folder > .row::after { animation-play-state: paused; }
+/* Light theme (Josie: "the rainbows on the white are too distracting"):
+   the folder rows keep the split and the glint at a third of the strength. */
+:root[data-theme="light"] .tree .folder > .row .lbl { text-shadow: -1px 0 rgba(255, 59, 48, .2), 1px 0 rgba(47, 107, 255, .2); }
+:root[data-theme="light"] .tree .folder > .row .ic { filter: drop-shadow(-.7px 0 rgba(255, 59, 48, .3)) drop-shadow(.7px 0 rgba(47, 107, 255, .3)); }
+:root[data-theme="light"] .tree .folder > .row::after { background: linear-gradient(90deg, transparent, rgba(255, 59, 48, .35), rgba(255, 214, 10, .35), rgba(52, 226, 255, .35), rgba(47, 107, 255, .35), transparent); box-shadow: none; }
 @media (prefers-reduced-motion: reduce) { .tree .folder > .row::after { animation: none; } }
 
 /* Shared cursor dot for the scenes that tap things */

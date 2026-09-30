@@ -33,6 +33,7 @@
   const still = () => rmq.matches || document.documentElement.classList.contains('motion-off');
   const phone = () => matchMedia('(max-width: 720px)').matches;
   const blogTitle = (window.BLOG && window.BLOG.title) || 'Blog';
+  const tree = $('#tree');
 
   /* Icons: the lattice motif at desktop size. A folder is four squares, a
      file one; the CV and link files carry a detail cut in the page colour. */
@@ -142,7 +143,8 @@
 
   function setHash(el) {
     const h = el && el.dataset.hash;
-    history.replaceState(null, '', h ? '#' + h : location.pathname + location.search);
+    /* Chrome refuses replaceState on a file:// page; the desktop must still work when index.html is opened straight from the folder */
+    try { history.replaceState(null, '', h ? '#' + h : location.pathname + location.search); } catch (e) {}
   }
 
   function open(id, opener) {
@@ -273,7 +275,6 @@
      site.js). An entry row opens the entry, CV the CV, a post row the post.
      Links stay links. Runs in the capture phase so site.js's own handler,
      which would fold the folder or follow the href, does not. */
-  const tree = $('#tree');
   const folderIdFor = (li) => {
     const first = li.querySelector('ul a.row');
     if (!first) return null;
