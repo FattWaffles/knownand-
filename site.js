@@ -114,14 +114,13 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
 
   /* program icon tiles: rounded squares in the lattice's style, placed and
      moved by the simulation below (hero coordinates on wide screens, tray
-     coordinates on narrow ones). The Tilt chip under the tray is the narrow
-     screens' motion button; CSS hides it on wide screens. */
+     coordinates on narrow ones) */
   const hero = document.querySelector('.hero');
   hero.insertAdjacentHTML('beforeend', '<div class="tiles" aria-hidden="true">' + S.stack.map((b, i) => {
     const ic = ICONS[b.icon] || { bg: '#151515', fg: '#fff', text: b.label.slice(0, 2) };
     const tilt = ((i * 37) % 24) - 12;
     return `<span class="badge" data-side="${b.side}" title="${b.label}" style="--tilt:${tilt}deg;background:${ic.bg};color:${ic.fg || '#fff'}">${ic.svg || ic.text}</span>`;
-  }).join('') + '</div><button class="tilt-btn" id="tilt" type="button" hidden aria-pressed="false">Tilt</button>');
+  }).join('') + '</div>');
   $('#stack-list').textContent = 'Programs: ' + S.stack.map((b) => b.label).join(', ') + '.';
 
   /* currently building */
@@ -287,19 +286,22 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
   /* Program icon tiles. Wide screens: they roam the hero, drift, bounce off
      the hero's edges, each other and the text block, and flee the cursor.
      Narrow screens (the .tiles box is a relative tray under the sign-up, see
-     styles.css): the tiles sit in a grid of home slots; tap Tilt and the
-     phone's tilt from that pose becomes gravity, so they slide and pile up
-     inside the tray, and levelling the phone sends them back to their slots.
-     The red/blue edge split widens with speed (--sp), like the lattice's
-     turning squares. Nothing is drawn on bumps (Josie, 2026-09-30: "no
-     rainbow from collision"). Reduced motion: the tiles sit still at their
-     starting places and the tilt buttons stay hidden. */
+     styles.css): the tiles sit in a grid of home slots and jostle when the
+     page scrolls. They have inertia, so a flick leaves them lagging and a
+     stop sends them past their slots, with a small rattle while the page is
+     moving; a spring then settles them back into the grid (Josie,
+     2026-09-30: "a shake every time the user scrolls", after trying and
+     dropping phone tilt as gravity). The red/blue edge split widens with
+     speed (--sp), like the lattice's turning squares. Nothing is drawn on
+     bumps (Josie, 2026-09-30: "no rainbow from collision"). Reduced motion:
+     the tiles sit still at their starting places. */
   const els = [...document.querySelectorAll('.badge')];
   const heroIn = $('#badges');
   if (els.length) {
-    const FLEE = 150, MAXV = 4.2, GAP = 10, COLS = 6, SLACK = 60, HOME = .02, GMAX = .35;
-    let R = 24, bodies = [], W = 0, H = 0, obs = null, running = false, lastT = 0, active = 'off', lastMode = '', inView = true, tiltOn = false;
-    const mouse = { x: -1e4, y: -1e4 }, grav = { x: 0, y: 0 }, gTarget = { x: 0, y: 0 };
+    const FLEE = 150, MAXV = 4.2, GAP = 10, COLS = 6, SLACK = 100, HOME = .02, INERTIA = .14, KICK = 3, JITTER = .45;
+    let R = 24, bodies = [], W = 0, H = 0, obs = null, running = false, lastT = 0, active = 'off', lastMode = '', inView = true;
+    let scrollDelta = 0, scrollV = 0, lastY = scrollY;
+    const mouse = { x: -1e4, y: -1e4 };
     const tilesBox = hero.querySelector('.tiles');
     /* roam: .tiles is absolute over the hero. tray: .tiles is a relative box (narrow screens). */
     const mode = () => { const p = getComputedStyle(tilesBox).position; return p === 'absolute' ? 'roam' : p === 'relative' ? 'tray' : 'off'; };
@@ -312,7 +314,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       obs = { x0: Math.min(...parts.map((r) => r.left)) - hb.left - 10, x1: Math.max(...parts.map((r) => r.right)) - hb.left + 10,
               y0: Math.min(...parts.map((r) => r.top)) - hb.top - 10, y1: Math.max(...parts.map((r) => r.bottom)) - hb.top + 10 };
     }
-    /* tray: a grid of up to COLS columns, centred, with SLACK px of room to slide in */
+    /* tray: a grid of up to COLS columns, centred, with SLACK px of room around it */
     function trayMeasure() {
       W = tilesBox.clientWidth; obs = null;
       const n = els.length, size = R * 2;
@@ -351,6 +353,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
         }
       }
       bodies.forEach((b) => { b.x = Math.max(R, Math.min(W - R, b.x)); b.y = Math.max(R, Math.min(H - R, b.y)); place(b, 0); });
+      lastY = scrollY; scrollDelta = 0; scrollV = 0;
     }
     function place(b, sp) {
       b.el.style.transform = `translate(${(b.x - R).toFixed(1)}px, ${(b.y - R).toFixed(1)}px) rotate(${(b.tilt + b.a).toFixed(1)}deg)`;
@@ -368,19 +371,25 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     }
     function step(dt) {
       const k = dt * 60, tray = active === 'tray';
-      grav.x += (gTarget.x - grav.x) * Math.min(1, .15 * k); grav.y += (gTarget.y - grav.y) * Math.min(1, .15 * k);   // smooth the tilt
-      const g = Math.hypot(grav.x, grav.y);
-      /* tray: the pull back to the home slots fades out as the phone tilts, so a
-         level phone re-forms the grid and a tilted one lets the tiles slide */
-      const home = tray ? HOME * Math.max(0, 1 - Math.max(0, g - .03) / .09) : 0;
       const REST = tray ? .45 : .95;   // tray walls and bumps are soft, the hero's are lively
+      /* tray: the page's scroll speed this frame and its change (the tray's
+         acceleration). Inertia: the tiles keep their screen position, so an
+         accelerating page pushes them the other way. */
+      let kick = 0, jit = 0;
+      if (tray) {
+        const v = scrollDelta / k; scrollDelta = 0;
+        kick = Math.max(-KICK, Math.min(KICK, (v - scrollV) * INERTIA)); scrollV = v;
+        jit = Math.min(1, Math.abs(v) / 15) * JITTER;
+      }
       for (const b of bodies) {
-        if (tray) { b.vx += (b.hx - b.x) * home * k; b.vy += (b.hy - b.y) * home * k; }
-        else {
+        if (tray) {
+          b.vx += (b.hx - b.x) * HOME * k; b.vy += (b.hy - b.y) * HOME * k;
+          if (kick) { b.vy += kick * rnd(.7, 1.3); b.vx += kick * rnd(-.35, .35); }   // each tile a little different
+          if (jit) { b.vx += rnd(-jit, jit) * k; b.vy += rnd(-jit, jit) * k; }        // the rattle while the page moves
+        } else {
           const dx = b.x - mouse.x, dy = b.y - mouse.y, d = Math.hypot(dx, dy);
           if (d < FLEE && d > .01) { const f = (1 - d / FLEE) * 3.2 * k; b.vx += dx / d * f; b.vy += dy / d * f; }
         }
-        b.vx += grav.x * k; b.vy += grav.y * k;
         let sp = Math.hypot(b.vx, b.vy);
         if (sp > MAXV) { b.vx *= MAXV / sp; b.vy *= MAXV / sp; sp = MAXV; }
         else if (tray) { const damp = Math.pow(.9, k); b.vx *= damp; b.vy *= damp; }             // settle, no drift
@@ -411,14 +420,14 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       if (tray) bodies.forEach((b) => { b.x = Math.max(R, Math.min(W - R, b.x)); b.y = Math.max(R, Math.min(H - R, b.y)); });   // bumps never push a tile through the tray wall
       bodies.forEach((b) => place(b, Math.hypot(b.vx, b.vy)));
     }
-    /* tray, tilt off: everything back in its slot and still, so the loop can stop */
-    const settled = () => bodies.every((b) => Math.abs(b.vx) + Math.abs(b.vy) + Math.abs(b.va) < .02 && Math.hypot(b.hx - b.x, b.hy - b.y) < .5 && Math.abs(b.a) < .5);
+    /* tray: page still and everything back in its slot, so the loop can stop */
+    const settled = () => scrollDelta === 0 && Math.abs(scrollV) < .05 && bodies.every((b) => Math.abs(b.vx) + Math.abs(b.vy) < .02 && Math.hypot(b.hx - b.x, b.hy - b.y) < .5 && Math.abs(b.a) < .5);
     function loop(t) {
       if (!on() || !inView || document.hidden) { running = false; return; }
       const dt = Math.min(.033, (t - lastT) / 1000 || .016); lastT = t;
       step(dt);
-      if (active === 'tray' && !tiltOn && settled()) {
-        bodies.forEach((b) => { b.x = b.hx; b.y = b.hy; b.vx = b.vy = b.va = b.a = 0; place(b, 0); });
+      if (active === 'tray' && settled()) {
+        bodies.forEach((b) => { b.x = b.hx; b.y = b.hy; b.vx = b.vy = b.a = 0; place(b, 0); });
         running = false; return;
       }
       requestAnimationFrame(loop);
@@ -431,52 +440,20 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       mouse.x = e.clientX - hb.left; mouse.y = e.clientY - hb.top;
     }, { passive: true });
     addEventListener('mouseleave', () => { mouse.x = -1e4; mouse.y = -1e4; });
+    /* the page scrolled: hand the tray the distance and make sure the loop is up.
+       A loop that was asleep (tray off screen, or settled) gets only this event's
+       distance, so scrolling that happened while it slept is not one big kick. */
+    addEventListener('scroll', () => {
+      const y = scrollY, dy = y - lastY; lastY = y;
+      if (active !== 'tray') return;
+      if (!running) { scrollDelta = dy; scrollV = 0; } else scrollDelta += dy;
+      wake();
+    }, { passive: true });
     let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); wake(); }, 120); });
     document.addEventListener('visibilitychange', wake);
     if ('IntersectionObserver' in window) new IntersectionObserver((en) => { inView = en[0].isIntersecting; wake(); }).observe(hero);
     const start = () => { layout(); wake(); };
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(start);
     start();
-
-    /* Phone tilt as gravity. #motion is the wide-screen button (a tablet with a
-       coarse pointer, roaming tiles); #tilt sits under the tray on narrow
-       screens. iOS asks for permission on the first tap. The pose the phone is
-       held in at that moment counts as level; a second tap turns tilt off and
-       the tiles go home. */
-    const tiltBtns = ['#motion', '#tilt'].map((q) => $(q)).filter(Boolean);
-    let neutral = null, listening = false;
-    function onTilt(e) {
-      if (!tiltOn) return;
-      const beta = e.beta || 0, gamma = e.gamma || 0;
-      if (!neutral) neutral = { beta, gamma };
-      const dead = (v) => (Math.abs(v) < 2 ? 0 : v - Math.sign(v) * 2);   // 2deg of hand shake ignored
-      const clamp = (v) => Math.max(-1, Math.min(1, v));
-      gTarget.x = clamp(dead(gamma - neutral.gamma) / 25) * GMAX;
-      gTarget.y = clamp(dead(beta - neutral.beta) / 25) * GMAX;
-      wake();
-    }
-    function setTilt(next) {
-      tiltOn = next; neutral = null;
-      if (!tiltOn) { gTarget.x = gTarget.y = 0; }
-      tiltBtns.forEach((b) => { b.textContent = tiltOn ? 'Tilt on' : 'Tilt'; b.setAttribute('aria-pressed', String(tiltOn)); });
-      wake();
-    }
-    const fail = (msg) => tiltBtns.forEach((b) => { b.textContent = msg; b.disabled = true; });
-    if (!REDUCED && 'DeviceOrientationEvent' in window && matchMedia('(pointer: coarse)').matches) {
-      tiltBtns.forEach((btn) => {
-        btn.hidden = false;
-        btn.addEventListener('click', async () => {
-          if (tiltOn) { setTilt(false); return; }
-          try {
-            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-              const r = await DeviceOrientationEvent.requestPermission();
-              if (r !== 'granted') { fail('Tilt blocked'); return; }
-            }
-            if (!listening) { addEventListener('deviceorientation', onTilt); listening = true; }
-            setTilt(true);
-          } catch (_) { fail('Tilt unavailable'); }
-        });
-      });
-    }
   }
 })();

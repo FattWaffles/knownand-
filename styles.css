@@ -37,7 +37,7 @@ a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
 h1, h2, h3 { font-family: var(--display); font-stretch: 112%; font-weight: 800; margin: 0; letter-spacing: -.01em; line-height: 1.08; }
 .wrap { max-width: var(--w); margin: 0 auto; padding: 0 20px; }
-.label, .eyebrow, .thead, .tag, .live, .steps, .idx, .imp, .kind, .time span, .stat span, .pct span, .stats span, .proj .meta, .motion-btn, .certs .pill-lite, .top nav, .brand, footer {
+.label, .eyebrow, .thead, .tag, .live, .steps, .idx, .imp, .kind, .time span, .stat span, .pct span, .stats span, .proj .meta, .certs .pill-lite, .top nav, .brand, footer {
   font-family: var(--mono); }
 .eyebrow { display: block; font: 500 10px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
 h2 { font-size: clamp(26px, 3.4vw, 34px); }
@@ -87,11 +87,6 @@ h2 { font-size: clamp(26px, 3.4vw, 34px); }
 .btn { display: inline-flex; align-items: center; gap: 9px; background: var(--fg); color: var(--bg); font: 600 14px/1 var(--sans); letter-spacing: -.01em; padding: 14px 24px; border-radius: var(--ri); transition: transform .15s, opacity .15s; }
 .btn:hover { transform: translateY(-1px); opacity: .92; }
 .btn .cal { width: 15px; height: 15px; opacity: .9; }
-.motion-btn { position: absolute; right: 0; bottom: -56px; background: var(--card); border: 1px solid var(--line); color: var(--muted); font: 500 10px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 8px 12px; border-radius: var(--ri); cursor: pointer; }
-.motion-btn[hidden] { display: none; }
-/* narrow screens' tilt button, under the tray (site.js shows it on touch devices) */
-.tilt-btn { display: none; background: var(--card); border: 1px solid var(--line); color: var(--muted); font: 500 10px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 8px 12px; border-radius: var(--ri); cursor: pointer; }
-.tilt-btn[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); }
 
 /* program icon tiles: rounded squares with the lattice's red/blue edge
    split, which widens with speed (--sp is set per frame by site.js) */
@@ -217,13 +212,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--blue); outline-
 @media (max-width: 1080px) {
   /* no side room for roaming: the program tiles sit in a tray under the
      sign-up, a grid of slots (site.js lays them out and sets the height) they
-     slide out of when the phone tilts */
-  .tiles { position: relative; inset: auto; height: 150px; max-width: 560px; margin: 30px auto 0; border: 1px solid var(--line); border-radius: 14px; pointer-events: none; }
+     jostle out of when the page scrolls */
+  .tiles { position: relative; inset: auto; height: 190px; max-width: 560px; margin: 30px auto 0; border: 1px solid var(--line); border-radius: 14px; pointer-events: none; }
   .badge { width: 40px; height: 40px; border-radius: 10px; }
   .badge svg { width: 21px; height: 21px; }
-  .tilt-btn { display: inline-block; margin-top: 12px; }
-  .tilt-btn[hidden] { display: none; }
-  .motion-btn { display: none; }
   .hero { padding: 72px 20px 64px; }
 }
 @media (max-width: 840px) {
@@ -283,7 +275,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--blue); outline-
 .stats span { font-size: 11px; font-weight: 600; }
 .soc { font-size: 10px; font-weight: 600; }
 .pill-lite { font-size: 11.5px; font-weight: 600; }
-.motion-btn { font-size: 11px; font-weight: 600; }
 footer { font-size: 11.5px; font-weight: 600; }
 .nl-line { display: inline-flex; align-items: center; max-width: 100%; margin: 16px auto 0; padding: 9px 14px; font-size: 11px; font-weight: 600; letter-spacing: .08em; color: var(--fg); background: var(--card); border: 1px solid var(--line-strong); border-radius: 999px; }
 .signup input { background: var(--field); border: 1px solid var(--line-strong); font-weight: 500; }
@@ -352,3 +343,26 @@ footer { font-size: 11.5px; font-weight: 600; }
   opacity: 0; transition: opacity .2s; z-index: -1; pointer-events: none; }
 .row:not(.acc):hover::before, .acc-head:hover::before, .row.acc.open > .acc-head::before { opacity: 1; }
 @media (hover: none) { .row:not(.acc):hover::before, .acc-head:hover::before { opacity: 0; } .row.acc.open > .acc-head::before { opacity: 1; } }
+
+/* ---- soft assets (Josie, 2026-09-30, "let's try this treatment for these
+   assets", with the neumorphic shape sheet: circle, rounded square and pill in
+   raised, flat and pressed forms): the small parts of a row are shapes cut
+   from the surface colour (--neu), lit from the top left. The number badge is
+   a raised rounded square, the status and link tags are raised pills (a link
+   presses in while held), the progress bar is a pressed trough with the blue
+   fill running along it. The status pill lost its blue tint, so a blue dot
+   carries the "live" signal instead (same dot as .kind and .live). ---- */
+:root { --raise-sm: -2px -2px 5px var(--neu-lt), 3px 3px 6px var(--neu-dk);
+        --raise-md: -3px -3px 7px var(--neu-lt), 4px 4px 9px var(--neu-dk);
+        --press-sm: inset 2px 2px 4px var(--neu-dk), inset -2px -2px 4px var(--neu-lt); }
+.num { background: var(--neu); color: var(--fg); border-radius: 11px; box-shadow: var(--raise-md); }
+.tag { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 6px 11px; background: var(--neu); box-shadow: var(--raise-sm); }
+.tag.building { background: var(--neu); color: var(--fg); }
+.tag.building::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); flex: 0 0 auto; }
+:root[data-theme="light"] .tag.building { color: var(--blue); }
+.soc { border: 0; border-radius: 999px; padding: 6px 11px 6px 9px; background: var(--neu); box-shadow: var(--raise-sm); transition: box-shadow .15s, color .15s; }
+.soc:hover { color: var(--fg); box-shadow: -3px -3px 6px var(--neu-lt), 4px 4px 8px var(--neu-dk); }
+.soc:active { box-shadow: var(--press-sm); }
+.bar { position: relative; height: 10px; margin-top: 10px; background: var(--neu); }
+.bar::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: var(--press-sm); pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .soc { transition: none; } }
