@@ -42,7 +42,8 @@
   function shotsHTML(p) {
     const s = p.shots;
     if (s.kind === 'html') return `<div class="shot-html"><div class="scaled">${SC[s.html]()}</div></div>`;
-    return s.src.map((src) => `<img src="${src}" alt="" loading="lazy">`).join('');
+    const alt = esc(s.alt || p.title + '. ' + p.line); // descriptive alt for search; the panel's aria-label names it for screen readers
+    return s.src.map((src) => `<img src="${src}" alt="${alt}" loading="lazy">`).join('');
   }
   $('#work-list').innerHTML = P.map((p) => `
     <article class="proj" id="p-${p.id}">
@@ -255,15 +256,16 @@
     renderWorld(); renderChrome(); fit();
     if (!keepHash) history.replaceState(history.state, '', `#/${S.p.id}/${S.i}`);
   }
+  const baseTitle = document.title;
   function show(id, i) {
     const p = P.find((x) => x.id === id); if (!p) return false;
-    S.p = p; S.pages = [{ name: 'Overview', board: overviewBoard(p), summary: 'The short version: problem, process, decisions and results.' },
+    S.p = p; document.title = `${p.title} — Known`; S.pages = [{ name: 'Overview', board: overviewBoard(p), summary: 'The short version: problem, process, decisions and results.' },
       ...p.pages.map((g) => (g.board ? { ...g, board: { title: g.name, line: g.summary, sections: g.board.sections } } : g))];
     fv.hidden = false; document.body.classList.add('locked');
     goPage(i || 0, true); canvas.focus({ preventScroll: true });
     return true;
   }
-  function hide() { fv.hidden = true; document.body.classList.remove('locked'); }
+  function hide() { fv.hidden = true; document.body.classList.remove('locked'); document.title = baseTitle; }
   function openFile(id, i, push) { if (show(id, i) && push) history.pushState({ fv: 1 }, '', `#/${id}/${i || 0}`); }
   function closeFile() { hide(); if (history.state && history.state.fv) history.back(); else history.replaceState(null, '', location.pathname + location.search); }
   function route() { const m = location.hash.match(/^#\/([\w-]+)(?:\/(\d+))?/); if (!(m && show(m[1], +m[2] || 0))) hide(); }

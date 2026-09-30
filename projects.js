@@ -22,7 +22,7 @@ window.PROJECTS = [
     tags: ['Product design', 'Design system'],
     year: '2024–25',
     facts: { Role: 'Design lead', Scope: 'Agency portal, creator portal, style guide, login v2', Tools: 'Figma, FigJam' },
-    shots: { kind: 'desktop', src: [A + 'sapphire/creators-mosaic.png'] },
+    shots: { kind: 'desktop', src: [A + 'sapphire/creators-mosaic.webp'], alt: 'Sapphire Studios agency portal: a mosaic of creator profiles used for casting.' },
     quick: {
       before: 'Campaigns ran across spreadsheets, email and DMs.',
       after: 'One portal where the agency casts, briefs and pays creators.',
@@ -51,7 +51,7 @@ window.PROJECTS = [
         name: 'Agency portal',
         summary: 'Where the agency team casts creators and runs campaigns.',
         frames: [
-          desk('sapphire/creators-mosaic.png', 'Creators / Mosaic', 'Faces first. Casting is a visual job, so the default view is cards.'),
+          desk('sapphire/creators-mosaic.webp', 'Creators / Mosaic', 'Faces first. Casting is a visual job, so the default view is cards.'),
           desk('sapphire/creators-list.png', 'Creators / List', 'Same data as rows for admin work: bulk actions, quick view, message.'),
           desk('sapphire/casting-list.png', 'New casting list', 'Column toggles on the left let a manager shape the shortlist without leaving the page.'),
           desk('sapphire/campaign-details.png', 'Campaign details', 'Brief, budget and deadlines in one place. Tabs keep scripts, creators and payments one click away.'),
@@ -62,13 +62,13 @@ window.PROJECTS = [
       {
         name: 'Creator portal',
         summary: 'What creators see. Dark theme, fewer choices.',
-        frames: [desk('sapphire/creator-announcements.png', 'Announcements', 'One feed replaces hundreds of repeat DMs. Portal, agency and casting updates are tagged.')],
+        frames: [desk('sapphire/creator-announcements.webp', 'Announcements', 'One feed replaces hundreds of repeat DMs. Portal, agency and casting updates are tagged.')],
       },
       {
         name: 'Login v2',
         summary: 'A calmer front door with a creator quote beside the form.',
         frames: [
-          desk('sapphire/login.png', 'Login / Desktop', 'Social proof from a real creator sits next to the form.', 1280, 832),
+          desk('sapphire/login.webp', 'Login / Desktop', 'Social proof from a real creator sits next to the form.', 1280, 832),
           desk('sapphire/login-mobile.png', 'Login / Mobile', 'Same form, single column.', 320, 832),
         ],
       },
@@ -87,7 +87,7 @@ window.PROJECTS = [
   {
     id: 'instaquote',
     no: '002',
-    title: 'InstaQuote',
+    title: 'Quote On',
     line: 'An Android app where a tradie talks through a job and gets a priced quote draft in minutes.',
     hook: 'Tradies lose 10 to 15 hours a week to admin. This gives the evenings back.',
     context: [
@@ -96,7 +96,7 @@ window.PROJECTS = [
     tags: ['Product design', 'AI UX', 'Android'],
     year: '2026',
     facts: { Role: 'Product designer', Scope: '50 screens, AI chat behaviour, starter components', Tools: 'Figma, Claude' },
-    shots: { kind: 'phone', src: ['chat-start', 'chat-photo', 'chat-draft', 'job-costing'].map((s) => A + 'instaquote/' + s + '.png') },
+    shots: { kind: 'phone', src: ['chat-start', 'chat-photo', 'chat-draft', 'job-costing'].map((s) => A + 'instaquote/' + s + '.png'), alt: 'Quote On Android app: chat start, photo upload, quote draft and job costing screens.' },
     quick: {
       before: 'Quotes written at night, from memory, often under-priced.',
       after: 'Say the job out loud, check the draft, send it.',
@@ -143,7 +143,7 @@ window.PROJECTS = [
         name: 'AI chat',
         summary: 'The core of the app: a conversation that ends in a quote.',
         frames: [
-          phone('chat-start.png', 'C1 Chat start', 'Greeting plus three example jobs, so the first message is never a blank page.'),
+          phone('chat-start.png', 'C1 Chat start', 'Greeting plus four example jobs, so the first message is never a blank page.'),
           phone('chat-photo.png', 'C3 Photo upload', 'The AI says what it can see and what it cannot. It asks about the rest.'),
           phone('chat-draft.png', 'C6 Draft ready', 'A structured quote card inside the chat, with assumptions listed.'),
           phone('chat-guardrail.png', 'C8 Guardrail', 'No rate on file for this job type, so the AI stops and asks. It will not guess.'),
@@ -243,7 +243,7 @@ window.PROJECTS = [
     tags: ['UX research', 'Legacy software', 'Metrics'],
     year: '',
     facts: { Client: 'A major education publisher (name withheld)', Role: 'UX researcher (contract)', Scope: 'Three platforms: higher-ed, K-12, homework' },
-    shots: { kind: 'doc', src: [A + 'edu/scorecard-v1.jpg', A + 'edu/platform-detail.jpg'] },
+    shots: { kind: 'doc', src: [A + 'edu/scorecard-v1.jpg', A + 'edu/platform-detail.jpg'], alt: 'Legacy courseware turnaround: usability scorecard and platform detail pages.' },
     quick: {
       before: 'Eight clicks to open an eBook. Up to 26 minutes to find a resource.',
       after: 'Two clicks. Two seconds. A usability score up from 40 to 72.',
@@ -302,7 +302,7 @@ window.PROJECTS = [
     tags: ['UX audit', 'Accessibility', 'SEO'],
     year: '2022',
     facts: { Role: 'UX auditor', Scope: 'Navigation, homepage, products, datasheets', Tools: 'Figma audit kit' },
-    shots: { kind: 'doc', src: ['navigation', 'homepage', 'products'].map((s) => A + 'selig/' + s + '.png') },
+    shots: { kind: 'doc', src: ['navigation', 'homepage', 'products'].map((s) => A + 'selig/' + s + '.png'), alt: 'Selig Sealing website audit: navigation, homepage and products pages with findings.' },
     quick: {
       before: 'A lead-gen site that read as an outdated template.',
       after: 'A ranked fix list the client could hand straight to developers.',
@@ -349,7 +349,7 @@ window.NOW = [
   { date: 'Sep 2026', tag: 'website', status: 'In progress', title: 'Pet wellness launch', text: 'A custom Shopify theme built around one flagship product, a daily food topper for dogs.' },
   { date: 'Sep 2026', tag: 'website', status: 'In progress', title: 'Strategist website', text: 'A brand-led 2026 website for a growth and exit strategist.' },
   { date: 'Sep 2026', tag: 'website', status: 'In progress', title: 'The Known site', text: 'Bitmap hero, this file viewer and a plain-language services page.' },
-  { date: 'Sep 2026', tag: 'product', status: 'In design', title: 'InstaQuote', text: 'AI chat flow and job costing for an Android quoting app for tradies.', project: 'instaquote' },
+  { date: 'Sep 2026', tag: 'product', status: 'In design', title: 'Quote On', text: 'AI chat flow and job costing for an Android quoting app for tradies.', project: 'instaquote' },
   { date: 'Sep 2026', tag: 'game', status: 'In design', title: 'Cat in a Box: Schrödinger mode', text: 'Planned cat states and boosts. Boxed cats would show two shapes until you touch them.' },
   { date: 'Sep 2026', tag: 'build', status: 'In progress', title: 'Websites + CRM with Veruthia', text: 'Brand and design from Known, development and security from Veruthia, for contractors.' },
   { date: '2026–27', tag: 'experiment', status: 'Exploring', title: 'NFC cards, then a booth', text: 'Tap-to-open business cards first. The long game is a walk-in brand booth.' },
@@ -393,7 +393,7 @@ window.SIDE = [
       'Planned for the Solana dApp Store on Seeker phones. Not published yet. For now it is a signed Android build for testing.',
     ],
     tags: ['Game design', 'Illustration', 'Godot', 'Android'],
-    img: A + 'side/catblast-icon.png', alt: 'App icon: a grumpy orange and purple cat in an open cardboard box.',
+    img: A + 'side/catblast-icon.webp', alt: 'App icon: a grumpy orange and purple cat in an open cardboard box.',
     links: [{ label: 'About the Solana dApp Store', url: 'https://docs.solanamobile.com/solana-mobile-stack/dapp-store' }],
   },
 ];
