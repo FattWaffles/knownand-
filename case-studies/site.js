@@ -169,7 +169,8 @@
       return `<div class="row"><span class="k">${scr(m.label)}</span><span class="v">${right}</span></div>`;
     }).join('');
     /* The band is the pause between heading and rows: lattice.js snaps it to the grid and fills it with turning squares */
-    hero.innerHTML = `<h1><span class="name">${scr(S.hero.name)}</span> <span class="role">${scr(S.hero.role)}</span></h1><div class="band" data-rows="2" aria-hidden="true"></div><div class="meta">${rows}</div>`;
+    /* Heading is plain text (Josie, 2026-09-30: "turn off the hero type animation"); the row labels still decode in */
+    hero.innerHTML = `<h1><span class="name">${S.hero.name}</span> <span class="role">${S.hero.role}</span></h1><div class="band" data-rows="2" aria-hidden="true"></div><div class="meta">${rows}</div>`;
 
     const clocks = [...hero.querySelectorAll('.clock')];
     if (clocks.length) {
@@ -183,9 +184,9 @@
       setInterval(tick, 1000);
     }
 
-    /* Heading lines first, then the row labels, each a beat later */
+    /* Row labels decode in, each a beat later */
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      hero.querySelectorAll('.scr').forEach((el, i) => decode(el, 100 + i * 160));
+      hero.querySelectorAll('.meta .scr').forEach((el, i) => decode(el, 100 + i * 160));
     }
   }
 

@@ -11,13 +11,13 @@
       { name: '...', issuer: '...', year: '2026', url: '...' } and the
       Certifications row appears under the security grid.
 
-   VIEWER points at the Figma-style case-study viewer; deep links are #/<id>.
-   CASES points at the log site (live: /case-studies/). */
+   CASES points at the log site (live: /case-studies/); an entry there is
+   reached with #e-<slug of its title>. The Figma-style viewer the shipped
+   rows used to open was retired on 2026-09-30. */
 
-const VIEWER = 'case-study-viewer/index.html';
 /* CASES is the rest of the site (the log: dated work, CV, blog). Josie,
    2026-09-30: this page is the home page only; clicking into case studies
-   opens the rest. Shipped rows link straight into the viewer's studies. */
+   opens the rest. Shipped rows link to the matching log entry. */
 const CASES = 'case-studies/';
 const A = 'assets/';
 const GH = 'https://github.com/FattWaffles';
@@ -132,15 +132,15 @@ window.BUILDING = [
 /* Shipped. `sub` reads as an abstract: context, method, result.
    `stat` is the big figure, `label` the line under it. */
 window.SHIPPED = [
-  { title: 'Quote On', kind: 'Android app', stat: '50', label: 'screens designed', url: VIEWER + '#/instaquote',
+  { title: 'Quote On', kind: 'Android app', stat: '50', label: 'screens designed', url: CASES + '#e-quote-on',
     sub: 'Android app for tradespeople. A spoken job description becomes a priced draft quote. Designed the flows, the AI chat behaviour, 50 screens and a starter component set. The AI requests a rate when none is on file.' },
-  { title: 'Sapphire Studios', kind: 'Web platform', stat: '4', label: 'products: two portals, style guide, login', url: VIEWER + '#/sapphire',
+  { title: 'Sapphire Studios', kind: 'Web platform', stat: '4', label: 'products: two portals, style guide, login', url: CASES + '#e-sapphire-studios',
     sub: 'Agency and creator portals for a TikTok Marketing Partner: casting, campaigns, scripts and payments in one system. Led design for both portals, the shared style guide and the v2 login.' },
-  { title: 'Profitmind', kind: 'Research', stat: '3', label: 'ranked actions, each with its reason', url: VIEWER + '#/profitmind',
+  { title: 'Profitmind', kind: 'Research', stat: '3', label: 'ranked actions, each with its reason', url: CASES + '#e-profitmind',
     sub: 'UX and AI research for a retail stock-and-pricing platform. Friction workshops and prompt research, then a redesign around three ranked actions with the reason for each.' },
-  { title: 'Legacy courseware turnaround', kind: 'Research', stat: '40 → 72', label: 'usability score; 8 clicks to 2', url: VIEWER + '#/edu',
+  { title: 'Legacy courseware turnaround', kind: 'Research', stat: '40 → 72', label: 'usability score; 8 clicks to 2', url: CASES + '#e-legacy-courseware-turnaround',
     sub: 'UX research across three learning platforms for an education publisher, name withheld. Interviews, usability tests, accessibility audits and the scorecard leadership tracked. Opening an eBook went from eight clicks to two.' },
-  { title: 'Selig Sealing UX audit', kind: 'UX audit', stat: '31', label: 'findings, 12 high priority', url: VIEWER + '#/selig',
+  { title: 'Selig Sealing UX audit', kind: 'UX audit', stat: '31', label: 'findings, 12 high priority', url: CASES + '#e-selig-sealing-ux-audit',
     sub: 'Page-by-page audit of a 130-year-old manufacturer\'s lead-generation site. 31 findings, 12 high priority, ranked for direct hand-off to developers. Reusable audit kit built in Figma.' },
   { title: 'Neutrogena.com rebrand', kind: 'Brand + web', stat: 'ADA', label: 'compliant design system',
     sub: 'Lead designer at Kenvue: creative direction, e-commerce and the design system, built to ADA and North American brand standards.' },

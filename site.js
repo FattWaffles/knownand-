@@ -2,8 +2,11 @@
    bars and the floating-badge parallax. Nothing in here is content. */
 
 /* Old deep links (knownand.com/#/sapphire/2) belonged to the case-study
-   viewer; send them on. Lives here, not inline, so the CSP can stay strict. */
-if (/^#\/[a-z]/i.test(location.hash)) location.replace(VIEWER + location.hash);
+   viewer, retired 2026-09-30; send them to the matching log entry. Lives
+   here, not inline, so the CSP can stay strict. */
+const OLD_VIEWER = { sapphire: 'sapphire-studios', instaquote: 'quote-on', profitmind: 'profitmind', edu: 'legacy-courseware-turnaround', selig: 'selig-sealing-ux-audit' };
+const oldLink = location.hash.match(/^#\/([a-z]+)/i);
+if (oldLink) { const s = OLD_VIEWER[oldLink[1].toLowerCase()]; location.replace(CASES + (s ? '#e-' + s : '')); }
 /* The log site's own hashes (#e-<entry>, #<tag>) from when it was the root go to /case-studies/. */
 else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash)) location.replace(CASES + location.hash);
 

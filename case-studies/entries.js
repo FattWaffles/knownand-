@@ -1,15 +1,16 @@
 /* All content for the log site lives here. Edit this file only.
    Dates are shown as written. Leave `date` as 'Contract' for the courseware
    entry: Josie asked that the dates she worked there stay off the site.
-   VIEWER points at the Figma-style case-study viewer; deep links are #/<id>. */
+   HOME points at the home page (live: /). The Figma-style case-study viewer
+   was retired 2026-09-30, so entries no longer link out. */
 
-const VIEWER = '../case-study-viewer/index.html';
+const HOME = '/';
 const A = 'assets/';
 
 window.SITE = {
   name: 'Josie Rigali',
   intro: [
-    'I design brands that behave like products: identity, interfaces, motion, 3D, research and emerging technology, brought together as one system. <a href="' + VIEWER + '">Known</a> is my studio.',
+    'I design brands that behave like products: identity, interfaces, motion, 3D, research and emerging technology, brought together as one system. <a href="' + HOME + '">Known</a> is my studio.',
     'Before Known I spent 10+ years designing inside beauty, retail, education and AI companies, from email and motion to UX research and design systems.',
     'Off the clock I build games and hackathon projects: a block puzzle made of cats I drew, and a browser concept for the web, Web3 and AI agents.',
   ],
@@ -101,7 +102,7 @@ window.ENTRIES = [
     text: 'A brand-led 2026 website for a growth and exit strategist. In progress.',
   },
   {
-    date: '2026', tag: 'product', title: 'Quote On', url: VIEWER + '#/instaquote', motion: 'chat',
+    date: '2026', tag: 'product', title: 'Quote On', motion: 'chat',
     text: 'An Android app where a tradie talks through a job and gets a priced quote draft in minutes. I designed the flows, the AI chat behaviour, 50 screens and the starter component set. One guardrail runs through it: with no rate on file, the AI asks. It never guesses a price.',
     imgs: [
       { src: A + 'chat-start.png', alt: 'Chat start screen with four example jobs.' },
@@ -111,18 +112,18 @@ window.ENTRIES = [
     caption: 'Sample job, customer and figures.',
   },
   {
-    date: '2025–26', tag: 'research', title: 'Profitmind', url: VIEWER + '#/profitmind', motion: 'rank',
+    date: '2025–26', tag: 'research', title: 'Profitmind', motion: 'rank',
     text: 'UX and AI research for a platform that tells retailers what to stock and how to price it. The AI found the money; buyers could not see why, so they did not act. I ran friction workshops and prompt research, then led a redesign around three ranked actions with the reason for each. The case-study screens are redrawn with sample data.',
   },
   {
-    date: '2024–25', tag: 'product', title: 'Sapphire Studios', url: VIEWER + '#/sapphire', motion: 'portal',
+    date: '2024–25', tag: 'product', title: 'Sapphire Studios', motion: 'portal',
     text: 'One portal for a creator agency, an official TikTok Marketing Partner: casting, campaigns, scripts and payments in one place. I led design for the agency portal, the creator portal, the shared style guide and the v2 login.',
     img: { src: A + 'creators-mosaic.png', alt: 'Creators page in the agency portal, shown as a mosaic of cards.', w: 1440, h: 1024 },
     shots: { casting: A + 'casting-list.png', campaign: A + 'create-campaign.png' },
     caption: 'Sample data on the screens.',
   },
   {
-    date: 'Contract', tag: 'research', title: 'Legacy courseware turnaround', url: VIEWER + '#/edu', motion: 'score',
+    date: 'Contract', tag: 'research', title: 'Legacy courseware turnaround', motion: 'score',
     text: 'UX research across three learning platforms for a major education publisher, name withheld. Interviews, usability tests and accessibility audits, then the scorecard leadership used to track it. Eight clicks to open an eBook became two, and the usability score the scorecard tracks went from 40 to 72.',
     img: { src: A + 'scorecard-v1.jpg', alt: 'Usability scorecard summary page with a what-this-means line under each chart.', w: 1400, h: 1283 },
     caption: 'Real figures. Company and product names withheld.',
@@ -136,7 +137,7 @@ window.ENTRIES = [
     text: 'Motion, icons and templates for Bath & Body Works email, social and landing pages, plus brand guides for Conversant and AdParlor.',
   },
   {
-    date: '2022', tag: 'research', title: 'Selig Sealing UX audit', url: VIEWER + '#/selig', motion: 'pins',
+    date: '2022', tag: 'research', title: 'Selig Sealing UX audit', motion: 'pins',
     text: 'A page-by-page audit of a 130-year-old manufacturer\'s lead-generation site: 31 findings, 12 high priority, ranked so the client could hand them straight to developers. I also built a reusable audit kit in Figma.',
     img: { src: A + 'navigation.png', alt: 'Audit page for the site navigation, with findings and priority labels.', w: 595, h: 921 },
   },
@@ -174,11 +175,11 @@ window.CV = {
     ],
   },
   work: [
-    { label: 'Sapphire Studios: agency + creator portals', url: VIEWER + '#/sapphire' },
-    { label: 'Quote On: AI quoting app for tradies', url: VIEWER + '#/instaquote' },
-    { label: 'Profitmind: UX + AI research', url: VIEWER + '#/profitmind' },
-    { label: 'Legacy courseware turnaround', url: VIEWER + '#/edu' },
-    { label: 'Selig Sealing: UX audit', url: VIEWER + '#/selig' },
+    { label: 'Sapphire Studios: agency + creator portals', url: 'index.html#e-sapphire-studios' },
+    { label: 'Quote On: AI quoting app for tradies', url: 'index.html#e-quote-on' },
+    { label: 'Profitmind: UX + AI research', url: 'index.html#e-profitmind' },
+    { label: 'Legacy courseware turnaround', url: 'index.html#e-legacy-courseware-turnaround' },
+    { label: 'Selig Sealing: UX audit', url: 'index.html#e-selig-sealing-ux-audit' },
   ],
   tools: 'Figma, FigJam, Shopify, Godot, Claude, HTML/CSS/JS.',
 };
