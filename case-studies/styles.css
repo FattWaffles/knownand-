@@ -237,23 +237,34 @@ h2 {
 :root[data-theme="light"] .hero .role { text-shadow: -1px 0 rgba(255, 59, 48, .22), 1px 0 rgba(47, 107, 255, .22); }
 :root[data-theme="light"] .hero .row + .row::before { background: linear-gradient(90deg, transparent, rgba(255, 59, 48, .35), rgba(255, 214, 10, .35), rgba(52, 226, 255, .35), rgba(47, 107, 255, .35), transparent); }
 
-/* Tags: quiet mono labels. In the filter they become outlined chips. */
+/* Tags: quiet mono labels (the brands row, blog tags). */
 .tag {
   display: inline-block; vertical-align: middle;
   font: 500 11px/18px var(--mono); letter-spacing: .1em; text-transform: uppercase;
   color: var(--muted); text-decoration: none; white-space: nowrap;
 }
 
-/* Filter: outlined chips; the active one fills */
+/* Filter chips and the tag on each log card: solid rounded pills with a
+   four-point sparkle, like a name chip (Josie, 2026-09-30: "i want these to
+   look like tags on the filter and the content card"). Filled with the page
+   ink: black on the white page, bone on the dark one. */
 .filter { margin: 30px 0 8px; display: flex; flex-wrap: wrap; gap: 8px; }
-.filter .tag {
-  font: 500 12px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase;
-  color: var(--muted); cursor: pointer;
-  padding: 9px 12px; border: 1px solid var(--line); border-radius: 6px; background: transparent;
-  transition: color .15s, border-color .15s, background-color .15s;
+.filter .tag, .entry .head .tag {
+  display: inline-flex; align-items: center; gap: 7px;
+  font: 500 13px/1 var(--sans); letter-spacing: 0; text-transform: capitalize;
+  color: var(--bg); background: var(--fg); border: 1px solid var(--fg); border-radius: 999px;
+  padding: 8px 14px 8px 11px;
+  transition: color .15s, border-color .15s, background-color .15s, box-shadow .15s;
 }
-.filter .tag:hover { color: var(--fg); border-color: var(--fg); }
-.filter .tag.on { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+.filter .tag { cursor: pointer; }
+.filter .tag::before, .entry .head .tag::before {
+  content: ""; flex: none; width: 11px; height: 11px; opacity: .8; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0C12 7 17 12 24 12 17 12 12 17 12 24 12 17 7 12 0 12 7 12 12 7 12 0Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0C12 7 17 12 24 12 17 12 12 17 12 24 12 17 7 12 0 12 7 12 12 7 12 0Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* hover: a thin blue ring around the pill; selected: the pill turns blue */
+.filter .tag:hover { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--blue); }
+.filter .tag.on { background: var(--blue); border-color: var(--blue); color: #fff; }
 
 /* Cards: a cell of the lattice, with a dot at each corner like the crossings */
 .entry, .cv section {
@@ -386,7 +397,7 @@ h2 {
    turning squares and the margins keep the full lattice */
 .hero h1, .hero .meta, .intro, .brands, .filter, .entry, .cv > *, .post, .posts, .blog-head { position: relative; background: var(--veil); box-shadow: 0 0 0 14px var(--veil); border-radius: 3px; }
 /* small mono labels: heavier */
-.hero .row, .brands .tag, .filter .tag, .entry .date, .brands .k, .caption { font-weight: 600; }
+.hero .row, .brands .tag, .entry .date, .brands .k, .caption { font-weight: 600; }
 /* pops of the palette in the type: blue name and links, vermilion labels and dates, magenta brands key */
 .hero .name { color: var(--blue); }
 .hero .k { color: var(--verm); }
@@ -395,8 +406,6 @@ h2 {
 .intro a { text-decoration-color: var(--blue); }
 .brands .k { color: var(--mag); }
 .entry .date { color: var(--verm); }
-.filter .tag.on { background: var(--blue); border-color: var(--blue); color: #fff; }
-.filter .tag:hover { color: var(--blue); border-color: var(--blue); }
 .tree .folder > .row .lbl { color: var(--fg); }
 @media (max-width: 720px) { .hero h1, .hero .meta, .intro, .brands, .filter, .entry, .cv > *, .post, .posts, .blog-head { box-shadow: 0 0 0 10px var(--veil); } }
 
