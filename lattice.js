@@ -207,7 +207,8 @@
   /* ---------- run ---------- */
   let last = 0;
   function loop(t) {
-    if (t - last >= 1000 / FPS) { last = t; draw(t); }
+    // light mode hides the canvas (styles.css), so skip the drawing too
+    if (t - last >= 1000 / FPS && document.documentElement.dataset.theme !== 'light') { last = t; draw(t); }
     requestAnimationFrame(loop);
   }
   resize();
