@@ -399,3 +399,16 @@ footer { font-size: 11.5px; font-weight: 600; }
 @media (min-width: 841px) { .wrap { max-width: min(var(--w), calc(round(down, 100% - 40px, 72px) + 40px)); } }
 .card { width: calc(100% + 1px); border-radius: 0; overflow: visible; }
 .row::before, .acc-head::before { inset: 0; }
+
+/* ---- open row = one pressed well (Josie, 2026-09-30: "this looks weird, can we
+   use one of the other states to define the drop down but also 90 degree
+   edges"): the open panel was a rounded raised block floating under the
+   square pressed header. Now the pressed state moves from the header to the
+   whole open row: the row's own ::before (inset 0, square) is the pressed
+   block from the sheet, and it grows with the row as the body opens, so the
+   title and its text sit in one well. The panel keeps no shape of its own;
+   its text is padded to the title's left edge (24 + 40 + 18 = 82px). ---- */
+.row.acc.open::before { opacity: 1; box-shadow: var(--press-lg); }
+.row.acc.open > .acc-head::before, .row.acc.open > .acc-head:hover::before { opacity: 0; }
+.acc-box { margin: 0; padding: 0 24px 26px 82px; border-radius: 0; background: transparent; box-shadow: none; }
+@media (max-width: 840px) { .acc-box { margin: 0; padding: 0 20px 22px 78px; } }
