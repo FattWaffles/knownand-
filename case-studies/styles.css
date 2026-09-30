@@ -402,10 +402,11 @@ h2 {
 
 /* ---- selected page in the tree (Josie, 2026-09-30): a soft raised row instead
    of the browser's blue focus ring, and its square turns like the band ---- */
-:root { --raise-bg: #121212; --raise: 4px 4px 10px rgba(0, 0, 0, .75), -3px -3px 8px rgba(255, 255, 255, .05), inset 1px 1px 0 rgba(255, 255, 255, .06); }
-:root[data-theme="light"] { --raise-bg: #F4F4F6; --raise: 4px 4px 9px rgba(0, 0, 0, .10), -3px -3px 8px #FFFFFF, inset 1px 1px 0 rgba(255, 255, 255, .95); }
+/* --raise is the rim from the home page (Josie, 2026-09-30: "use this treatment on everything", square corners): raised outer edge, pressed inner edge, no fill */
+:root { --raise-bg: #121212; --raise: -3px -3px 8px rgba(255, 255, 255, .05), 4px 4px 10px rgba(0, 0, 0, .75), inset 3px 3px 8px rgba(0, 0, 0, .75), inset -3px -3px 8px rgba(255, 255, 255, .05); }
+:root[data-theme="light"] { --raise-bg: #F4F4F6; --raise: -3px -3px 8px #FFFFFF, 4px 4px 9px rgba(0, 0, 0, .10), inset 3px 3px 8px rgba(0, 0, 0, .10), inset -3px -3px 8px #FFFFFF; }
 .tree .row:focus { outline: none; }
-.tree .row.sel, .tree .row:focus-visible { background: var(--raise-bg); box-shadow: var(--raise); }
+.tree .row.sel, .tree .row:focus-visible { background: transparent; box-shadow: var(--raise); border-radius: 0; }
 .tree .row.sel .lbl { font-weight: 600; }
 /* the selected log entry, raised the same way; the shadows carry the veil's spread so they show outside it */
 :root { --veil-sp: 14px; --raise-dk: rgba(0, 0, 0, .7); --raise-lt: rgba(255, 255, 255, .05); }
