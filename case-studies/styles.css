@@ -244,27 +244,52 @@ h2 {
   color: var(--muted); text-decoration: none; white-space: nowrap;
 }
 
-/* Filter chips and the tag on each log card: solid rounded pills with a
+/* Filter chips and the tag on each log card: small solid pills with a
    four-point sparkle, like a name chip (Josie, 2026-09-30: "i want these to
-   look like tags on the filter and the content card"). Filled with the page
-   ink: black on the white page, bone on the dark one. */
+   look like tags on the filter and the content card", then "make them small
+   and black with white type on light mode and have the same glitchy
+   background without turning the shape like these squares"). Filled with the
+   page ink (black + white type on the white page, bone + black on the dark
+   one) and edged with the lattice squares' prismatic split: red one way, blue
+   the other, a little yellow above. The split stays thin and faint, then
+   flares for a moment a couple of times a cycle, like a square's does while it
+   turns; the pill itself never moves. */
+:root {
+  --fr-idle: -1.2px 0 0 color-mix(in srgb, var(--prism-r) 60%, transparent), 1.2px 0 0 color-mix(in srgb, var(--prism-b) 60%, transparent), 0 -.8px 0 color-mix(in srgb, var(--prism-y) 35%, transparent);
+  --fr-hot: -3px .4px 0 var(--prism-r), 3px -.4px 0 var(--prism-b), 0 -1.8px 0 color-mix(in srgb, var(--prism-y) 70%, transparent);
+}
 .filter { margin: 30px 0 8px; display: flex; flex-wrap: wrap; gap: 8px; }
 .filter .tag, .entry .head .tag {
-  display: inline-flex; align-items: center; gap: 7px;
-  font: 500 13px/1 var(--sans); letter-spacing: 0; text-transform: capitalize;
-  color: var(--bg); background: var(--fg); border: 1px solid var(--fg); border-radius: 999px;
-  padding: 8px 14px 8px 11px;
-  transition: color .15s, border-color .15s, background-color .15s, box-shadow .15s;
+  display: inline-flex; align-items: center; gap: 5px;
+  font: 500 11px/1 var(--sans); letter-spacing: 0; text-transform: capitalize;
+  color: var(--bg); background: var(--fg); border: 0; border-radius: 999px;
+  padding: 5px 10px 5px 8px;
+  box-shadow: var(--fr-idle);
+  animation: tag-glitch 7s ease-in-out infinite;
+  transition: color .15s, background-color .15s;
 }
 .filter .tag { cursor: pointer; }
 .filter .tag::before, .entry .head .tag::before {
-  content: ""; flex: none; width: 11px; height: 11px; opacity: .8; background: currentColor;
+  content: ""; flex: none; width: 8px; height: 8px; opacity: .8; background: currentColor;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0C12 7 17 12 24 12 17 12 12 17 12 24 12 17 7 12 0 12 7 12 12 7 12 0Z'/%3E%3C/svg%3E") center / contain no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0C12 7 17 12 24 12 17 12 12 17 12 24 12 17 7 12 0 12 7 12 12 7 12 0Z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
-/* hover: a thin blue ring around the pill; selected: the pill turns blue */
-.filter .tag:hover { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--blue); }
-.filter .tag.on { background: var(--blue); border-color: var(--blue); color: #fff; }
+/* the flare: wider and full-strength for a beat, with a one-frame jitter, then back to the faint split */
+@keyframes tag-glitch {
+  0%, 44%, 50%, 78%, 83%, 100% { box-shadow: var(--fr-idle); }
+  46%  { box-shadow: var(--fr-hot); }
+  47%  { box-shadow: -2px -.6px 0 var(--prism-r), 3.4px .6px 0 var(--prism-b), .6px -1.4px 0 var(--prism-y); }
+  48%  { box-shadow: var(--fr-hot); }
+  80%  { box-shadow: -2.4px 0 0 var(--prism-r), 2.4px 0 0 var(--prism-b), 0 -1.4px 0 var(--prism-y); }
+}
+/* each pill flares on its own clock */
+.filter .tag:nth-child(3n+2), .entry:nth-child(3n+2) .head .tag { animation-delay: -2.3s; }
+.filter .tag:nth-child(3n),   .entry:nth-child(3n) .head .tag   { animation-delay: -4.9s; }
+.filter .tag:nth-child(4n+1), .entry:nth-child(4n+1) .head .tag { animation-duration: 8.6s; }
+@media (prefers-reduced-motion: reduce) { .filter .tag, .entry .head .tag { animation: none; } }
+/* hover: a thin blue ring outside the split; selected: the pill turns blue */
+.filter .tag:hover { outline: 1.5px solid var(--blue); outline-offset: 3px; }
+.filter .tag.on { background: var(--blue); color: #fff; }
 
 /* Cards: a cell of the lattice, with a dot at each corner like the crossings */
 .entry, .cv section {
