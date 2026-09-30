@@ -479,14 +479,15 @@
     ? new IntersectionObserver((list) => list.forEach((x) => { const sc = x.target._scene; if (sc) { sc.seen = x.isIntersecting; wake(sc); } }), { rootMargin: '80px 0px' })
     : null;
 
-  (window.ENTRIES || []).forEach((e) => {
-    const build = e.motion && S[e.motion];
-    if (!build) return;
-    const art = document.getElementById('e-' + entryId(e));
-    if (!art) return;
+  /* Wire one entry card to its scene. The log page does this for every card
+     at load; desktop.js calls attach() for a card it puts in a window, and
+     release() when that window closes. */
+  function attach(art, e) {
+    const build = e && e.motion && S[e.motion];
+    if (!build || !art) return null;
     let fig = art.querySelector('figure.shot');
     if (!fig) {
-      if (e.motion !== 'rank') return;
+      if (e.motion !== 'rank') return null;
       fig = document.createElement('figure');
       fig.className = 'shot';
       const cap = art.querySelector('.caption');
@@ -497,8 +498,23 @@
     fig._scene = sc;
     scenes.push(sc);
     if (io) io.observe(fig); else wake(sc);
-  });
+    return sc;
+  }
+  function release(art) {
+    if (!art) return;
+    art.querySelectorAll('figure.shot').forEach((fig) => {
+      const sc = fig._scene;
+      if (!sc) return;
+      if (io) io.unobserve(fig);
+      (sc.players || []).forEach((p) => { p.pause(); if (p.cancel) p.cancel(); });
+      const i = scenes.indexOf(sc);
+      if (i > -1) scenes.splice(i, 1);
+      fig._scene = null;
+    });
+  }
+  (window.ENTRIES || []).forEach((e) => attach(document.getElementById('e-' + entryId(e)), e));
   listeners.push(() => scenes.forEach(wake));
+  window.MOTION = { attach, release, allowed };
 
   let rt;
   window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => scenes.forEach((sc) => { if (sc.players && sc.fig.clientWidth !== sc.width) wake(sc); }), 250); });

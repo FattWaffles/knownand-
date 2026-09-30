@@ -1,0 +1,183 @@
+/* Desktop home page (desktop.js). Same tokens as styles.css. The lattice
+   canvas is the wallpaper. Icons sit in a column at the right, like a Mac
+   desktop, drawn with the lattice squares. Windows are frosted panes (the
+   same mist as the nav in motion.css) with a mono title bar, three small
+   squares for close / shade / zoom that take the prism colours on hover,
+   and the card's corner dots; the top window carries the liquid rim from
+   motion.css. Under 720px windows fill the screen and do not drag. */
+
+html:has(main.desktop) { overflow: hidden; }
+main.desktop {
+  position: relative; max-width: none; height: 100vh; height: 100dvh;
+  padding: 0; overflow: hidden;
+}
+
+/* ---------- Icons ---------- */
+.icons {
+  position: absolute; top: 14px; right: 12px; bottom: 14px; z-index: 1;
+  display: flex; flex-direction: column; flex-wrap: wrap-reverse; align-content: flex-start; gap: 2px;
+}
+.icon {
+  width: 104px; padding: 10px 6px 9px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  background: none; border: 1px solid transparent; border-radius: 6px;
+  color: var(--muted); cursor: pointer; text-align: center;
+  font: 500 11px/1.35 var(--mono); letter-spacing: .08em; text-transform: uppercase;
+  transition: color .15s, background-color .15s, border-color .15s;
+}
+.icon .glyph { display: block; width: 52px; height: 52px; }
+.icon .lbl { max-width: 100%; }
+.desktop .ic { display: block; width: 100%; height: 100%; overflow: visible; }
+.desktop .sq { fill: currentColor; transform-origin: center; transform-box: fill-box; transition: transform .45s cubic-bezier(.65, 0, .2, 1); }
+.desktop .ln { fill: none; stroke: var(--bg); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+.icon:hover, .icon:focus-visible, .icon.on { color: var(--fg); }
+.icon:hover .sq, .icon:focus-visible .sq, .icon.on .sq { transform: rotate(45deg); }
+.icon.on { background: var(--hover); border-color: var(--line); }
+.icon:focus-visible { outline: none; border-color: var(--fg); }
+
+/* ---------- Windows ---------- */
+.wins { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.win {
+  --win-bg: rgba(8, 8, 8, .8);
+  position: absolute; left: 24px; top: 24px;
+  display: flex; flex-direction: column; pointer-events: auto;
+  max-width: calc(100% - 32px); max-height: calc(100% - 32px);
+  background: var(--win-bg); color: var(--fg);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1); backdrop-filter: blur(16px) saturate(1.1);
+  border: 1px solid var(--line); border-radius: 6px;
+  box-shadow: 0 30px 70px -30px rgba(0, 0, 0, .85), 0 2px 10px rgba(0, 0, 0, .3);
+  outline: none;
+  transition: border-color .2s;
+}
+:root[data-theme="light"] .win { --win-bg: rgba(250, 247, 241, .86); box-shadow: 0 30px 70px -30px rgba(0, 0, 0, .35), 0 2px 10px rgba(0, 0, 0, .08); }
+.win[hidden] { display: none; }
+.win.top { border-color: var(--muted); }
+.win.max { left: 16px; top: 16px; width: calc(100% - 32px); height: calc(100% - 32px); max-width: none; }
+
+/* Corner dots, like the cards */
+.win::before {
+  content: ""; position: absolute; inset: -3px; pointer-events: none; opacity: .75;
+  background:
+    radial-gradient(circle, var(--node) 1.5px, transparent 2px) 0 0 / 6px 6px no-repeat,
+    radial-gradient(circle, var(--node) 1.5px, transparent 2px) 100% 0 / 6px 6px no-repeat,
+    radial-gradient(circle, var(--node) 1.5px, transparent 2px) 0 100% / 6px 6px no-repeat,
+    radial-gradient(circle, var(--node) 1.5px, transparent 2px) 100% 100% / 6px 6px no-repeat;
+}
+/* The liquid rim (motion.css) on the top window only */
+.win.top::after {
+  content: ""; position: absolute; inset: -1px; border-radius: 7px; padding: 1.5px; pointer-events: none;
+  background: conic-gradient(from var(--rim),
+    rgba(255, 255, 255, 0) 0deg, rgba(255, 255, 255, 0) 40deg,
+    rgba(255, 255, 255, .55) 70deg, rgba(255, 170, 90, .5) 92deg, rgba(255, 255, 255, 0) 124deg,
+    rgba(255, 255, 255, 0) 210deg, rgba(180, 220, 255, .35) 240deg, rgba(255, 255, 255, .28) 262deg, rgba(255, 255, 255, 0) 296deg, rgba(255, 255, 255, 0) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  filter: blur(.35px);
+  animation: m-rim 11s linear infinite;
+}
+:root[data-theme="light"] .win.top::after { opacity: .7; }
+html.motion-off .win.top::after { animation-play-state: paused; }
+
+/* Title bar: three squares, then the name in mono small caps */
+.win .bar {
+  flex: none; display: flex; align-items: center; gap: 12px;
+  height: 36px; padding: 0 12px 0 11px;
+  border-bottom: 1px solid var(--line); border-radius: 6px 6px 0 0;
+  background: rgba(255, 255, 255, .025);
+  cursor: grab; user-select: none; -webkit-user-select: none; touch-action: none;
+  font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+}
+:root[data-theme="light"] .win .bar { background: rgba(10, 10, 10, .03); }
+.win.drag .bar { cursor: grabbing; }
+.win.max .bar { cursor: default; }
+.win.shaded .bar { border-bottom-color: transparent; border-radius: 6px; }
+.win .lights { display: flex; gap: 7px; flex: none; }
+.win .lt {
+  width: 10px; height: 10px; padding: 0; border: 0; border-radius: 3px;
+  background: var(--line); cursor: pointer;
+  transition: background-color .15s, transform .35s cubic-bezier(.65, 0, .2, 1);
+}
+.win.top .lt { background: var(--muted); }
+.win .lights:hover .lt { transform: rotate(45deg); }
+.win .lt.close:hover { background: var(--prism-r); }
+.win .lt.shade:hover { background: var(--prism-y); }
+.win .lt.zoom:hover { background: var(--prism-b); }
+.win .lt:focus-visible { outline: 1px solid var(--fg); outline-offset: 2px; }
+.win .ttl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.win.top .ttl { color: var(--fg); }
+.win .body { flex: 1; min-height: 0; overflow: auto; padding: 22px 24px 24px; overscroll-behavior: contain; }
+.win.shaded .body { display: none; }
+
+/* Open out of the clicked icon; close with a short fade */
+.win.in { animation: win-in .28s cubic-bezier(.65, 0, .2, 1) both; }
+.win.out { animation: win-out .16s ease-in both; pointer-events: none; }
+@keyframes win-in { from { opacity: 0; transform: scale(.7); } }
+@keyframes win-out { to { opacity: 0; transform: scale(.96); } }
+
+/* ---------- Inside the windows ---------- */
+/* about.txt: the hero, smaller, without the band (the lattice is behind the window) */
+.win .hero { margin: 0; }
+.win .hero h1 { padding-top: 6px; font-size: 40px; letter-spacing: -.05em; }
+.win .hero .band { display: none; }
+.win .hero .meta { margin-top: 26px; }
+.win .intro { margin-top: 22px; }
+.win .intro p:last-child { margin-bottom: 0; }
+
+/* An entry card without its own card chrome: the window is the card */
+.win .entry { margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.win .entry::before, .win .entry::after { display: none; }
+
+/* The CV sections as one column, split by hairlines */
+.win .cv section { margin: 0; padding: 0 0 22px; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.win .cv section + section { padding-top: 22px; border-top: 1px solid var(--line); }
+.win .cv section:last-child { padding-bottom: 0; }
+.win .cv section::before, .win .cv section::after { display: none; }
+
+/* A post as plain prose */
+.win .post { padding: 0; border-radius: 0; box-shadow: none; }
+.win .post::after { display: none; }
+.win .post > :last-child { margin-bottom: 0; }
+
+/* A folder: its files as icons */
+.files { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 6px 4px; }
+.file {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 12px 6px 10px; background: none; border: 1px solid transparent; border-radius: 6px;
+  color: var(--muted); text-decoration: none; cursor: pointer; text-align: center; font: inherit;
+  transition: color .15s, background-color .15s, border-color .15s;
+}
+.file .ic { width: 44px; height: 44px; margin-bottom: 5px; }
+.file .nm { font: 500 13px/1.3 var(--sans); color: var(--fg); overflow-wrap: anywhere; }
+.file .dt { font: 500 10px/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.file:hover, .file:focus-visible { color: var(--fg); background: var(--hover); border-color: var(--line); }
+.file:hover .sq, .file:focus-visible .sq { transform: rotate(45deg); }
+.file:focus-visible { outline: none; border-color: var(--fg); }
+
+/* log.txt: every entry in order, one line each */
+.loglist { list-style: none; margin: 0; padding: 0; }
+.loglist li { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: baseline; padding: 9px 0; border-top: 1px solid var(--line); }
+.loglist li:first-child { border-top: 0; padding-top: 0; }
+.loglist .d { font: 500 11px/1.4 var(--mono); letter-spacing: .06em; color: var(--muted); }
+.loglist .t { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.loglist button { font: 500 15px/1.4 var(--sans); color: var(--fg); background: none; border: 0; padding: 0; text-align: left; cursor: pointer; }
+.loglist button:hover, .loglist button:focus-visible { text-decoration: underline; text-underline-offset: 3px; outline: none; }
+
+/* ---------- Phones: icons in rows, one window at a time, full screen ---------- */
+@media (max-width: 720px) {
+  html:has(main.desktop) { overflow: auto; }
+  main.desktop { height: auto; min-height: 70vh; padding: 12px 12px 40px; overflow: visible; }
+  .icons { position: static; flex-direction: row; flex-wrap: wrap; align-content: flex-start; gap: 2px; }
+  .icon { width: 92px; }
+  .wins { position: fixed; inset: 0; z-index: 5; }
+  .win { position: fixed; left: 8px !important; top: 8px !important; right: 8px; bottom: 8px; width: auto !important; max-width: none; max-height: none; transform-origin: 50% 50% !important; }
+  .win .bar { cursor: default; }
+  .win .lt.shade, .win .lt.zoom { display: none; }
+  .win .body { padding: 18px 18px 20px; }
+  .win .hero h1 { font-size: 34px; }
+  .loglist li { grid-template-columns: 1fr; gap: 2px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .win.top::after { animation: none; }
+  .win.in, .win.out { animation: none; }
+  .desktop .sq, .win .lt { transition: none; }
+}

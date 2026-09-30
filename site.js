@@ -20,6 +20,25 @@
     return `<span class="tag" data-color="${t.color}">${t.label}</span>`;
   }
 
+  /* One log card. The log page lists them; desktop.js (the desktop home
+     page) renders the same card inside a window. */
+  function entryHtml(e) {
+    const title = e.url ? `<a class="title" href="${e.url}">${e.title}</a>` : `<span class="title">${e.title}</span>`;
+    let media = '';
+    if (e.img) {
+      media = `<figure class="shot${e.img.small ? ' small' : ''}"><img src="${e.img.src}" alt="${e.img.alt || ''}" width="${e.img.w || ''}" height="${e.img.h || ''}" loading="lazy"></figure>`;
+    } else if (e.imgs) {
+      media = `<figure class="shot row">${e.imgs.map((i) => `<img src="${i.src}" alt="${i.alt || ''}" loading="lazy">`).join('')}</figure>`;
+    }
+    const cap = e.caption ? `<p class="caption">${e.caption}</p>` : '';
+    return `<article class="entry" id="e-${entryId(e)}" data-tag="${e.tag}">
+        <p class="date">${e.date}</p>
+        <p class="head">${pill(e.tag)} ${title}</p>
+        <p class="text">${e.text}</p>
+        ${media}${cap}
+      </article>`;
+  }
+
   /* Icons: the lattice motif (after the M:PY GIF). A file is one rounded
      square, a folder is four; they turn 45 degrees on hover, when selected and
      when open (CSS). Details on the CV and link squares are cut in the page
@@ -221,22 +240,7 @@
       .map((t) => `<button type="button" class="tag" data-color="${t.color}" data-tag="${t.id}" aria-pressed="false">${t.label}</button>`)
       .join('');
 
-    log.innerHTML = window.ENTRIES.map((e) => {
-      const title = e.url ? `<a class="title" href="${e.url}">${e.title}</a>` : `<span class="title">${e.title}</span>`;
-      let media = '';
-      if (e.img) {
-        media = `<figure class="shot${e.img.small ? ' small' : ''}"><img src="${e.img.src}" alt="${e.img.alt || ''}" width="${e.img.w || ''}" height="${e.img.h || ''}" loading="lazy"></figure>`;
-      } else if (e.imgs) {
-        media = `<figure class="shot row">${e.imgs.map((i) => `<img src="${i.src}" alt="${i.alt || ''}" loading="lazy">`).join('')}</figure>`;
-      }
-      const cap = e.caption ? `<p class="caption">${e.caption}</p>` : '';
-      return `<article class="entry" id="e-${entryId(e)}" data-tag="${e.tag}">
-        <p class="date">${e.date}</p>
-        <p class="head">${pill(e.tag)} ${title}</p>
-        <p class="text">${e.text}</p>
-        ${media}${cap}
-      </article>`;
-    }).join('') + '<p class="empty" hidden>Nothing with that tag yet.</p>';
+    log.innerHTML = window.ENTRIES.map(entryHtml).join('') + '<p class="empty" hidden>Nothing with that tag yet.</p>';
 
     filter.addEventListener('click', (ev) => {
       const b = ev.target.closest('button[data-tag]');
@@ -251,10 +255,9 @@
   }
 
   /* ---------- CV page ---------- */
-  const cv = $('#cv');
-  if (cv && window.CV) {
-    const c = window.CV;
-    cv.innerHTML = `
+  /* The CV sections. cv.html fills #cv with them; desktop.js puts them in a window. */
+  function cvHtml(c) {
+    return `
       <section>
         <h2>Employment</h2>
         <div class="emp">
@@ -275,6 +278,8 @@
         <p>${c.tools}</p>
       </section>`;
   }
+  const cv = $('#cv');
+  if (cv && window.CV) cv.innerHTML = cvHtml(window.CV);
 
   /* ---------- Blog page ----------
      posts.js holds BLOG.posts (newest first), each with a Markdown body.
@@ -363,4 +368,8 @@
     endP(); endL();
     return out.join('\n').replace(/\u0000(\d+)\u0000/g, (m, i) => keep[+i]);
   }
+
+  /* Shared with desktop.js, which renders the same cards, CV and posts
+     inside desktop windows. */
+  window.KNOWN = { md, pill, entryId, entryHtml, cvHtml };
 })();
