@@ -281,9 +281,9 @@ window.NEXT = {
    "add the pricing page". The four engagements are the ones in her
    service outline (v3, July 2026) and website copy.
 
-   Prices set 2026-09-30 (Josie): $500 Fit Session (credited to the first
-   sprint), $4,500 sprint, $2,500 Known Layer ($6,500 with a sprint),
-   retainer $1,500 (2 days) or $3,000 (4 days). Five working days per
+   Prices set 2026-09-30 (Josie), raised $250 each the same day: $750 Fit
+   Session (credited to the first sprint), $4,750 sprint, $2,750 Known Layer
+   ($7,000 with a sprint), retainer $1,750 (2 days) or $3,250 (4 days). Five working days per
    fixed-price project, 24/7 human support, prices move with availability,
    10% off the next engagement for recommending a hire. An empty `price`
    reads "Priced per engagement" over `unit`; `note` shows only once a
@@ -296,7 +296,7 @@ window.PRICING = {
   title: 'Four ways in.\nOne method underneath.',
   text: 'Every engagement starts with a map of how the work moves: where it shows up, what flows between steps, what people keep, what AI does and what plain systems handle. The map decides what to design, build and automate. Each price is fixed before work starts. Projects ship in five working days. A person answers support, any hour, any day. Known, and is building a network of people who do good work. Recommend one we hire and your next engagement is 10% off.',
   plans: [
-    { name: 'The Fit Session', kind: 'Audit', price: '$500', unit: 'fixed price, credited to your first sprint', time: '2 working days',
+    { name: 'The Fit Session', kind: 'Audit', price: '$750', unit: 'fixed price, credited to your first sprint', time: '2 working days',
       text: 'A short paid review of one product or workflow: where context leaks, where the experience fights the user, where AI is guessing.',
       includes: [
         'A working session and a review of the current product or workflow',
@@ -305,7 +305,7 @@ window.PRICING = {
         'The map is yours to keep, whatever you decide next',
       ],
       cta: 'Book a Fit Session' },
-    { name: 'Design + Automate Sprint', kind: 'Build', price: '$4,500', unit: 'fixed price per 5-day sprint', time: '5 working days',
+    { name: 'Design + Automate Sprint', kind: 'Build', price: '$4,750', unit: 'fixed price per 5-day sprint', time: '5 working days',
       text: 'The build. Design of the experience (flows, interface, copy) and the automation underneath it, grounded in the context captured in the Fit Session.',
       includes: [
         'One workflow and one interface per sprint, scoped from the map. Larger work runs as more sprints',
@@ -315,7 +315,7 @@ window.PRICING = {
         'Hand-off: source, design files and a written record of each decision',
       ],
       cta: 'Book a sprint' },
-    { name: 'The Known Layer', kind: 'System', price: '$2,500', unit: 'fixed price, or $6,500 with a sprint', time: '5 working days, after a sprint',
+    { name: 'The Known Layer', kind: 'System', price: '$2,750', unit: 'fixed price, or $7,000 with a sprint', time: '5 working days, after a sprint',
       text: 'The durable version: the documented context that keeps outputs on-brand as the business grows, without you in the loop for every one.',
       includes: [
         'Voice documentation with approved and rejected examples',
@@ -324,7 +324,7 @@ window.PRICING = {
         'Handed over as files you own',
       ],
       cta: 'Book the Known Layer' },
-    { name: 'Studio Retainer', kind: 'Ongoing', price: '$1,500', unit: 'per month for 2 studio days. $3,000 for 4 days and the priority queue', time: 'Month to month',
+    { name: 'Studio Retainer', kind: 'Ongoing', price: '$1,750', unit: 'per month for 2 studio days. $3,250 for 4 days and the priority queue', time: 'Month to month',
       text: 'Ongoing design and automation work: maintenance, updates as context changes, and the next things on the list.',
       includes: [
         'Two or four studio days each month, set in the proposal',
