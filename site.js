@@ -286,27 +286,45 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
   /* Program icon tiles. Wide screens: they roam the hero, drift, bounce off
      the hero's edges, each other and the text block, and flee the cursor.
      Narrow screens (the .tiles box is a relative tray under the sign-up, see
-     styles.css): the tiles sit in a grid of home slots and jostle when the
-     page scrolls. They have inertia, so a flick leaves them lagging and a
-     stop sends them past their slots, with a small rattle while the page is
-     moving; a spring then settles them back into the grid (Josie,
-     2026-09-30: "a shake every time the user scrolls", after trying and
-     dropping phone tilt as gravity). The red/blue edge split widens with
-     speed (--sp), like the lattice's turning squares. Nothing is drawn on
-     bumps (Josie, 2026-09-30: "no rainbow from collision"). Reduced motion:
-     the tiles sit still at their starting places. */
+     styles.css): no grid (Josie, 2026-09-30: "break the grid", "more reactive
+     and have interesting gravity", "just for the mobile version"). The tray
+     is a small system: Claude sits at the centre, four tools turn on an inner
+     orbit and seven on an outer one, the inner ring faster, each orbit
+     breathing a little so nothing lines up twice. A spring holds each tile
+     to its moving orbit point, so the whole thing keeps slowly turning while
+     the hero is on screen. Reactions, all through the same springs and bumps:
+     - press and hold (or drag): the finger is a gravity well; the orbits let
+       go, every tile falls toward it and swirls round it (they keep off the
+       fingertip, so they ring it); lift and they fly on for a beat, then the
+       orbits take them back;
+     - tap: the tile under the finger twitches and a wave runs out through the
+       others, each pushed as it passes, a signal through a mesh;
+     - scroll: inertia (an accelerating page shoves them the other way) plus
+       a wind while the page moves, so a flick slides the cluster to one
+       wall and the stop lets it drift back into orbit; a small rattle while
+       moving.
+     Nothing is drawn on bumps (Josie, 2026-09-30: "no rainbow from
+     collision"); the red/blue edge split widens with speed (--sp), like the
+     lattice's turning squares, so a swirl or a passing wave shows in the
+     rims. Phone tilt was tried and dropped earlier (Josie: "let's not do the
+     tilt"). Reduced motion: the constellation sits still at its start. */
   const els = [...document.querySelectorAll('.badge')];
   const heroIn = $('#badges');
   if (els.length) {
-    const FLEE = 150, MAXV = 4.2, GAP = 10, COLS = 6, SLACK = 100, HOME = .02, INERTIA = .14, KICK = 3, JITTER = .45;
-    let R = 24, bodies = [], W = 0, H = 0, obs = null, running = false, lastT = 0, active = 'off', lastMode = '', inView = true;
+    const FLEE = 150, HOME = .02, INERTIA = .14, KICK = 3, JITTER = .45,
+          WIND = .035, WINDMAX = 1, WELL_G = .5, WELL_SWIRL = .35, WAVE = 9, PULSE = 2.2, PULSE_REACH = 360,
+          TURN_IN = 22, TURN_OUT = 58;   // seconds per orbit, inner and outer ring
+    let R = 24, bodies = [], W = 0, H = 0, cx = 0, cy = 0, T = 0, obs = null, running = false, lastT = 0, active = 'off', lastMode = '', inView = true;
     let scrollDelta = 0, scrollV = 0, lastY = scrollY;
     const mouse = { x: -1e4, y: -1e4 };
+    const well = { on: false, x: 0, y: 0, x0: 0, y0: 0, k: 0, dir: 1, t0: 0, moved: 0, id: null };   // the finger, tray mode
+    const pulses = [];                                                                              // tap waves in flight
     const tilesBox = hero.querySelector('.tiles');
     /* roam: .tiles is absolute over the hero. tray: .tiles is a relative box (narrow screens). */
     const mode = () => { const p = getComputedStyle(tilesBox).position; return p === 'absolute' ? 'roam' : p === 'relative' ? 'tray' : 'off'; };
     const on = () => active !== 'off';
     const rnd = (a, b) => a + Math.random() * (b - a);
+    const clamp = (v, m) => Math.max(-m, Math.min(m, v));
 
     function measure() {
       const hb = hero.getBoundingClientRect(); W = hb.width; H = hb.height;
@@ -314,21 +332,30 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       obs = { x0: Math.min(...parts.map((r) => r.left)) - hb.left - 10, x1: Math.max(...parts.map((r) => r.right)) - hb.left + 10,
               y0: Math.min(...parts.map((r) => r.top)) - hb.top - 10, y1: Math.max(...parts.map((r) => r.bottom)) - hb.top + 10 };
     }
-    /* tray: a grid of up to COLS columns, centred, with SLACK px of room around it */
+    /* tray: centre tile, an inner ring of up to four, the rest on an outer
+       ring; ellipses, since the tray is wide and low. The tray's height comes
+       from the outer ring. */
     function trayMeasure() {
       W = tilesBox.clientWidth; obs = null;
-      const n = els.length, size = R * 2;
-      const cols = Math.max(1, Math.min(n, COLS, Math.floor((W - 20 + GAP) / (size + GAP))));
-      const rows = Math.ceil(n / cols);
-      const gw = cols * size + (cols - 1) * GAP, gh = rows * size + (rows - 1) * GAP;
-      tilesBox.style.height = (gh + SLACK) + 'px';
-      H = tilesBox.clientHeight;
+      const bIn = R * 2.3, aIn = R * 2.9, bOut = bIn + R * 2 + 6, aOut = Math.max(bOut, Math.min(150, W / 2 - R - 14));
+      tilesBox.style.height = Math.round(2 * (bOut + R) + 36) + 'px';
+      H = tilesBox.clientHeight; cx = W / 2; cy = H / 2;
+      const n = bodies.length, inner = Math.min(4, Math.max(0, n - 1)), outer = Math.max(0, n - 1 - inner);
       bodies.forEach((b, i) => {
-        const c = i % cols, r = Math.floor(i / cols);
-        b.hx = (W - gw) / 2 + R + c * (size + GAP);
-        b.hy = (H - gh) / 2 + R + r * (size + GAP);
-        if (b.fresh) { b.x = b.hx; b.y = b.hy; b.fresh = false; }
+        if (i === 0) { b.ring = 0; b.ax = b.ay = b.ph = b.w = 0; }
+        else if (i <= inner) { b.ring = 1; b.ax = aIn; b.ay = bIn; b.ph = .4 + (i - 1) * Math.PI * 2 / inner; b.w = Math.PI * 2 / TURN_IN; }
+        else { b.ring = 2; b.ax = aOut; b.ay = bOut; b.ph = -.2 + (i - 1 - inner) * Math.PI * 2 / outer; b.w = Math.PI * 2 / TURN_OUT; }
       });
+      orbitHomes();
+      bodies.forEach((b) => { if (b.fresh) { b.x = b.hx; b.y = b.hy; b.fresh = false; } });
+    }
+    /* where each tile's orbit point is right now */
+    function orbitHomes() {
+      for (const b of bodies) {
+        if (b.ring === 0) { b.hx = cx + Math.sin(T * .5) * 4; b.hy = cy + Math.cos(T * .37) * 3; continue; }
+        const th = b.ph + T * b.w, wob = 1 + .04 * Math.sin(T * .6 + b.ph * 3);
+        b.hx = cx + Math.cos(th) * b.ax * wob; b.hy = cy + Math.sin(th) * b.ay * wob;
+      }
     }
     function layout() {
       active = mode();
@@ -336,7 +363,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       if (!on()) { els.forEach((el) => { el.style.transform = ''; el.style.removeProperty('--sp'); }); tilesBox.style.height = ''; return; }
       R = els[0].offsetWidth / 2 || R;
       if (active === 'tray') {
-        if (!bodies.length) bodies = els.map((el) => ({ el, x: 0, y: 0, vx: 0, vy: 0, a: 0, va: 0, hx: 0, hy: 0, tilt: 0, fresh: true }));
+        if (!bodies.length) bodies = els.map((el) => ({ el, x: 0, y: 0, vx: 0, vy: 0, a: 0, va: 0, hx: 0, hy: 0, tilt: 0, ring: 0, ax: 0, ay: 0, ph: 0, w: 0, fresh: true }));
         trayMeasure();
       } else {
         tilesBox.style.height = '';
@@ -372,27 +399,56 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     function step(dt) {
       const k = dt * 60, tray = active === 'tray';
       const REST = tray ? .45 : .95;   // tray walls and bumps are soft, the hero's are lively
-      /* tray: the page's scroll speed this frame and its change (the tray's
-         acceleration). Inertia: the tiles keep their screen position, so an
-         accelerating page pushes them the other way. */
-      let kick = 0, jit = 0;
+      const MAXV = tray ? 5.5 : 4.2;
+      /* tray: the orbits turn; the page's scroll speed this frame and its
+         change (the tray's acceleration). Inertia: the tiles keep their
+         screen position, so an accelerating page pushes them the other way;
+         wind: a moving page keeps pushing. The well ramps in fast on a press
+         and fades after the lift, so the tiles coast before the orbits pull. */
+      let kick = 0, wind = 0, jit = 0, reach = 0;
       if (tray) {
+        T += dt; orbitHomes();
         const v = scrollDelta / k; scrollDelta = 0;
-        kick = Math.max(-KICK, Math.min(KICK, (v - scrollV) * INERTIA)); scrollV = v;
+        kick = clamp((v - scrollV) * INERTIA, KICK); scrollV = v;
+        wind = clamp(v * WIND, WINDMAX);
         jit = Math.min(1, Math.abs(v) / 15) * JITTER;
+        well.k += ((well.on ? 1 : 0) - well.k) * Math.min(1, (well.on ? .25 : .08) * k);
+        reach = Math.max(W, H);
+        for (const p of pulses) p.r += WAVE * k;
       }
       for (const b of bodies) {
         if (tray) {
-          b.vx += (b.hx - b.x) * HOME * k; b.vy += (b.hy - b.y) * HOME * k;
+          const spring = HOME * (1 - .97 * well.k);   // the orbit lets go while the finger holds
+          b.vx += (b.hx - b.x) * spring * k; b.vy += (b.hy - b.y) * spring * k;
           if (kick) { b.vy += kick * rnd(.7, 1.3); b.vx += kick * rnd(-.35, .35); }   // each tile a little different
+          if (wind) b.vy += wind * k;
           if (jit) { b.vx += rnd(-jit, jit) * k; b.vy += rnd(-jit, jit) * k; }        // the rattle while the page moves
+          b.vx += rnd(-.03, .03) * k; b.vy += rnd(-.03, .03) * k;                       // never quite still
+          if (well.on) {
+            const dx = well.x - b.x, dy = well.y - b.y, d = Math.hypot(dx, dy) || .01, nx = dx / d, ny = dy / d;
+            const s = Math.max(0, 1 - d / reach);
+            const g = WELL_G * (.5 + .5 * s) * well.k * k;          // pull, a little stronger close in
+            b.vx += nx * g; b.vy += ny * g;
+            const sw = WELL_SWIRL * s * well.k * well.dir * k;      // and round it
+            b.vx += -ny * sw; b.vy += nx * sw;
+            const ex = R * 1.3;                                     // keep off the fingertip
+            if (d < ex) { const push = (ex - d) * .5; b.x -= nx * push; b.y -= ny * push; const rv = b.vx * nx + b.vy * ny; if (rv > 0) { b.vx -= nx * rv; b.vy -= ny * rv; } }
+          }
+          for (const p of pulses) {
+            if (p.hit.has(b)) continue;
+            const dx = b.x - p.x, dy = b.y - p.y, d = Math.hypot(dx, dy);
+            if (d > p.r) continue;
+            p.hit.add(b);
+            if (d < R * 1.5) { b.a += (Math.random() < .5 ? -18 : 18); b.vy -= 1; }   // the tapped tile twitches
+            else { const f = .4 + PULSE * Math.max(0, 1 - d / PULSE_REACH); b.vx += dx / d * f; b.vy += dy / d * f; }
+          }
         } else {
           const dx = b.x - mouse.x, dy = b.y - mouse.y, d = Math.hypot(dx, dy);
           if (d < FLEE && d > .01) { const f = (1 - d / FLEE) * 3.2 * k; b.vx += dx / d * f; b.vy += dy / d * f; }
         }
         let sp = Math.hypot(b.vx, b.vy);
         if (sp > MAXV) { b.vx *= MAXV / sp; b.vy *= MAXV / sp; sp = MAXV; }
-        else if (tray) { const damp = Math.pow(.9, k); b.vx *= damp; b.vy *= damp; }             // settle, no drift
+        else if (tray) { const damp = Math.pow(well.on ? .93 : .9, k); b.vx *= damp; b.vy *= damp; }   // settle onto the orbit; looser round the finger
         else if (sp > .8) { const damp = Math.pow(.975, k); b.vx *= damp; b.vy *= damp; }   // shed the cursor's push, keep the drift
         else if (sp < .35) { b.vx += rnd(-.06, .06) * k; b.vy += rnd(-.06, .06) * k; }      // never quite still
         b.x += b.vx * k; b.y += b.vy * k;
@@ -401,7 +457,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
         if (b.y < R) { b.y = R; b.vy = Math.abs(b.vy) * REST; }
         if (b.y > H - R) { b.y = H - R; b.vy = -Math.abs(b.vy) * REST; }
         bounceRect(b);
-        if (tray) b.a += (Math.max(-14, Math.min(14, b.vx * 4)) - b.a) * Math.min(1, .2 * k);   // lean into the slide, straight at rest
+        if (tray) b.a += (clamp(b.vx * 4, 14) - b.a) * Math.min(1, .2 * k);   // lean into the slide, straight at rest
         else { b.va = b.va * .92 + b.vx * .25; b.a += b.va * k; }
       }
       for (let i = 0; i < bodies.length; i++) for (let j = i + 1; j < bodies.length; j++) {
@@ -417,19 +473,16 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
           }
         }
       }
-      if (tray) bodies.forEach((b) => { b.x = Math.max(R, Math.min(W - R, b.x)); b.y = Math.max(R, Math.min(H - R, b.y)); });   // bumps never push a tile through the tray wall
+      if (tray) {
+        bodies.forEach((b) => { b.x = Math.max(R, Math.min(W - R, b.x)); b.y = Math.max(R, Math.min(H - R, b.y)); });   // bumps never push a tile through the tray wall
+        for (let i = pulses.length - 1; i >= 0; i--) if (pulses[i].r > PULSE_REACH + 60) pulses.splice(i, 1);   // a wave that has passed everything
+      }
       bodies.forEach((b) => place(b, Math.hypot(b.vx, b.vy)));
     }
-    /* tray: page still and everything back in its slot, so the loop can stop */
-    const settled = () => scrollDelta === 0 && Math.abs(scrollV) < .05 && bodies.every((b) => Math.abs(b.vx) + Math.abs(b.vy) < .02 && Math.hypot(b.hx - b.x, b.hy - b.y) < .5 && Math.abs(b.a) < .5);
     function loop(t) {
       if (!on() || !inView || document.hidden) { running = false; return; }
       const dt = Math.min(.033, (t - lastT) / 1000 || .016); lastT = t;
       step(dt);
-      if (active === 'tray' && settled()) {
-        bodies.forEach((b) => { b.x = b.hx; b.y = b.hy; b.vx = b.vy = b.a = 0; place(b, 0); });
-        running = false; return;
-      }
       requestAnimationFrame(loop);
     }
     function wake() { if (!running && on() && !REDUCED && inView && !document.hidden) { running = true; lastT = performance.now(); requestAnimationFrame(loop); } }
@@ -440,9 +493,34 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       mouse.x = e.clientX - hb.left; mouse.y = e.clientY - hb.top;
     }, { passive: true });
     addEventListener('mouseleave', () => { mouse.x = -1e4; mouse.y = -1e4; });
+    /* tray: a finger (or a pressed mouse) on the tray is the gravity well; a
+       quick tap that barely moved is a pulse instead. touch-action: pan-y on
+       .tiles (styles.css) keeps vertical scrolling with the browser, which
+       then cancels the pointer, so a scroll through the tray is just a scroll. */
+    const trayPt = (e) => { const r = tilesBox.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+    tilesBox.addEventListener('pointerdown', (e) => {
+      if (active !== 'tray' || REDUCED || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      const p = trayPt(e);
+      Object.assign(well, { on: true, x: p.x, y: p.y, x0: p.x, y0: p.y, t0: performance.now(), moved: 0, dir: Math.random() < .5 ? -1 : 1, id: e.pointerId });
+      try { tilesBox.setPointerCapture(e.pointerId); } catch (_) { /* fine without it */ }
+      wake();
+    });
+    tilesBox.addEventListener('pointermove', (e) => {
+      if (!well.on || e.pointerId !== well.id) return;
+      const p = trayPt(e);
+      well.moved = Math.max(well.moved, Math.hypot(p.x - well.x0, p.y - well.y0)); well.x = p.x; well.y = p.y;
+    });
+    const release = (e) => {
+      if (!well.on || e.pointerId !== well.id) return;
+      well.on = false;
+      if (e.type === 'pointerup' && performance.now() - well.t0 < 220 && well.moved < 8) pulses.push({ x: well.x, y: well.y, r: 0, hit: new Set() });
+      wake();
+    };
+    tilesBox.addEventListener('pointerup', release);
+    tilesBox.addEventListener('pointercancel', release);
     /* the page scrolled: hand the tray the distance and make sure the loop is up.
-       A loop that was asleep (tray off screen, or settled) gets only this event's
-       distance, so scrolling that happened while it slept is not one big kick. */
+       A loop that was asleep (tray off screen) gets only this event's distance,
+       so scrolling that happened while it slept is not one big kick. */
     addEventListener('scroll', () => {
       const y = scrollY, dy = y - lastY; lastY = y;
       if (active !== 'tray') return;

@@ -211,9 +211,13 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--blue); outline-
 }
 @media (max-width: 1080px) {
   /* no side room for roaming: the program tiles sit in a tray under the
-     sign-up, a grid of slots (site.js lays them out and sets the height) they
-     jostle out of when the page scrolls */
-  .tiles { position: relative; inset: auto; height: 190px; max-width: 560px; margin: 30px auto 0; border: 1px solid var(--line); border-radius: 14px; pointer-events: none; }
+     sign-up, orbiting a centre tile (site.js lays them out and sets the
+     height; Josie, 2026-09-30: "break the grid"). The tray takes the pointer:
+     a press is a gravity well, a tap a pulse; pan-y leaves vertical
+     scrolling with the browser, so a scroll through the tray is just a scroll. */
+  .tiles { position: relative; inset: auto; height: 260px; max-width: 560px; margin: 30px auto 0; border: 1px solid var(--line); border-radius: 14px;
+    pointer-events: auto; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .tiles:active { cursor: grabbing; }
   .badge { width: 40px; height: 40px; border-radius: 10px; }
   .badge svg { width: 21px; height: 21px; }
   .hero { padding: 72px 20px 64px; }
@@ -376,6 +380,6 @@ footer { font-size: 11.5px; font-weight: 600; }
    panel is a raised block of the same kind. ---- */
 :root { --raise-lg: -5px -5px 12px var(--neu-lt), 7px 7px 16px var(--neu-dk);
         --press-lg: inset 5px 5px 12px var(--neu-dk), inset -5px -5px 12px var(--neu-lt); }
-.row::before, .acc-head::before { border-radius: 14px; background: var(--neu); box-shadow: var(--raise-lg); transition: opacity .2s, box-shadow .25s; }
+.row::before, .acc-head::before { border-radius: 0; background: var(--neu); box-shadow: var(--raise-lg); transition: opacity .2s, box-shadow .25s; }   /* square (Josie, 2026-09-30: "90 degree corners 0 curve") */
 .row.acc.open > .acc-head::before, .row.acc.open > .acc-head:hover::before { box-shadow: var(--press-lg); }
 .acc-box { border-radius: 14px; background: var(--neu); box-shadow: var(--raise-lg); }

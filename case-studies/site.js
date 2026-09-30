@@ -3,7 +3,8 @@
    before first paint so the page does not flash.
 
    Sidebar = a Project Explorer-style tree (folders per tag, one "file" per entry,
-   then CV and Links). Clicking a folder folds it. Clicking a file jumps to that
+   then CV and Links). Only the first folder starts open; clicking a folder
+   folds or unfolds it. Clicking a file jumps to that
    entry in the log, or over to index.html from the CV page. */
 
 (function () {
@@ -63,7 +64,11 @@
       const href = (onIndex ? '' : 'index.html') + '#e-' + id;
       return `<li role="treeitem"><a class="row" href="${href}" data-entry="${id}"><span class="tw"></span>${I.file}<span class="lbl">${e.title}</span></a></li>`;
     };
-    const folder = (label, inner, open = true) =>
+    /* Only the first folder starts open, so the tree reads as foldable
+       without every folder unrolled (Josie, 2026-09-30). The same state is
+       restored each time the phone "Explorer" button opens the panel. */
+    let nFolders = 0;
+    const folder = (label, inner, open = nFolders++ === 0) =>
       `<li class="folder${open ? ' open' : ''}" role="treeitem" aria-expanded="${open}">
         <button class="row" type="button"><span class="tw">${I.chev}</span>${I.folder}<span class="lbl">${label}</span></button>
         <ul role="group">${inner}</ul>
@@ -89,6 +94,14 @@
     ).join(''));
     tree.innerHTML = html;
 
+    /* First folder open, the rest closed */
+    window.KNOWN_RESET_TREE = () => {
+      tree.querySelectorAll('li.folder').forEach((li, i) => {
+        li.classList.toggle('open', i === 0);
+        li.setAttribute('aria-expanded', String(i === 0));
+      });
+    };
+
     tree.addEventListener('click', (ev) => {
       const b = ev.target.closest('button.row');
       if (b) {
@@ -112,6 +125,7 @@
     toggle.addEventListener('click', () => {
       const open = $('.side').classList.toggle('open');
       toggle.setAttribute('aria-expanded', String(open));
+      if (open && window.KNOWN_RESET_TREE) window.KNOWN_RESET_TREE();
     });
   }
 
@@ -309,7 +323,11 @@
       const p = h.startsWith('p-') ? byId[h.slice(2)] : null;
       document.querySelectorAll('.tree .row.sel').forEach((n) => n.classList.remove('sel'));
       const row = tree && tree.querySelector(`a[data-post="${p ? p.id : 'index'}"]`);
-      if (row) row.classList.add('sel');
+      if (row) {
+        row.classList.add('sel');
+        const li = row.closest('li.folder');
+        if (li && !li.classList.contains('open')) { li.classList.add('open'); li.setAttribute('aria-expanded', 'true'); }
+      }
       const title = window.BLOG.title || 'Blog';
       if (p) {
         blog.innerHTML = `<p class="back"><a href="blog.html" data-post="index">&larr; All posts</a></p>
