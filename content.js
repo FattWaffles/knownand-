@@ -190,23 +190,31 @@ window.LEARNING = {
   steps: ['Research', 'Design', 'Build', 'Ship'],
 };
 
-/* Security. Josie, 2026-09-30: "less sales and more telling how much I
-   understand, like custom security-first builds for crypto and vibe coded
-   software." Each cell states a threat and the design answer, drawn from
+/* Security. Josie, 2026-09-30: less sales, more showing how much she
+   understands: custom security-first builds for fintech, crypto and
+   AI-assisted software. Each cell states a threat and the design answer, drawn from
    real work: RobotFac3's security core (its public README and the
    "fix all 35 findings from the adversarial review" commit), the Quote On
    guardrail, and the client baseline in security-dev-outline/outline.md. */
 window.SECURITY = {
   eyebrow: 'Security',
-  title: 'Security-first builds for crypto and vibe-coded software.',
-  text: 'Most of what I build now touches wallets, agents or code an AI helped write. Each fails in its own way, and the design has to account for that before the first screen is drawn.',
+  title: 'Security-first builds for fintech, crypto and AI-assisted software.',
+  text: 'Most of what I build now touches money, wallets, agents or code an AI helped write. Each fails in its own way, and the design has to account for that before the first screen is drawn.',
   items: [
     { name: 'Wallets and signing', text: 'A person approves every signature. The app shows what a transaction does in plain words before it is signed, holds no keys and sends nothing on its own. In RobotFac3 the wallet sends; the browser only prepares.' },
     { name: 'Agents with a payment policy', text: 'An agent that can pay gets a strict grammar for payment sentences, a leak check and an injection detector. Anything outside the grammar stops and asks a person.' },
     { name: 'AI that asks', text: 'Quote On: with no rate on file, the AI requests one. Rules like that are designed into the flow, written down and tested like any other feature.' },
-    { name: 'Vibe-coded, then reviewed', text: 'AI-written code ships after an adversarial review and regression tests. RobotFac3 v0.2: 35 findings from one review, all fixed, each covered by a test.' },
+    { name: 'Written with AI, then reviewed', text: 'AI-written code ships after an adversarial review and regression tests. RobotFac3 v0.2: 35 findings from one review, all fixed, each covered by a test.' },
     { name: 'Fewer strangers in the code', text: 'Hand-written Solana layer, standard-library relay, no npm, no CDN, no web fonts. The relay allow-lists files and RPC methods, refuses wrong Host headers and cross-origin posts, and never reuses a connection.' },
     { name: 'Client baseline', text: 'Every client build starts the same way: MFA and domain lock, SPF, DKIM and DMARC, per-client isolation, backups and a written incident plan. The client owns the domain, the data and the code.' },
+    /* Josie, 2026-09-30 (later): fintech language, and the compliance line. A
+       certified security engineer is on the team; the certification is not
+       named on purpose (Josie: "so we don't get typecast"). */
+    { name: 'Payments, identity and compliance', text: 'Card and identity data go straight to the processor or the KYC provider and never pass through code we wrote. A certified security engineer is on every build. The proposal names the standards that apply to you, and the build is reviewed against them before launch.' },
+    /* Josie, 2026-09-30 (later): the brand-incubator reason for the AI rule,
+       and both halves of it in one cell (every model for ideation, sovereign
+       models only for client material). The tier diagram is in privacy.html. */
+    { name: 'Your idea stays off the model', text: 'A brand is built to surprise, and what a model has seen it can reproduce. So unreleased work, client files and data never go into one. Ideation draws on every model worth using, on prompts that name nothing, because each thinks differently and that range is part of the craft. Client material reaches only models designed for data sovereignty. <a href="privacy.html#tiers">Where each model sits</a>.' },
   ],
   /* Certifications: add rows here and they render below the grid.
      { name: 'Name', issuer: 'Issuer', year: '2026', url: 'https://...' } */
@@ -285,7 +293,7 @@ window.NEXT = {
    nothing here promises a schedule Josie has not set. */
 window.PRICING = {
   eyebrow: 'Pricing',
-  title: 'Four ways in. One method underneath.',
+  title: 'Four ways in.\nOne method underneath.',
   text: 'Every engagement starts with a map of how the work moves: where it shows up, what flows between steps, what people keep, what AI does and what plain systems handle. The map decides what to design, build and automate. Each price is fixed before work starts. Projects ship in five working days. A person answers support, any hour, any day. Known, and is building a network of people who do good work. Recommend one we hire and your next engagement is 10% off.',
   plans: [
     { name: 'The Fit Session', kind: 'Audit', price: '$500', unit: 'fixed price, credited to your first sprint', time: '2 working days',

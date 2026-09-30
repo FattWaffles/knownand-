@@ -118,21 +118,46 @@
             <li><strong>No training, no retention.</strong> The plan in use excludes your data from model training and, where the provider offers it, keeps zero data retention. Free tiers that train by default do not qualify.</li>
             <li><strong>A written agreement.</strong> The provider's data-processing terms are on file before any client material is used.</li>
           </ol>
-          <p>What that means today, checked 30 September 2026:</p>
-          <div class="status">
-            <div class="ok"><b>Meets the rule</b>
-              <ul>
-                <li>European providers running in Europe. Mistral AI (Paris) is the current example: it hosts in the EU by default, excludes paid API data from training and offers zero data retention.</li>
-                <li>Open-weight models run on hardware the studio controls. The material never leaves the machine, whatever country the model came from.</li>
+          <h3 id="tiers">Where each model sits</h3>
+          <p>Three tiers, by how much of your material a provider could see, keep or be made to hand over. Colour runs from least exposure to most. The tier decides what goes in. Only the first two ever see client material. Checked 30 September 2026.</p>
+          <div class="tiers" role="list" aria-label="AI models by privacy exposure">
+            <div class="scale" aria-hidden="true"><span>Least exposure</span><i></i><span>Most exposure</span></div>
+            <div class="tier t1" role="listitem">
+              <span class="tn">01</span>
+              <h4>On the studio's hardware</h4>
+              <p class="tin"><b>What goes in</b>Client material, yes.</p>
+              <ul class="models" aria-label="Models"><li>Open-weight models, run locally</li><li>Mistral open weights today</li></ul>
+              <ul class="risk">
+                <li>Nothing leaves the machine, whatever country the model came from.</li>
+                <li>No provider account, so nothing to train on, retain or subpoena.</li>
+                <li>What remains is the studio's own machine, covered in <a href="#security">section 5</a>.</li>
               </ul>
             </div>
-            <div class="no"><b>Does not meet the rule</b>
-              <ul>
-                <li>Consumer chat apps of any provider. Their consumer plans may use conversations for training by default.</li>
-                <li>APIs run by US-headquartered companies, including Anthropic's and OpenAI's own endpoints. Their European options (AWS Bedrock and Google Vertex AI in EU regions, OpenAI's European data residency) keep the data in Europe but under a US parent company, which fails the first test.</li>
+            <div class="tier t2" role="listitem">
+              <span class="tn">02</span>
+              <h4>European provider, contract on file</h4>
+              <p class="tin"><b>What goes in</b>Client material, only through the models named in your proposal.</p>
+              <ul class="models" aria-label="Models"><li>Mistral AI, Paris (paid API)</li><li>Aleph Alpha, Heidelberg</li></ul>
+              <ul class="risk">
+                <li>The provider sees the prompt for the length of the request. No training, zero retention where offered, both in the written agreement.</li>
+                <li>Headquartered and hosted in Europe, so no court outside Europe can compel a hand-over.</li>
+                <li>What remains: a breach at the provider, or a change in their terms. The date above is re-checked for that.</li>
+              </ul>
+            </div>
+            <div class="tier t3" role="listitem">
+              <span class="tn">03</span>
+              <h4>Their terms, their jurisdiction</h4>
+              <p class="tin"><b>What goes in</b>Prompts that name nothing. No client name, file, dataset, credential or unreleased work.</p>
+              <ul class="models" aria-label="Models"><li>Claude</li><li>ChatGPT</li><li>Cohere</li><li>Qwen</li><li>Kimi K3</li><li>Any consumer chat app</li></ul>
+              <ul class="risk">
+                <li>Consumer plans train on your chats unless you find the switch and turn it off. An idea typed in can surface in another user's answer.</li>
+                <li>Deleted chats can still exist. In 2025 a US court ordered OpenAI to keep ChatGPT conversations, deleted ones included, as evidence in a lawsuit. Enterprise and zero-retention plans were exempt. Everyone else's chats were held for months.</li>
+                <li>Headquartered outside Europe, so a court or agency there can compel a hand-over. The US CLOUD Act reaches US companies' servers in Europe too.</li>
+                <li>Output is not yours alone. Provider terms say the same output can go to other users, and in the US purely AI-generated work gets no copyright.</li>
               </ul>
             </div>
           </div>
+          <p>The plan decides the tier, and the same brand can sit in two. Mistral's open weights run locally sit in 01. Its paid API sits in 02. Its consumer chat app sits in 03 with every other consumer chat app.</p>
           <p>The list changes as providers change. When it does, this page is updated and the date above moves.</p>
           <h3 id="when">When models are used</h3>
           <ul>
