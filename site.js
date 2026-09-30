@@ -55,6 +55,25 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     cohere:       { bg: '#FF7759', fg: '#212121', text: 'co' },
     qwen:         { bg: '#615CED', svg: svg(`<g fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5l3 3 5-6.5"/><path d="M8.5 12.5l3 3 5-6.5"/><path d="M13.5 12.5l3 3 5-6.5"/></g>`) },
     kimi:         { bg: '#1F5EFF', fg: '#fff', text: 'Kimi' },
+    deepseek:     { bg: '#4D6BFE', svg: svg(`<path d="M3.5 12.5c0-3.3 3-6 7.5-6 3.2 0 5.6 1.4 6.8 3.4l3.2-2.4c-.3 2.1-.9 3.7-2.3 4.7-.4 3.2-3.4 5.3-7.7 5.3-4.5 0-7.5-2.4-7.5-5z" fill="#fff"/><circle cx="7" cy="11.5" r="1" fill="#4D6BFE"/>`) },
+    /* Chains and coins (Josie, 2026-09-30: "any major crypto coin but base"):
+       each mark simplified in the coin's own colour, like the tools above */
+    bitcoin:      { bg: '#F7931A', svg: svg(`<g transform="rotate(12 12 12)" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 5.5v11.5"/><path d="M8.5 5.5h4.8a2.7 2.7 0 0 1 0 5.4H8.5"/><path d="M8.5 10.9h5.6a3.05 3.05 0 0 1 0 6.1H8.5"/><path d="M10.5 3.2v2.3M13.3 3.2v2.3M10.5 17v2.3M13.3 17v2.3"/></g>`) },
+    ethereum:     { bg: '#627EEA', svg: svg(`<path d="M12 2.5v13.2l-6.2-3.6z" fill="#fff" opacity=".62"/><path d="M12 2.5v13.2l6.2-3.6z" fill="#fff"/><path d="M12 17.1v4.6l-6.2-8.2z" fill="#fff" opacity=".62"/><path d="M12 17.1v4.6l6.2-8.2z" fill="#fff"/>`) },
+    cardano:      { bg: '#0033AD', svg: svg(`<g fill="#fff"><circle cx="12" cy="12" r="1.8"/>${[0,1,2,3,4,5].map((i) => { const a = (30 + i * 60) * Math.PI / 180, b = i * 60 * Math.PI / 180; return `<circle cx="${(12 + 5.4 * Math.cos(a)).toFixed(2)}" cy="${(12 + 5.4 * Math.sin(a)).toFixed(2)}" r="1.3"/><circle cx="${(12 + 9.3 * Math.cos(b)).toFixed(2)}" cy="${(12 + 9.3 * Math.sin(b)).toFixed(2)}" r=".95"/>`; }).join('')}</g>`) },
+    zcash:        { bg: '#F4B728', svg: svg(`<g fill="none" stroke="#231F20" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7.5h10L7 16.5h10"/><path d="M12 3.5v4M12 16.5v4"/></g>`) },
+    monero:       { bg: '#FF6600', svg: svg(`<path d="M4.5 19.5V6.5l7.5 7 7.5-7v13" fill="none" stroke="#fff" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round"/>`) },
+    xrp:          { bg: '#23292F', svg: svg(`<g fill="#fff"><path d="M4.5 5h3l4.5 4.4L16.5 5h3l-6.1 6h-2.8z"/><path d="M4.5 19h3l4.5-4.4 4.5 4.4h3l-6.1-6h-2.8z"/></g>`) },
+    litecoin:     { bg: '#345D9D', svg: svg(`<g fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 4.5L8.8 18.5H17"/><path d="M7 13.5l6-3"/></g>`) },
+    dogecoin:     { bg: '#C2A633', svg: svg(`<g fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 4.5v15h4a7.5 7.5 0 0 0 0-15z"/><path d="M5.5 12h6"/></g>`) },
+    polkadot:     { bg: '#E6007A', svg: svg(`<g fill="#fff">${[0,60,120,180,240,300].map((a) => `<ellipse cx="12" cy="5.2" rx="3.1" ry="2.1" transform="rotate(${a} 12 12)"/>`).join('')}</g>`) },
+    avalanche:    { bg: '#E84142', svg: svg(`<path d="M12 4l8.5 15h-4.6l-3.9-6.9-3.9 6.9H3.5z" fill="#fff"/>`) },
+    chainlink:    { bg: '#2A5ADA', svg: svg(`<path d="M12 3.2l7.6 4.4v8.8L12 20.8l-7.6-4.4V7.6z" fill="none" stroke="#fff" stroke-width="3.2" stroke-linejoin="round"/>`) },
+    polygon:      { bg: '#8247E5', svg: svg(`<g fill="none" stroke="#fff" stroke-width="2.1" stroke-linejoin="round"><path d="M8 7.2l4 2.3v4.6l-4 2.3-4-2.3V9.5z"/><path d="M16 7.2l4 2.3v4.6l-4 2.3-4-2.3V9.5z"/></g>`) },
+    bnb:          { bg: '#F3BA2F', svg: svg(`<g fill="#fff"><path d="M12 8.5l3.5 3.5-3.5 3.5L8.5 12z"/><path d="M12 3l2.6 2.6-2.6 2.6L9.4 5.6z"/><path d="M12 15.8l2.6 2.6L12 21l-2.6-2.6z"/><path d="M5.6 9.4L8.2 12l-2.6 2.6L3 12z"/><path d="M18.4 9.4L21 12l-2.6 2.6L15.8 12z"/></g>`) },
+    tron:         { bg: '#EF0027', svg: svg(`<g fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M4 4l16 3.5-9 13z"/><path d="M4 4l7.5 7.8 8.5-4.3M11.5 11.8L11 20.5"/></g>`) },
+    stellar:      { bg: '#0B0B0B', svg: svg(`<g fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M18.6 8.6A7.3 7.3 0 0 0 5 10.8"/><path d="M5.4 15.4a7.3 7.3 0 0 0 13.6-2.2"/><path d="M3 14.6L21 6.4M3 17.6L21 9.4"/></g>`) },
+    sui:          { bg: '#4DA2FF', svg: svg(`<path d="M12 3.2c3.6 4.3 6.2 7.2 6.2 10.8a6.2 6.2 0 0 1-12.4 0c0-3.6 2.6-6.5 6.2-10.8z" fill="#fff"/>`) },
   };
 
   /* decode-in labels, from the previous version: the real text sits in a
@@ -366,19 +385,35 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       obs = { x0: Math.min(...parts.map((r) => r.left)) - hb.left - 10, x1: Math.max(...parts.map((r) => r.right)) - hb.left + 10,
               y0: Math.min(...parts.map((r) => r.top)) - hb.top - 10, y1: Math.max(...parts.map((r) => r.bottom)) - hb.top + 10 };
     }
-    /* tray: centre tile, an inner ring of up to four, the rest on an outer
-       ring; ellipses, since the tray is wide and low. The tray's height comes
-       from the outer ring. */
+    /* tray: centre tile, an inner ring of four, then as many rings as the
+       count needs (35 tiles since the coins, 2026-09-30; a phone holds three),
+       each holding what its ellipse has room for. The outermost ring sits at
+       the tray's width and each ring inside steps in by a tile, so no two
+       touch at the sides; rings are wider than tall while the tray allows.
+       The inner ring turns fastest, the outer slowest. The tray's height
+       comes from the outer ring. */
     function trayMeasure() {
       W = tilesBox.clientWidth; obs = null;
-      const bIn = R * 2.3, aIn = R * 2.9, bOut = bIn + R * 2 + 6, aOut = Math.max(bOut, Math.min(150, W / 2 - R - 14));
-      tilesBox.style.height = Math.round(2 * (bOut + R) + 36) + 'px';
+      const n = bodies.length, step = R * 2 + 6, aMax = Math.max(R * 2.9, W / 2 - R - 14);
+      const perim = (a, b) => Math.PI * (3 * (a + b) - Math.sqrt((3 * a + b) * (a + 3 * b)));
+      const build = (nr) => { const rs = []; for (let k = 1; k <= nr; k++) { const ay = R * 2.3 + (k - 1) * step, ax = Math.min(aMax - (nr - k) * step, ay * 1.3); rs.push({ ax, ay, cap: k === 1 ? 4 : Math.max(1, Math.floor(perim(ax, ay) / step)), cnt: 0 }); } return rs; };
+      const capOf = (rs) => rs.reduce((s, r) => s + r.cap, 0);
+      const nrMax = Math.max(1, Math.floor((aMax - R * 2.6) / step) + 1);
+      let nr = 1;
+      while (nr < nrMax && capOf(build(nr)) < n - 1) nr++;
+      const rings = build(nr), last = rings[nr - 1];
+      let left = Math.max(0, n - 1);
+      rings[0].cnt = Math.min(4, left); left -= rings[0].cnt;
+      const outerCap = capOf(rings.slice(1));
+      rings.slice(1).forEach((r, i, arr) => { r.cnt = i === arr.length - 1 ? left : Math.min(left, Math.round((n - 1 - rings[0].cnt) * r.cap / outerCap)); left -= r.cnt; });
+      while (last.cnt > 1 && perim(last.ax, last.ay) < last.cnt * step) last.ay += 2;   // more than the width holds: grow downward
+      tilesBox.style.height = Math.round(2 * (last.ay + R) + 36) + 'px';
       H = tilesBox.clientHeight; cx = W / 2; cy = H / 2;
-      const n = bodies.length, inner = Math.min(4, Math.max(0, n - 1)), outer = Math.max(0, n - 1 - inner);
-      bodies.forEach((b, i) => {
-        if (i === 0) { b.ring = 0; b.ax = b.ay = b.ph = b.w = 0; }
-        else if (i <= inner) { b.ring = 1; b.ax = aIn; b.ay = bIn; b.ph = .4 + (i - 1) * Math.PI * 2 / inner; b.w = Math.PI * 2 / TURN_IN; }
-        else { b.ring = 2; b.ax = aOut; b.ay = bOut; b.ph = -.2 + (i - 1 - inner) * Math.PI * 2 / outer; b.w = Math.PI * 2 / TURN_OUT; }
+      let i = 1;
+      bodies[0] && Object.assign(bodies[0], { ring: 0, ax: 0, ay: 0, ph: 0, w: 0 });
+      rings.forEach((r, k) => {
+        const turn = TURN_IN + (TURN_OUT - TURN_IN) * (nr > 1 ? k / (nr - 1) : 1);
+        for (let j = 0; j < r.cnt; j++, i++) Object.assign(bodies[i], { ring: k + 1, ax: r.ax, ay: r.ay, ph: .4 - .6 * k + j * Math.PI * 2 / r.cnt, w: Math.PI * 2 / turn });
       });
       orbitHomes();
       bodies.forEach((b) => { if (b.fresh) { b.x = b.hx; b.y = b.hy; b.fresh = false; } });
@@ -404,12 +439,19 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
         measure();
         if (!bodies.length) {
           const L = els.filter((e) => e.dataset.side === 'l'), Rr = els.filter((e) => e.dataset.side !== 'l');
-          const col = (list, x0, x1) => list.map((el, k) => {
-            const x = Math.max(R + 4, Math.min(W - R - 4, (x0 + x1) / 2 + (k % 2 ? 14 : -14)));
-            const y = H * (0.3 + 0.62 * (list.length > 1 ? k / (list.length - 1) : .5));
-            const ang = rnd(0, Math.PI * 2), sp = REDUCED ? 0 : rnd(.45, .75);
-            return { el, x, y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, a: 0, va: 0, hx: 0, hy: 0, tilt: parseFloat(el.style.getPropertyValue('--tilt')) || 0 };
-          });
+          /* start in short columns beside the text (as many as the side
+             room takes: 35 tiles since the coins, 2026-09-30), then roam */
+          const col = (list, x0, x1) => {
+            const cell = 2 * R + 10, rows = Math.max(1, Math.floor(H * .62 / cell));
+            const cols = Math.max(1, Math.min(Math.ceil(list.length / rows), Math.floor((x1 - x0) / cell))), nr = Math.ceil(list.length / cols);
+            return list.map((el, k) => {
+              const c = k % cols, r = Math.floor(k / cols);
+              const x = Math.max(R + 4, Math.min(W - R - 4, (x0 + x1) / 2 + (c - (cols - 1) / 2) * cell + (r % 2 ? 6 : -6)));
+              const y = H * (0.3 + 0.62 * (nr > 1 ? r / (nr - 1) : .5));
+              const ang = rnd(0, Math.PI * 2), sp = REDUCED ? 0 : rnd(.45, .75);
+              return { el, x, y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, a: 0, va: 0, hx: 0, hy: 0, tilt: parseFloat(el.style.getPropertyValue('--tilt')) || 0 };
+            });
+          };
           bodies = [...col(L, 0, obs.x0), ...col(Rr, obs.x1, W)];
         }
       }
