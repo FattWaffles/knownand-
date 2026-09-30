@@ -456,3 +456,54 @@ h2 {
 }
 .tree a.row.sel .sq { animation: sq-turn 5.4s cubic-bezier(.65, 0, .2, 1) infinite; }
 @media (prefers-reduced-motion: reduce) { .tree a.row.sel .sq { animation: none; } }
+
+/* ---- home page treatment (Josie, 2026-09-30, from a crop of the Quote On card's
+   rounded corner beside a grid line: "this page's treatment needs to match the
+   hp treatments"). What the home page settled that night comes across:
+   square corners on every container, the column a whole number of 72px cells
+   with each card one pixel wider so its left and right hairlines sit on two
+   grid lines, and hover / selected as soft blocks cut from the surface colour
+   (--neu, the home page's tokens): raised on hover, pressed in when selected.
+   The veil no longer spreads past a block (that spread was the rounded halo in
+   the crop); the text blocks carry a card's 24px inset instead, so their edges
+   sit on the grid as well. The column is 12 cells (864px; main's max-width is
+   border-box, so --col is what is left after the sidebar and the paddings;
+   it was 840 before). The image well is a pressed trough like the home page's
+   progress bar. The tree's selected row is pressed, hover raised. ---- */
+:root { --neu: #151515; --neu-lt: rgba(255, 255, 255, .07); --neu-dk: rgba(0, 0, 0, .85);
+        --raise-sm: -2px -2px 5px var(--neu-lt), 3px 3px 6px var(--neu-dk);
+        --raise-lg: -5px -5px 12px var(--neu-lt), 7px 7px 16px var(--neu-dk);
+        --press-sm: inset 2px 2px 4px var(--neu-dk), inset -2px -2px 4px var(--neu-lt);
+        --press-lg: inset 5px 5px 12px var(--neu-dk), inset -5px -5px 12px var(--neu-lt);
+        --col: 864px; --hx: 24px; }
+:root[data-theme="light"] { --neu: #F3F4F6; --neu-lt: #FFFFFF; --neu-dk: rgba(10, 10, 10, .14); }
+/* on the grid: the column is whole cells at every width above the phone break (main's left edge is already 4 cells in) */
+@media (min-width: 721px) { main > * { max-width: round(down, 100%, 72px); } }
+/* square, no spread: the veil is the block itself */
+.hero h1, .hero .meta, .intro, .brands, .filter, .entry, .cv > *, .post { border-radius: 0; box-shadow: none; }
+.hero h1, .cv > h1 { padding-left: var(--hx); padding-right: var(--hx); }
+.hero .row { padding: 12px var(--hx); }
+@keyframes glint {
+  0%   { transform: translateX(-72px); opacity: 0; }
+  2%   { opacity: 1; }
+  16%  { opacity: 1; }
+  18%  { transform: translateX(calc(100cqw + 2 * var(--hx))); opacity: 0; }
+  100% { transform: translateX(calc(100cqw + 2 * var(--hx))); opacity: 0; }
+}
+.intro { padding: 14px var(--hx) 2px; }
+.brands { margin-left: calc(-1 * var(--hx)); margin-right: calc(-1 * var(--hx)); padding-left: var(--hx); padding-right: var(--hx); }
+.filter { padding: 12px var(--hx); }
+/* cards: one pixel wider than the column so both hairlines sit on grid lines; hover raised, selected pressed */
+.entry, .cv section { width: calc(100% + 1px); }
+.entry { transition: border-color .2s, background-color .2s, box-shadow .25s; }
+@media (hover: hover) { .entry:hover { background: var(--neu); box-shadow: var(--raise-lg); } }
+.entry.sel, .entry.sel:hover { border-color: var(--line); background: var(--neu); box-shadow: var(--press-lg); }
+/* the image well is a pressed trough in the surface colour, square */
+.shot { border-radius: 0; background: var(--neu); box-shadow: var(--press-sm); }
+.shot img, .shot.row img { border-radius: 0; }
+/* tree rows: square; hover raised, selected pressed (the old square rim is history) */
+.tree .row { border-radius: 0; }
+.tree .row:hover { background: var(--neu); box-shadow: var(--raise-sm); }
+.tree .row.sel, .tree .row.sel:hover, .tree .row:focus-visible { background: var(--neu); box-shadow: var(--press-sm); }
+@media (max-width: 720px) { :root { --hx: 18px; } }
+@media (prefers-reduced-motion: reduce) { .entry { transition: none; } }

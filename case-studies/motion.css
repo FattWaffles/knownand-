@@ -142,10 +142,10 @@
    edge like light on a wet rim, softened a touch. Browsers without @property
    show the ring still. Paused by the Motion switch and reduced motion. */
 @property --rim { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
-.entry, .cv section, .post { border-radius: 6px; }
+.entry, .cv section, .post { border-radius: 0; }   /* square, like the home page's cards (Josie, 2026-09-30: "match the hp treatments"; the 6px above is history) */
 .entry, .cv section { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), inset 0 0 28px rgba(255, 255, 255, .025); }
 .entry::after, .cv section::after, .post::after {
-  content: ""; position: absolute; inset: -1px; border-radius: 7px; padding: 1.5px; pointer-events: none;
+  content: ""; position: absolute; inset: -1px; border-radius: 0; padding: 1.5px; pointer-events: none;
   background: conic-gradient(from var(--rim),
     rgba(255, 255, 255, 0) 0deg, rgba(255, 255, 255, 0) 40deg,
     rgba(255, 255, 255, .55) 70deg, rgba(255, 170, 90, .5) 92deg, rgba(255, 255, 255, 0) 124deg,
@@ -160,7 +160,7 @@
 :root[data-theme="light"] .entry::after, :root[data-theme="light"] .cv section::after, :root[data-theme="light"] .post::after { opacity: .7; }
 html.motion-off .entry::after, html.motion-off .cv section::after, html.motion-off .post::after { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) { .entry::after, .cv section::after, .post::after { animation: none; } }
-.stage, .shot.motion .go { border-radius: 6px; }
+.stage, .shot.motion .go { border-radius: 0; }   /* the well and its stage are square too (2026-09-30) */
 .stage .stat, .stage.rank .panel { border-radius: 6px; }
 
 /* Light theme glints (Josie, 2026-09-30: "see the blurred colors travel down
