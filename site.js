@@ -94,19 +94,14 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
   $('#sub').innerHTML = S.sub;
   const cta = $('#cta'); cta.href = S.cta.url; $('span', cta).textContent = S.cta.label;
 
-  /* badges: a left column and a bottom-right cluster, like the reference */
-  const L_POS = [[-14, 56], [-4, 64], [-12, 72], [-2, 80], [-14, 88], [0, 96]];
-  const R_POS = [[196, 88], [150, 86], [106, 90], [60, 78], [18, 84]];
-  let li = 0, ri = 0;
-  const badges = S.stack.map((b, i) => {
-    const left = b.side === 'l';
-    const [x, y] = left ? (L_POS[li++] || [0, 60]) : (R_POS[ri++] || [0, 80]);
+  /* program icon tiles: rounded squares in the lattice's style, placed and
+     moved by the simulation below (hero coordinates) */
+  const hero = document.querySelector('.hero');
+  hero.insertAdjacentHTML('beforeend', S.stack.map((b, i) => {
     const ic = ICONS[b.icon] || { bg: '#151515', fg: '#fff', text: b.label.slice(0, 2) };
-    const tilt = ((i * 37) % 24) - 12, depth = (0.45 + ((i * 53) % 10) / 16).toFixed(2), delay = -((i * 0.7) % 5.5).toFixed(1);
-    return `<span class="badge" title="${b.label}" aria-hidden="true" data-depth="${depth}"
-      style="${left ? 'left' : 'right'}:${x}px;top:${y}%;--tilt:${tilt}deg;--d:${delay}s;background:${ic.bg};color:${ic.fg || '#fff'}">${ic.svg || ic.text}</span>`;
-  }).join('');
-  $('#badges').insertAdjacentHTML('beforeend', badges);
+    const tilt = ((i * 37) % 24) - 12;
+    return `<span class="badge" data-side="${b.side}" title="${b.label}" aria-hidden="true" style="--tilt:${tilt}deg;background:${ic.bg};color:${ic.fg || '#fff'}">${ic.svg || ic.text}</span>`;
+  }).join(''));
   $('#stack-list').textContent = 'Programs: ' + S.stack.map((b) => b.label).join(', ') + '.';
 
   /* currently building */
@@ -208,7 +203,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
      applies the saved choice before first paint). Dark is the default. */
   const root = document.documentElement, tbtn = $('#theme');
   const isDark = () => root.dataset.theme !== 'light';
-  const paintTheme = () => { tbtn.setAttribute('aria-pressed', String(isDark())); $('meta[name=theme-color]').setAttribute('content', isDark() ? '#050505' : '#F3EEE4'); };
+  const paintTheme = () => { tbtn.setAttribute('aria-pressed', String(isDark())); $('meta[name=theme-color]').setAttribute('content', isDark() ? '#050505' : '#FFFFFF'); };
   tbtn.addEventListener('click', () => {
     const next = isDark() ? 'light' : 'dark';
     root.dataset.theme = next;
@@ -244,61 +239,74 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     document.querySelectorAll('.bar i').forEach((i) => { i.style.width = i.dataset.w; });
   }));
 
-  /* Program icons: they flee the cursor (chase them), spring back home,
-     bump into each other and the hero's edges, and every bump pops a tiny
-     prismatic burst (the lattice's prism colours) on a canvas over the hero.
-     On phones/tablets the "Enable phone motion" button turns tilt into
-     gravity. Reduced motion: the icons stay put. */
+  /* Program icon tiles roam the hero: they drift, bounce off the hero's
+     edges, each other and the text block, and flee the cursor. Their red/blue
+     edge split widens with speed (--sp), like the lattice's turning squares.
+     Nothing is drawn on bumps (Josie, 2026-09-30: "no rainbow from collision").
+     Phone tilt (after the motion button) becomes gravity. Reduced motion:
+     the tiles sit still at their starting places. */
   const els = [...document.querySelectorAll('.badge')];
   const heroIn = $('#badges');
-  if (!REDUCED && els.length) {
-    const R = 23, FLEE = 150, PRISM = ['#FF3B30', '#FFD60A', '#34C759', '#34E2FF', '#2F6BFF', '#B4009C'];
-    let bodies = [], W = 0, H = 0, running = false, lastT = 0, active = false;
-    const mouse = { x: -1e4, y: -1e4, t: -1e4 }, grav = { x: 0, y: 0 }, particles = [];
-    const burst = document.createElement('canvas'); burst.className = 'burst'; burst.setAttribute('aria-hidden', 'true');
-    heroIn.appendChild(burst);
-    const bctx = burst.getContext('2d');
+  if (els.length) {
+    const R = 24, FLEE = 150, MAXV = 4.2;
+    let bodies = [], W = 0, H = 0, obs = null, running = false, lastT = 0, active = false, inView = true;
+    const mouse = { x: -1e4, y: -1e4 }, grav = { x: 0, y: 0 };
     const visible = () => getComputedStyle(els[0]).display !== 'none';
+    const rnd = (a, b) => a + Math.random() * (b - a);
 
+    function measure() {
+      const hb = hero.getBoundingClientRect(); W = hb.width; H = hb.height;
+      const parts = ['.ava', '.pills', 'h1', '.sub', '.cta-row', '.nl-line'].map((q) => heroIn.querySelector(q)).filter(Boolean).map((el) => el.getBoundingClientRect());
+      obs = { x0: Math.min(...parts.map((r) => r.left)) - hb.left - 10, x1: Math.max(...parts.map((r) => r.right)) - hb.left + 10,
+              y0: Math.min(...parts.map((r) => r.top)) - hb.top - 10, y1: Math.max(...parts.map((r) => r.bottom)) - hb.top + 10 };
+    }
     function layout() {
       active = visible();
-      if (!active) { els.forEach((el) => { el.classList.remove('phys'); el.style.transform = ''; }); return; }
-      const box = heroIn.getBoundingClientRect();
-      W = box.width; H = box.height;
-      const dpr = Math.min(2, devicePixelRatio || 1);
-      burst.width = Math.round(W * dpr); burst.height = Math.round(H * dpr);
-      bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      bodies = els.map((el) => {
-        el.classList.add('phys'); el.style.transform = 'none';
-        const r = el.getBoundingClientRect();
-        const hx = r.left - box.left + r.width / 2, hy = r.top - box.top + r.height / 2;
-        return { el, hx, hy, x: hx, y: hy, vx: 0, vy: 0, a: 0, va: 0, tilt: parseFloat(el.style.getPropertyValue('--tilt')) || 0 };
-      });
-      bodies.forEach(place);
-    }
-    function place(b) { b.el.style.transform = `translate(${(b.x - b.hx).toFixed(1)}px, ${(b.y - b.hy).toFixed(1)}px) rotate(${(b.tilt + b.a).toFixed(1)}deg)`; }
-    function pop(x, y, n = 10) {
-      if (particles.length > 180) return;
-      for (let i = 0; i < n; i++) {
-        const ang = (i / n) * Math.PI * 2 + Math.random() * .5, sp = 1.4 + Math.random() * 1.8;
-        particles.push({ x, y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, life: 1, col: PRISM[i % PRISM.length], r: 1.5 + Math.random() * 1.3 });
+      if (!active) return;
+      measure();
+      if (!bodies.length) {
+        const L = els.filter((e) => e.dataset.side === 'l'), Rr = els.filter((e) => e.dataset.side !== 'l');
+        const col = (list, x0, x1) => list.map((el, k) => {
+          const x = Math.max(R + 4, Math.min(W - R - 4, (x0 + x1) / 2 + (k % 2 ? 14 : -14)));
+          const y = H * (0.3 + 0.62 * (list.length > 1 ? k / (list.length - 1) : .5));
+          const ang = rnd(0, Math.PI * 2), sp = REDUCED ? 0 : rnd(.45, .75);
+          return { el, x, y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, a: 0, va: 0, tilt: parseFloat(el.style.getPropertyValue('--tilt')) || 0 };
+        });
+        bodies = [...col(L, 0, obs.x0), ...col(Rr, obs.x1, W)];
       }
+      bodies.forEach((b) => { b.x = Math.max(R, Math.min(W - R, b.x)); b.y = Math.max(R, Math.min(H - R, b.y)); place(b, 0); });
+    }
+    function place(b, sp) {
+      b.el.style.transform = `translate(${(b.x - R).toFixed(1)}px, ${(b.y - R).toFixed(1)}px) rotate(${(b.tilt + b.a).toFixed(1)}deg)`;
+      b.el.style.setProperty('--sp', Math.min(1, sp / 2.4).toFixed(2));
+    }
+    function bounceRect(b) {   // keep the tile out of the text block
+      if (!obs) return;
+      const x0 = obs.x0 - R, x1 = obs.x1 + R, y0 = obs.y0 - R, y1 = obs.y1 + R;
+      if (b.x <= x0 || b.x >= x1 || b.y <= y0 || b.y >= y1) return;
+      const dl = b.x - x0, dr = x1 - b.x, dt = b.y - y0, db = y1 - b.y, m = Math.min(dl, dr, dt, db);
+      if (m === dl) { b.x = x0; b.vx = -Math.abs(b.vx) * .95; }
+      else if (m === dr) { b.x = x1; b.vx = Math.abs(b.vx) * .95; }
+      else if (m === dt) { b.y = y0; b.vy = -Math.abs(b.vy) * .95; }
+      else { b.y = y1; b.vy = Math.abs(b.vy) * .95; }
     }
     function step(dt) {
-      const k = dt * 60; let moving = false;
+      const k = dt * 60;
       for (const b of bodies) {
-        b.vx += (b.hx - b.x) * 0.02 * k; b.vy += (b.hy - b.y) * 0.02 * k;           // spring home
         const dx = b.x - mouse.x, dy = b.y - mouse.y, d = Math.hypot(dx, dy);
-        if (d < FLEE && d > .01) { const f = (1 - d / FLEE) * 3.4 * k; b.vx += dx / d * f; b.vy += dy / d * f; }  // flee the cursor
-        b.vx += grav.x * k; b.vy += grav.y * k;                                         // tilt gravity
-        const damp = Math.pow(.94, k); b.vx *= damp; b.vy *= damp;
+        if (d < FLEE && d > .01) { const f = (1 - d / FLEE) * 3.2 * k; b.vx += dx / d * f; b.vy += dy / d * f; }
+        b.vx += grav.x * k; b.vy += grav.y * k;
+        let sp = Math.hypot(b.vx, b.vy);
+        if (sp > MAXV) { b.vx *= MAXV / sp; b.vy *= MAXV / sp; sp = MAXV; }
+        else if (sp > .8) { const damp = Math.pow(.975, k); b.vx *= damp; b.vy *= damp; }   // shed the cursor's push, keep the drift
+        else if (sp < .35) { b.vx += rnd(-.06, .06) * k; b.vy += rnd(-.06, .06) * k; }      // never quite still
         b.x += b.vx * k; b.y += b.vy * k;
-        if (b.x < R) { b.x = R; if (b.vx < -1.2) pop(b.x - R, b.y, 7); b.vx = -b.vx * .6; }
-        if (b.x > W - R) { b.x = W - R; if (b.vx > 1.2) pop(b.x + R, b.y, 7); b.vx = -b.vx * .6; }
-        if (b.y < R) { b.y = R; if (b.vy < -1.2) pop(b.x, b.y - R, 7); b.vy = -b.vy * .6; }
-        if (b.y > H - R) { b.y = H - R; if (b.vy > 1.2) pop(b.x, b.y + R, 7); b.vy = -b.vy * .6; }
-        b.va = b.va * .9 + b.vx * .35; b.a += b.va * k;
-        if (Math.abs(b.vx) + Math.abs(b.vy) > .04 || Math.abs(b.x - b.hx) + Math.abs(b.y - b.hy) > .6) moving = true;
+        if (b.x < R) { b.x = R; b.vx = Math.abs(b.vx) * .95; }
+        if (b.x > W - R) { b.x = W - R; b.vx = -Math.abs(b.vx) * .95; }
+        if (b.y < R) { b.y = R; b.vy = Math.abs(b.vy) * .95; }
+        if (b.y > H - R) { b.y = H - R; b.vy = -Math.abs(b.vy) * .95; }
+        bounceRect(b);
+        b.va = b.va * .92 + b.vx * .25; b.a += b.va * k;
       }
       for (let i = 0; i < bodies.length; i++) for (let j = i + 1; j < bodies.length; j++) {
         const a = bodies[i], c = bodies[j];
@@ -308,50 +316,36 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
           a.x -= nx * ov; a.y -= ny * ov; c.x += nx * ov; c.y += ny * ov;
           const rv = (c.vx - a.vx) * nx + (c.vy - a.vy) * ny;
           if (rv < 0) {
-            const imp = -rv * .9;
+            const imp = -rv * .95;
             a.vx -= nx * imp; a.vy -= ny * imp; c.vx += nx * imp; c.vy += ny * imp;
-            if (-rv > 1.1) pop(a.x + nx * R, a.y + ny * R);
           }
         }
       }
-      bodies.forEach(place);
-      return moving;
-    }
-    function drawBursts(dt) {
-      bctx.clearRect(0, 0, W, H);
-      if (!particles.length) return false;
-      bctx.globalCompositeOperation = isDark() ? 'lighter' : 'source-over';
-      const k = dt * 60;
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx * k; p.y += p.vy * k; p.vx *= .92; p.vy *= .92; p.life -= .045 * k;
-        if (p.life <= 0) { particles.splice(i, 1); continue; }
-        bctx.globalAlpha = p.life; bctx.fillStyle = p.col;
-        bctx.beginPath(); bctx.arc(p.x, p.y, p.r * (.6 + p.life * .6), 0, Math.PI * 2); bctx.fill();
-      }
-      bctx.globalAlpha = 1;
-      return true;
+      bodies.forEach((b) => place(b, Math.hypot(b.vx, b.vy)));
     }
     function loop(t) {
+      if (!active || !inView || document.hidden) { running = false; return; }
       const dt = Math.min(.033, (t - lastT) / 1000 || .016); lastT = t;
-      const m = step(dt), p = drawBursts(dt);
-      if (m || p || t - mouse.t < 400) requestAnimationFrame(loop); else running = false;
+      step(dt);
+      requestAnimationFrame(loop);
     }
-    function wake() { if (!running && active) { running = true; lastT = performance.now(); requestAnimationFrame(loop); } }
+    function wake() { if (!running && active && !REDUCED && inView && !document.hidden) { running = true; lastT = performance.now(); requestAnimationFrame(loop); } }
 
     addEventListener('mousemove', (e) => {
       if (!active) return;
-      const box = heroIn.getBoundingClientRect();
-      mouse.x = e.clientX - box.left; mouse.y = e.clientY - box.top; mouse.t = performance.now();
-      wake();
+      const hb = hero.getBoundingClientRect();
+      mouse.x = e.clientX - hb.left; mouse.y = e.clientY - hb.top;
     }, { passive: true });
     addEventListener('mouseleave', () => { mouse.x = -1e4; mouse.y = -1e4; });
-    let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(layout, 120); });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout); else layout();
-    layout();
+    let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); wake(); }, 120); });
+    document.addEventListener('visibilitychange', wake);
+    if ('IntersectionObserver' in window) new IntersectionObserver((en) => { inView = en[0].isIntersecting; wake(); }).observe(hero);
+    const start = () => { layout(); wake(); };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start);
+    start();
 
     const btn = $('#motion');
-    if ('DeviceOrientationEvent' in window && matchMedia('(pointer: coarse)').matches) {
+    if (!REDUCED && 'DeviceOrientationEvent' in window && matchMedia('(pointer: coarse)').matches) {
       btn.hidden = false;
       btn.addEventListener('click', async () => {
         try {
@@ -361,8 +355,8 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
           }
           addEventListener('deviceorientation', (e) => {
             const clamp = (v) => Math.max(-1, Math.min(1, v));
-            grav.x = clamp((e.gamma || 0) / 30) * .5; grav.y = clamp(((e.beta || 0) - 45) / 30) * .5;
-            mouse.t = performance.now(); wake();
+            grav.x = clamp((e.gamma || 0) / 30) * .4; grav.y = clamp(((e.beta || 0) - 45) / 30) * .4;
+            wake();
           });
           btn.textContent = 'Motion on'; btn.disabled = true;
         } catch (_) { btn.textContent = 'Motion unavailable'; }

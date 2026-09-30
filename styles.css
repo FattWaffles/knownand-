@@ -19,8 +19,9 @@
   color-scheme: dark;
 }
 :root[data-theme="light"] {
-  --bg: #F3EEE4; --fg: #0A0A0A; --muted: #6F6A60; --line: #DCD5C7; --card: #FAF7F1;
-  --band: rgba(10, 10, 10, .035); --band2: #E3DDD0; --grid: #E3DDD0;
+  /* light: white page (Josie, 2026-09-30: "light mode background should be white") */
+  --bg: #FFFFFF; --fg: #0A0A0A; --muted: #6B6B6B; --line: #E4E4E4; --card: #FFFFFF;
+  --band: rgba(10, 10, 10, .03); --band2: #ECECEC; --grid: #E9E9E9;
   --hover: rgba(10, 10, 10, .06); --blue-soft: rgba(27, 52, 240, .10);
   --node: #0A0A0A; --node-alpha: .35; --sq: #0A0A0A; --sq-alpha: .9;
   --glint-blend: multiply; --glint-width: 1.6; --glint-alpha: .4; --glint-glow: 2.5;
@@ -56,8 +57,7 @@ h2 { font-size: clamp(26px, 3.4vw, 34px); }
 :root[data-theme="light"] .theme .moon { display: none; }
 
 /* ---- hero ---- */
-.hero { position: relative; text-align: center; padding: 96px 20px 24px; overflow: hidden; }
-.band { position: relative; width: 100%; margin: 48px 0 0; pointer-events: none; }
+.hero { position: relative; text-align: center; padding: 96px 20px 84px; overflow: hidden; }
 .hero .grid { display: none; position: absolute; inset: 0; pointer-events: none;
   background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: 48px 48px; opacity: .9;
@@ -80,19 +80,17 @@ h2 { font-size: clamp(26px, 3.4vw, 34px); }
 .btn { display: inline-flex; align-items: center; gap: 9px; background: var(--fg); color: var(--bg); font: 600 14px/1 var(--sans); letter-spacing: -.01em; padding: 14px 24px; border-radius: var(--ri); transition: transform .15s, opacity .15s; }
 .btn:hover { transform: translateY(-1px); opacity: .92; }
 .btn .cal { width: 15px; height: 15px; opacity: .9; }
-.motion-btn { position: absolute; right: 0; bottom: -40px; background: var(--card); border: 1px solid var(--line); color: var(--muted); font: 500 10px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 8px 12px; border-radius: var(--ri); cursor: pointer; }
+.motion-btn { position: absolute; right: 0; bottom: -56px; background: var(--card); border: 1px solid var(--line); color: var(--muted); font: 500 10px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 8px 12px; border-radius: var(--ri); cursor: pointer; }
 .motion-btn[hidden] { display: none; }
 
-/* floating program icons */
-.badge { position: absolute; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
-  font: 600 12.5px var(--sans); letter-spacing: -.02em; color: #fff; border: 2px solid var(--bg);
-  box-shadow: 0 0 0 1px var(--line);
-  transform: rotate(var(--tilt, 0deg)) translate(var(--px, 0px), var(--py, 0px));
-  transition: transform .7s cubic-bezier(.2,.7,.2,1); animation: bob 5.5s ease-in-out infinite; animation-delay: var(--d, 0s); }
+/* program icon tiles: rounded squares with the lattice's red/blue edge
+   split, which widens with speed (--sp is set per frame by site.js) */
+.badge { position: absolute; left: 0; top: 0; z-index: 2; width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center;
+  font: 600 12.5px var(--sans); letter-spacing: -.02em; color: #fff; will-change: transform;
+  box-shadow: calc(-1px - var(--sp, 0) * 2.5px) 0 0 rgba(255, 59, 48, calc(.3 + var(--sp, 0) * .55)),
+              calc(1px + var(--sp, 0) * 2.5px) 0 0 rgba(47, 107, 255, calc(.3 + var(--sp, 0) * .55)),
+              0 calc(-1px - var(--sp, 0) * 1.5px) 0 rgba(255, 214, 10, calc(.14 + var(--sp, 0) * .3)); }
 .badge svg { width: 24px; height: 24px; display: block; }
-.badge.phys { animation: none; transition: none; will-change: transform; }
-.burst { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; }
-@keyframes bob { 0%, 100% { margin-top: 0; } 50% { margin-top: -7px; } }
 
 /* ---- sections ---- */
 .sec { padding: 60px 0; }
@@ -205,7 +203,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--blue); outline-
 @media (max-width: 1040px) {
   .table .thead, .row { grid-template-columns: 1fr 150px 170px; gap: 16px; }
 }
-@media (max-width: 880px) {
+@media (max-width: 1080px) {
   .badge, .motion-btn { display: none; }
   .hero { padding: 72px 20px 64px; }
 }
@@ -237,6 +235,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--blue); outline-
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .badge, .live i { animation: none; }
-  .badge, .bar i, .btn { transition: none; }
+  .live i { animation: none; }
+  .bar i, .btn { transition: none; }
 }
