@@ -53,6 +53,9 @@ window.TAGS = [
   { id: 'research', label: 'research', color: 'mag' },
   { id: 'brand', label: 'brand', color: 'verm' },
   { id: 'web', label: 'web', color: 'ink' },
+  /* Josie, 2026-09-30: "add a folder for side quests… and another folder for booth design and builds" */
+  { id: 'side', label: 'side quests', color: 'ink' },
+  { id: 'booth', label: 'booth design + builds', color: 'verm' },
 ];
 
 /* Newest first, except the web3 projects, which sit at the top (Josie,
@@ -74,7 +77,15 @@ window.ENTRIES = [
     img: { src: A + 'catblast-icon.png', alt: 'App icon: a grumpy orange and purple cat in an open cardboard box.', w: 560, h: 560, small: true },
   },
   {
-    date: '2026–27', tag: 'brand', title: 'NFC cards, then a booth',
+    date: 'September 2026', tag: 'side', title: 'Blender 3D renders',
+    text: 'Renders made in Blender: material and lighting studies for brand systems, and the first massing of the booth. Add `img` or `imgs` here as renders are ready.',
+  },
+  {
+    date: '2026–27', tag: 'booth', title: 'Booth design + builds',
+    text: 'The walk-in brand booth: design, materials and build notes as they happen. In progress.',
+  },
+  {
+    date: '2026–27', tag: 'booth', title: 'NFC cards, then a booth',
     text: 'Tap-to-open business cards first. The long game is a walk-in brand booth.',
   },
   {
