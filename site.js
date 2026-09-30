@@ -219,7 +219,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
   $('#cells').innerHTML = cells(L.items, (it, i) => `
       <span class="idx">${pad(i + 1)}</span><span class="imp">↑ Improving</span>
       <div class="glyph" aria-hidden="true">${it.glyph}</div>
-      <div><h3>${it.name}</h3><p>${it.text}</p></div>`);
+      <div><h3>${it.url ? `<a href="${it.url}">${it.name}<span class="ext" aria-hidden="true"> →</span></a>` : it.name}</h3><p>${it.text}</p></div>`);
   $('#steps').innerHTML = L.steps.map((s) => `<span>${s}</span>`).join('<i aria-hidden="true">→</i>');
 
   /* security layer + certifications */

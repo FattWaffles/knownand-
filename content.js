@@ -80,6 +80,7 @@ window.SITE = {
   links: [
     { label: 'Case studies', url: CASES },
     { label: 'Pricing', url: 'pricing.html' },
+    { label: 'Using AI', url: 'using-ai-as-a-digital-artist-and-researcher.html' },
     { label: 'Site source', url: GH + '/knownand-' },
     { label: 'LinkedIn', url: 'https://www.linkedin.com/in/josephinerigali/' },
     { label: 'GitHub', url: GH },
@@ -183,6 +184,8 @@ window.LEARNING = {
     { glyph: 'Gd', name: 'Godot', text: 'Shipping a game I designed and drew' },
     { glyph: '3D', name: '3D + motion', text: 'Brand systems that move' },
     { glyph: 'Sh', name: 'Shopify', text: 'Themes built around one flagship product' },
+    /* `url` makes the name a link (Josie, 2026-09-30: "add it to the website") */
+    { glyph: 'Eth', name: 'Using AI, in the open', text: 'Where the models enter my work, where they stop, and the rules I hold to', url: 'using-ai-as-a-digital-artist-and-researcher.html' },
   ],
   steps: ['Research', 'Design', 'Build', 'Ship'],
 };
