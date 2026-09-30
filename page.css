@@ -35,6 +35,8 @@
 .p-note { margin: 14px 0 0; font: 600 11px/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .p-note:empty { display: none; }
 .next .btn { margin-top: 4px; }
+.ar-links { justify-content: flex-start; margin-top: 18px; }
+.ar-links p { margin: 0; font-size: 14px; }
 
 /* ---- legal: contents rail + reading column on a card ---- */
 .doc { display: grid; grid-template-columns: 190px 1fr; gap: 48px; align-items: start; background: var(--card); border: 1px solid var(--line); width: calc(100% + 1px); padding: 40px 44px 48px; }

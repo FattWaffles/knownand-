@@ -422,3 +422,23 @@ footer { font-size: 11.5px; font-weight: 600; }
 .soc.follow svg { color: var(--blue); }
 .follow-form { margin-top: 12px; }
 .follow-form[hidden] { display: none; }
+
+/* ---- sharper chevron (Josie, 2026-09-30, night: "make this arrow stick out
+   more and sharper shadows, as if it was a 90 degree edge covered in a soft
+   blanket"): the chevron is cut square (square caps, mitred joins, a little
+   heavier) and its shading is two layers per side: a tight 1px contact shadow
+   with no blur (the 90 degree edge) under a short soft shadow (the blanket).
+   Own tokens, stronger than the row tokens, because the chevron is small and
+   the old soft shadows made it a smudge. Hover lifts it further; open still
+   rotates it 180deg so the same shading reads as pressed. ---- */
+:root { --arw-edge-lt: rgba(255, 255, 255, .18); --arw-lt: rgba(255, 255, 255, .10);
+        --arw-edge-dk: rgba(0, 0, 0, .95);       --arw-dk: rgba(0, 0, 0, .85); }
+:root[data-theme="light"] { --arw-edge-lt: #FFFFFF; --arw-lt: #FFFFFF;
+        --arw-edge-dk: rgba(10, 10, 10, .28);    --arw-dk: rgba(10, 10, 10, .18); }
+:root { --arw-raise: drop-shadow(-1px -1px 0 var(--arw-edge-lt)) drop-shadow(-2px -2px 3px var(--arw-lt))
+                     drop-shadow(1px 1px 0 var(--arw-edge-dk))   drop-shadow(3px 3px 3px var(--arw-dk));
+        --arw-lift:  drop-shadow(-1px -1px 0 var(--arw-edge-lt)) drop-shadow(-3px -3px 4px var(--arw-lt))
+                     drop-shadow(1px 1px 0 var(--arw-edge-dk))   drop-shadow(4px 4px 4px var(--arw-dk)); }
+.arrow svg { stroke-width: 5.2; stroke-linecap: square; stroke-linejoin: miter; filter: var(--arw-raise); }
+.acc-head:hover .arrow svg { filter: var(--arw-lift); }
+.row.acc.open .acc-head:hover .arrow svg { filter: var(--arw-raise); }

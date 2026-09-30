@@ -50,7 +50,8 @@ window.SITE = {
 
   /* Floating program icons either side of the hero. `icon` names a drawing
      in site.js (claude, figma, photoshop, illustrator, aftereffects,
-     procreate, github, solana, autocad, godot, shopify, blender). `side` l = left
+     procreate, github, solana, autocad, godot, shopify, blender, chatgpt, mistral,
+     alephalpha, cohere, qwen, kimi). `side` l = left
      column, top to bottom; r = bottom-right cluster, outer to inner. */
   stack: [
     { label: 'Claude',        icon: 'claude',       side: 'l' },
@@ -65,6 +66,15 @@ window.SITE = {
     { label: 'Godot',         icon: 'godot',        side: 'r' },
     { label: 'Shopify',       icon: 'shopify',      side: 'r' },
     { label: 'Blender',       icon: 'blender',      side: 'r' },
+    /* AI models used in ideation (Josie, 2026-09-30); the privacy page
+       (section 4, "When models are used") and the article page list the
+       same set, so keep the three in step. */
+    { label: 'ChatGPT',       icon: 'chatgpt',      side: 'l' },
+    { label: 'Mistral',       icon: 'mistral',      side: 'r' },
+    { label: 'Aleph Alpha',   icon: 'alephalpha',   side: 'l' },
+    { label: 'Cohere',        icon: 'cohere',       side: 'r' },
+    { label: 'Qwen',          icon: 'qwen',         side: 'l' },
+    { label: 'Kimi K3',       icon: 'kimi',         side: 'r' },
   ],
 
   links: [
@@ -325,3 +335,12 @@ window.PRICING = {
   ctaText: 'A few days, one map of how your work actually moves, and a ranked plan for what to design, build or automate first. The map is yours to keep.',
   note: 'Prices in US dollars, before tax.',
 };
+
+/* Article page (using-ai-as-a-digital-artist-and-researcher.html; linked
+   from the privacy policy). Josie, 2026-09-30: her ideation process, "which
+   I will outline in a video as well as write a paper on... pretend like it's
+   already made and link it".
+   >>> PLACEHOLDERS: set `video` and `paper` to their URLs when they exist
+   and two buttons appear at the end of the article; until then `note`
+   shows there. The article text itself is in the html file. */
+window.ARTICLE = { video: '', paper: '', note: 'The video and the paper are linked here on publication.' };

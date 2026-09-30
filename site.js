@@ -47,6 +47,14 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     godot:        { bg: '#478CBF', svg: svg(`<rect x="10.5" y="4" width="3" height="4" rx="1" fill="#fff"/><rect x="4" y="7" width="16" height="11" rx="5.5" fill="#fff"/><circle cx="9" cy="12.5" r="1.9" fill="#478CBF"/><circle cx="15" cy="12.5" r="1.9" fill="#478CBF"/>`) },
     blender:      { bg: '#E87D0D', svg: svg(`<path d="M3.5 7.5h7.5M2.5 12h6M5.5 3.5l5.2 4.6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="14.2" cy="14" r="5.4" fill="#265787" stroke="#fff" stroke-width="2.6"/><circle cx="14.2" cy="14" r="1.6" fill="#fff"/>`) },
     shopify:      { bg: '#96BF48', svg: svg(`<path d="M8.5 9V7.5a3.5 3.5 0 0 1 7 0V9" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M6 9h12l1 11.5H5z" fill="#fff"/><text x="12" y="17.6" font-size="7.5" font-weight="700" fill="#96BF48" text-anchor="middle" font-family="Space Grotesk, sans-serif">S</text>`) },
+    /* AI models (Josie, 2026-09-30: "include the other ai models icons in the
+       hero"): simplified marks in each maker's colours, like the rest */
+    chatgpt:      { bg: '#10A37F', svg: svg(`<g fill="none" stroke="#fff" stroke-width="1.9" stroke-linejoin="round">${[0,60,120,180,240,300].map((a) => `<rect x="9.6" y="3.2" width="4.8" height="10.4" rx="2.4" transform="rotate(${a} 12 12)"/>`).join('')}</g>`) },
+    mistral:      { bg: '#000000', svg: svg([[0,4],[0,1,3,4],[0,1,2,3,4],[0,2,4],[0,4]].map((row, r) => row.map((c) => `<rect x="${(3 + c * 3.6).toFixed(1)}" y="${(3 + r * 3.6).toFixed(1)}" width="3.4" height="3.4" fill="${['#FFD800','#FFAF00','#FF8205','#FA500F','#E10500'][r]}"/>`).join('')).join('')) },
+    alephalpha:   { bg: '#171717', fg: '#E4FF00', text: 'AA' },
+    cohere:       { bg: '#FF7759', fg: '#212121', text: 'co' },
+    qwen:         { bg: '#615CED', svg: svg(`<g fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5l3 3 5-6.5"/><path d="M8.5 12.5l3 3 5-6.5"/><path d="M13.5 12.5l3 3 5-6.5"/></g>`) },
+    kimi:         { bg: '#1F5EFF', fg: '#fff', text: 'Kimi' },
   };
 
   /* decode-in labels, from the previous version: the real text sits in a

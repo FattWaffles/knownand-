@@ -102,6 +102,15 @@
     $('#p-note').textContent = priced ? (P.note || '') : '';
   }
 
+  /* article: the video + paper buttons appear once their URLs are set */
+  const AR = window.ARTICLE, arBox = $('#ar-links');
+  if (arBox) {
+    const items = [];
+    if (AR && AR.video) items.push(`<a class="btn" href="${AR.video}"${ext(AR.video)}>Watch the video</a>`);
+    if (AR && AR.paper) items.push(`<a class="btn btn-lite" href="${AR.paper}"${ext(AR.paper)}>Read the paper</a>`);
+    arBox.innerHTML = items.length ? items.join('') : `<p class="muted">${(AR && AR.note) || ''}</p>`;
+  }
+
   /* decode-in: eyebrows on first view, like the home page */
   if (!REDUCED) {
     document.querySelectorAll('.eyebrow').forEach((el) => {
