@@ -412,3 +412,13 @@ footer { font-size: 11.5px; font-weight: 600; }
 .row.acc.open > .acc-head::before, .row.acc.open > .acc-head:hover::before { opacity: 0; }
 .acc-box { margin: 0; padding: 0 24px 26px 82px; border-radius: 0; background: transparent; box-shadow: none; }
 @media (max-width: 840px) { .acc-box { margin: 0; padding: 0 20px 22px 78px; } }
+
+/* ---- per-project updates (Josie, 2026-09-30: "subscribe to get updates on
+   the project" on current and recently finished projects): the pill is a
+   social tag with the bell in blue, in the tag cluster of every building row
+   and in the open panel of the recent shipped rows (FOLLOW in content.js).
+   Without a list provider it is a mailto link; with one it opens the small
+   form under the row text, styled as the weekly sign-up. ---- */
+.soc.follow svg { color: var(--blue); }
+.follow-form { margin-top: 12px; }
+.follow-form[hidden] { display: none; }

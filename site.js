@@ -85,9 +85,25 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     itch: '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 3.5h11M3 3.5v3.2a1.7 1.7 0 0 0 3.4 0 1.7 1.7 0 0 0 3.3 0 1.7 1.7 0 0 0 3.3 0V3.5M3.6 8v5h8.8V8"/></svg>',
   };
   const SOC_LABEL = { github: 'GitHub', x: 'X', linkedin: 'LinkedIn', discord: 'Discord', web: 'Site', play: 'Google Play', appstore: 'App Store', itch: 'itch.io' };
-  const socials = (list) => (list && list.length)
-    ? `<span class="socs">${list.map((t) => `<a class="soc" href="${t.url}"${ext(t.url)}>${SOC[t.kind] || SOC.web}<span>${t.label || SOC_LABEL[t.kind] || t.kind}</span></a>`).join('')}</span>`
+  const socials = (list, extra = '') => ((list && list.length) || extra)
+    ? `<span class="socs">${(list || []).map((t) => `<a class="soc" href="${t.url}"${ext(t.url)}>${SOC[t.kind] || SOC.web}<span>${t.label || SOC_LABEL[t.kind] || t.kind}</span></a>`).join('')}${extra}</span>`
     : '';
+
+  /* per-project updates (Josie, 2026-09-30: "subscribe to get updates on the
+     project" on current and recently finished projects). FOLLOW in content.js
+     sets the label, how many shipped rows count as recent, and the route: a
+     mailto link naming the project or, with a list provider, a small form on
+     the row that the pill opens. */
+  const F = window.FOLLOW || {};
+  const BELL = '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.3a4 4 0 0 0-8 0c0 4.7-2 6-2 6h12s-2-1.3-2-6"/><path d="M9.2 14a1.3 1.3 0 0 1-2.3 0"/></svg>';
+  const follow = (title) => F.label
+    ? `<a class="soc follow" href="mailto:${F.mailto}?subject=${encodeURIComponent('Updates on ' + title)}&amp;body=${encodeURIComponent(`Please send me updates on ${title} from Known, and.`)}" title="${F.label} on ${title} by email">${BELL}<span>${F.label}</span></a>`
+    : '';
+  const followForm = (title, id) => (F.label && F.action)
+    ? `<form class="signup follow-form" action="${F.action}" method="post" hidden><label class="sr" for="fl-${id}">Email address for updates on ${title}</label><input id="fl-${id}" type="email" name="${F.field || 'email'}" autocomplete="email" inputmode="email" placeholder="you@example.com" required><input type="hidden" name="project" value="${title}"><button class="btn btn-lite" type="submit">${F.label}</button></form>`
+    : '';
+  const wantsFollow = (row, i, n = Infinity) => (row.follow != null ? !!row.follow : i < n);
+  const recent = (d, i) => wantsFollow(d, i, F.recent || 0);
 
   /* top + hero */
   $('#brand').textContent = S.domain;
@@ -127,9 +143,10 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
   $('#building').innerHTML = B.map((b, i) => `
     <div class="row" data-start="${b.started}">
       <div class="proj"><div class="num">${i + 1}</div><div>
-        <h3>${b.title}<span class="tag building">${b.status || 'Building'}</span>${socials(b.social)}</h3>
+        <h3>${b.title}<span class="tag building">${b.status || 'Building'}</span>${socials(b.social, wantsFollow(b, i) ? follow(b.title) : '')}</h3>
         <p>${b.text}</p>
         <p class="meta">${b.kind} · Started ${fmtDate(new Date(b.started))}${b.note ? ' · ' + b.note : ''}</p>
+        ${wantsFollow(b, i) ? followForm(b.title, 'b' + i) : ''}
       </div></div>
       <div class="time" data-label="Building time"><b class="clock" aria-live="off">—</b><span>Counting live</span></div>
       <div class="pct-wrap" data-label="Completed">
@@ -156,7 +173,8 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       <div class="acc-body" id="acc-p-${i}" role="region" aria-labelledby="acc-h-${i}"${i ? ' inert' : ''}>
         <div class="acc-panel"><div class="acc-box">
           <p>${d.sub}</p>
-          ${d.url || (d.social && d.social.length) ? `<div class="acc-links">${d.url ? `<a class="acc-link" href="${d.url}">Read the case study <span class="ext" aria-hidden="true">↗</span></a>` : ''}${socials(d.social)}</div>` : ''}
+          ${d.url || (d.social && d.social.length) || recent(d, i) ? `<div class="acc-links">${d.url ? `<a class="acc-link" href="${d.url}">Read the case study <span class="ext" aria-hidden="true">↗</span></a>` : ''}${socials(d.social, recent(d, i) ? follow(d.title) : '')}</div>` : ''}
+          ${recent(d, i) ? followForm(d.title, 's' + i) : ''}
         </div></div>
       </div>
     </div>`).join('');
@@ -172,6 +190,14 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     const row = head.parentElement, wasOpen = row.classList.contains('open');
     ship.querySelectorAll('.row.acc.open').forEach((r) => setOpen(r, false));
     if (!wasOpen) setOpen(row, true);
+  });
+  /* with a list provider the updates pill opens the row's form instead of mail */
+  if (F.action) document.addEventListener('click', (ev) => {
+    const a = ev.target.closest('.soc.follow'), row = a && a.closest('.row'), form = row && $('.follow-form', row);
+    if (!form) return;
+    ev.preventDefault();
+    form.hidden = !form.hidden;
+    if (!form.hidden) $('input[type=email]', form).focus();
   });
 
   /* two-column cell grids (learning, security) */

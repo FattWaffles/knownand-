@@ -216,6 +216,24 @@ window.NEWSLETTER = {
   note: 'Weekly. Unsubscribe by replying.',
 };
 
+/* Per-project updates (Josie, 2026-09-30: "subscribe to get updates on the
+   project" on current and recently finished projects). Every BUILDING row
+   gets the pill; the first `recent` SHIPPED rows do too (the list is newest
+   first; 5 = the rows with case studies). Set `follow: true` or `false` on
+   a row to override. With `action` empty the pill is a mailto link with the
+   project in the subject, to the same inbox as the weekly sign-up, and the
+   visitor's mail app supplies their address. With a list provider, set
+   `action` + `field` (as for NEWSLETTER): the pill then opens a small email
+   form on the row, posting `field` and a hidden `project`. Add the provider
+   origin to form-action in the CSP meta in index.html. */
+window.FOLLOW = {
+  label: 'Get updates',
+  recent: 5,
+  action: '',
+  field: 'email',
+  mailto: 'rigaliresearchdevelopment@gmail.com',
+};
+
 window.ABOUT = {
   eyebrow: 'About me',
   title: 'I build brands as systems, and show the work as it happens.',
