@@ -1,9 +1,9 @@
-/* Shell for the secondary pages (pricing.html, roles.html, terms.html, privacy.html),
+/* Shell for the secondary pages (the private pricing page, roles.html, terms.html, privacy.html),
    added 2026-09-30: the same top bar, rotating mark, footer and theme switch
    as index.html, rendered from content.js. site.js expects the home page's
    hero and tables, so these pages load this file in its place. The pricing
-   page's cards come from window.PRICING, the roles page from window.ROLES
-   (content.js). Nothing in here is content. */
+   page's cards come from window.PRICING (its own data file, loaded by
+   that page only), the roles page from window.ROLES (content.js). Nothing in here is content. */
 (function () {
   const $ = (s, r = document) => r.querySelector(s);
   const S = window.SITE;
@@ -84,7 +84,7 @@
       <div><h3>${it.name}</h3><p>${it.text}</p>${it.after || ''}</div></div>`).join('');
   }
 
-  /* pricing cards (pricing.html only) */
+  /* pricing cards (the private pricing page only) */
   const P = window.PRICING, plans = $('#plans');
   if (P && plans) {
     $('#p-eyebrow').textContent = P.eyebrow;
