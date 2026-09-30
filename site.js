@@ -312,7 +312,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
   const heroIn = $('#badges');
   if (els.length) {
     const FLEE = 150, HOME = .02, INERTIA = .14, KICK = 3, JITTER = .45,
-          WIND = .035, WINDMAX = 1, WELL_G = .5, WELL_SWIRL = .35, WAVE = 9, PULSE = 2.2, PULSE_REACH = 360,
+          WIND = .05, WINDMAX = 1.2, WELL_G = .5, WELL_SWIRL = .22, WAVE = 9, PULSE = 2.2, PULSE_REACH = 360,
           TURN_IN = 22, TURN_OUT = 58;   // seconds per orbit, inner and outer ring
     let R = 24, bodies = [], W = 0, H = 0, cx = 0, cy = 0, T = 0, obs = null, running = false, lastT = 0, active = 'off', lastMode = '', inView = true;
     let scrollDelta = 0, scrollV = 0, lastY = scrollY;
@@ -448,7 +448,7 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
         }
         let sp = Math.hypot(b.vx, b.vy);
         if (sp > MAXV) { b.vx *= MAXV / sp; b.vy *= MAXV / sp; sp = MAXV; }
-        else if (tray) { const damp = Math.pow(well.on ? .93 : .9, k); b.vx *= damp; b.vy *= damp; }   // settle onto the orbit; looser round the finger
+        else if (tray) { const damp = Math.pow(well.on ? .92 : .9, k); b.vx *= damp; b.vy *= damp; }   // settle onto the orbit; looser round the finger
         else if (sp > .8) { const damp = Math.pow(.975, k); b.vx *= damp; b.vy *= damp; }   // shed the cursor's push, keep the drift
         else if (sp < .35) { b.vx += rnd(-.06, .06) * k; b.vy += rnd(-.06, .06) * k; }      // never quite still
         b.x += b.vx * k; b.y += b.vy * k;
