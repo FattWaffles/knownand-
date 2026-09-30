@@ -99,6 +99,8 @@
       <div><h3>${it.name}</h3><p>${it.text}</p></div></div>`).join('');
     const cta = $('#p-cta'); cta.href = P.cta.url; cta.textContent = P.cta.label;
     $('#p-cta-text').textContent = P.ctaText || '';
+    const sub = $('#p-sub');
+    if (sub) { if (P.subscribe) { sub.href = P.subscribe.url; sub.textContent = P.subscribe.label; } else sub.remove(); }
     $('#p-note').textContent = priced ? (P.note || '') : '';
   }
 
