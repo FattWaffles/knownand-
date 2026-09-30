@@ -97,6 +97,12 @@ window.BUILDING = [
     progress: 20,                         /* PLACEHOLDER */
   },
   {
+    title: 'What is crypto: more than a currency', kind: 'Article series, part 1',
+    text: 'Writing article 1 of a plain-language series on what a wallet, a signature and a chain actually do, drawn from building RobotFac3.',
+    started: '2026-09-28T09:00:00',      /* PLACEHOLDER */
+    progress: 15,                         /* PLACEHOLDER */
+  },
+  {
     title: 'Cat in a Box', kind: 'Android game',
     text: 'A block puzzle made of cats I drew, built in Godot with AI help. Design, art and build by me. Signed Android test build.',
     started: '2026-07-14T10:00:00',      /* PLACEHOLDER */
