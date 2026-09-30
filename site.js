@@ -94,6 +94,18 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
   $('#nav').innerHTML = S.nav.map((n) => n.icon
     ? `<a class="ico" href="${n.url}"${ext(n.url)} aria-label="${n.label}" title="${n.label}">${SOC[n.icon] || SOC.web}</a>`
     : `<a href="${n.url}">${n.label}</a>`).join('<span>·</span>');
+  /* brand mark: "Known, and <word>"; the word cycles with the decode churn
+     (Josie, 2026-09-30: the rotation from the viewer's old hero). Reduced
+     motion shows the first word only. */
+  const brand = $('#brand'), WORDS = S.brandWords || [];
+  if (brand && WORDS.length) {
+    brand.setAttribute('aria-label', 'Known, and: home');
+    brand.innerHTML = `Known, and <span class="w" aria-hidden="true" data-text="${WORDS[0]}">${WORDS[0]}</span>`;
+    if (!REDUCED && WORDS.length > 1) {
+      const w = $('.w', brand); let wi = 0;
+      setInterval(() => { wi = (wi + 1) % WORDS.length; w.dataset.text = WORDS[wi]; decode(w, 0); }, 3400);
+    }
+  }
   $('#pill-name').textContent = S.name;
   $('#pill-role').innerHTML = `<b>${S.studio}</b><span class="dot">·</span>${scr(S.role)}`;
   $('#h1').textContent = S.headline;
@@ -101,13 +113,15 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
   const cta = $('#cta'); cta.href = S.cta.url; $('span', cta).textContent = S.cta.label;
 
   /* program icon tiles: rounded squares in the lattice's style, placed and
-     moved by the simulation below (hero coordinates) */
+     moved by the simulation below (hero coordinates on wide screens, tray
+     coordinates on narrow ones). The Tilt chip under the tray is the narrow
+     screens' motion button; CSS hides it on wide screens. */
   const hero = document.querySelector('.hero');
   hero.insertAdjacentHTML('beforeend', '<div class="tiles" aria-hidden="true">' + S.stack.map((b, i) => {
     const ic = ICONS[b.icon] || { bg: '#151515', fg: '#fff', text: b.label.slice(0, 2) };
     const tilt = ((i * 37) % 24) - 12;
     return `<span class="badge" data-side="${b.side}" title="${b.label}" style="--tilt:${tilt}deg;background:${ic.bg};color:${ic.fg || '#fff'}">${ic.svg || ic.text}</span>`;
-  }).join('') + '</div>');
+  }).join('') + '</div><button class="tilt-btn" id="tilt" type="button" hidden aria-pressed="false">Tilt</button>');
   $('#stack-list').textContent = 'Programs: ' + S.stack.map((b) => b.label).join(', ') + '.';
 
   /* currently building */
@@ -270,22 +284,26 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     document.querySelectorAll('.bar i').forEach((i) => { i.style.width = i.dataset.w; });
   }));
 
-  /* Program icon tiles roam the hero: they drift, bounce off the hero's
-     edges, each other and the text block, and flee the cursor. Their red/blue
-     edge split widens with speed (--sp), like the lattice's turning squares.
-     Nothing is drawn on bumps (Josie, 2026-09-30: "no rainbow from collision").
-     Phone tilt (after the motion button) becomes gravity. Reduced motion:
-     the tiles sit still at their starting places. */
+  /* Program icon tiles. Wide screens: they roam the hero, drift, bounce off
+     the hero's edges, each other and the text block, and flee the cursor.
+     Narrow screens (the .tiles box is a relative tray under the sign-up, see
+     styles.css): the tiles sit in a grid of home slots; tap Tilt and the
+     phone's tilt from that pose becomes gravity, so they slide and pile up
+     inside the tray, and levelling the phone sends them back to their slots.
+     The red/blue edge split widens with speed (--sp), like the lattice's
+     turning squares. Nothing is drawn on bumps (Josie, 2026-09-30: "no
+     rainbow from collision"). Reduced motion: the tiles sit still at their
+     starting places and the tilt buttons stay hidden. */
   const els = [...document.querySelectorAll('.badge')];
   const heroIn = $('#badges');
   if (els.length) {
-    const R = 24, FLEE = 150, MAXV = 4.2;
-    let bodies = [], W = 0, H = 0, obs = null, running = false, lastT = 0, active = false, inView = true;
-    const mouse = { x: -1e4, y: -1e4 }, grav = { x: 0, y: 0 };
-    /* Wide screens: the tiles roam (the .tiles box is absolute over the hero).
-       Narrow screens: CSS lays them out as a static strip under the sign-up. */
+    const FLEE = 150, MAXV = 4.2, GAP = 10, COLS = 6, SLACK = 60, HOME = .02, GMAX = .35;
+    let R = 24, bodies = [], W = 0, H = 0, obs = null, running = false, lastT = 0, active = 'off', lastMode = '', inView = true, tiltOn = false;
+    const mouse = { x: -1e4, y: -1e4 }, grav = { x: 0, y: 0 }, gTarget = { x: 0, y: 0 };
     const tilesBox = hero.querySelector('.tiles');
-    const visible = () => getComputedStyle(tilesBox).position === 'absolute';
+    /* roam: .tiles is absolute over the hero. tray: .tiles is a relative box (narrow screens). */
+    const mode = () => { const p = getComputedStyle(tilesBox).position; return p === 'absolute' ? 'roam' : p === 'relative' ? 'tray' : 'off'; };
+    const on = () => active !== 'off';
     const rnd = (a, b) => a + Math.random() * (b - a);
 
     function measure() {
@@ -294,19 +312,43 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       obs = { x0: Math.min(...parts.map((r) => r.left)) - hb.left - 10, x1: Math.max(...parts.map((r) => r.right)) - hb.left + 10,
               y0: Math.min(...parts.map((r) => r.top)) - hb.top - 10, y1: Math.max(...parts.map((r) => r.bottom)) - hb.top + 10 };
     }
+    /* tray: a grid of up to COLS columns, centred, with SLACK px of room to slide in */
+    function trayMeasure() {
+      W = tilesBox.clientWidth; obs = null;
+      const n = els.length, size = R * 2;
+      const cols = Math.max(1, Math.min(n, COLS, Math.floor((W - 20 + GAP) / (size + GAP))));
+      const rows = Math.ceil(n / cols);
+      const gw = cols * size + (cols - 1) * GAP, gh = rows * size + (rows - 1) * GAP;
+      tilesBox.style.height = (gh + SLACK) + 'px';
+      H = tilesBox.clientHeight;
+      bodies.forEach((b, i) => {
+        const c = i % cols, r = Math.floor(i / cols);
+        b.hx = (W - gw) / 2 + R + c * (size + GAP);
+        b.hy = (H - gh) / 2 + R + r * (size + GAP);
+        if (b.fresh) { b.x = b.hx; b.y = b.hy; b.fresh = false; }
+      });
+    }
     function layout() {
-      active = visible();
-      if (!active) { els.forEach((el) => { el.style.transform = ''; el.style.removeProperty('--sp'); }); return; }
-      measure();
-      if (!bodies.length) {
-        const L = els.filter((e) => e.dataset.side === 'l'), Rr = els.filter((e) => e.dataset.side !== 'l');
-        const col = (list, x0, x1) => list.map((el, k) => {
-          const x = Math.max(R + 4, Math.min(W - R - 4, (x0 + x1) / 2 + (k % 2 ? 14 : -14)));
-          const y = H * (0.3 + 0.62 * (list.length > 1 ? k / (list.length - 1) : .5));
-          const ang = rnd(0, Math.PI * 2), sp = REDUCED ? 0 : rnd(.45, .75);
-          return { el, x, y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, a: 0, va: 0, tilt: parseFloat(el.style.getPropertyValue('--tilt')) || 0 };
-        });
-        bodies = [...col(L, 0, obs.x0), ...col(Rr, obs.x1, W)];
+      active = mode();
+      if (active !== lastMode) { bodies = []; lastMode = active; }   // the box changed shape: start over
+      if (!on()) { els.forEach((el) => { el.style.transform = ''; el.style.removeProperty('--sp'); }); tilesBox.style.height = ''; return; }
+      R = els[0].offsetWidth / 2 || R;
+      if (active === 'tray') {
+        if (!bodies.length) bodies = els.map((el) => ({ el, x: 0, y: 0, vx: 0, vy: 0, a: 0, va: 0, hx: 0, hy: 0, tilt: 0, fresh: true }));
+        trayMeasure();
+      } else {
+        tilesBox.style.height = '';
+        measure();
+        if (!bodies.length) {
+          const L = els.filter((e) => e.dataset.side === 'l'), Rr = els.filter((e) => e.dataset.side !== 'l');
+          const col = (list, x0, x1) => list.map((el, k) => {
+            const x = Math.max(R + 4, Math.min(W - R - 4, (x0 + x1) / 2 + (k % 2 ? 14 : -14)));
+            const y = H * (0.3 + 0.62 * (list.length > 1 ? k / (list.length - 1) : .5));
+            const ang = rnd(0, Math.PI * 2), sp = REDUCED ? 0 : rnd(.45, .75);
+            return { el, x, y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, a: 0, va: 0, hx: 0, hy: 0, tilt: parseFloat(el.style.getPropertyValue('--tilt')) || 0 };
+          });
+          bodies = [...col(L, 0, obs.x0), ...col(Rr, obs.x1, W)];
+        }
       }
       bodies.forEach((b) => { b.x = Math.max(R, Math.min(W - R, b.x)); b.y = Math.max(R, Math.min(H - R, b.y)); place(b, 0); });
     }
@@ -325,22 +367,34 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
       else { b.y = y1; b.vy = Math.abs(b.vy) * .95; }
     }
     function step(dt) {
-      const k = dt * 60;
+      const k = dt * 60, tray = active === 'tray';
+      grav.x += (gTarget.x - grav.x) * Math.min(1, .15 * k); grav.y += (gTarget.y - grav.y) * Math.min(1, .15 * k);   // smooth the tilt
+      const g = Math.hypot(grav.x, grav.y);
+      /* tray: the pull back to the home slots fades out as the phone tilts, so a
+         level phone re-forms the grid and a tilted one lets the tiles slide */
+      const home = tray ? HOME * Math.max(0, 1 - Math.max(0, g - .03) / .09) : 0;
+      const REST = tray ? .45 : .95;   // tray walls and bumps are soft, the hero's are lively
       for (const b of bodies) {
-        const dx = b.x - mouse.x, dy = b.y - mouse.y, d = Math.hypot(dx, dy);
-        if (d < FLEE && d > .01) { const f = (1 - d / FLEE) * 3.2 * k; b.vx += dx / d * f; b.vy += dy / d * f; }
+        if (tray) { b.vx += (b.hx - b.x) * home * k; b.vy += (b.hy - b.y) * home * k; }
+        else {
+          const dx = b.x - mouse.x, dy = b.y - mouse.y, d = Math.hypot(dx, dy);
+          if (d < FLEE && d > .01) { const f = (1 - d / FLEE) * 3.2 * k; b.vx += dx / d * f; b.vy += dy / d * f; }
+        }
         b.vx += grav.x * k; b.vy += grav.y * k;
         let sp = Math.hypot(b.vx, b.vy);
         if (sp > MAXV) { b.vx *= MAXV / sp; b.vy *= MAXV / sp; sp = MAXV; }
+        else if (tray) { const damp = Math.pow(.9, k); b.vx *= damp; b.vy *= damp; }             // settle, no drift
         else if (sp > .8) { const damp = Math.pow(.975, k); b.vx *= damp; b.vy *= damp; }   // shed the cursor's push, keep the drift
         else if (sp < .35) { b.vx += rnd(-.06, .06) * k; b.vy += rnd(-.06, .06) * k; }      // never quite still
         b.x += b.vx * k; b.y += b.vy * k;
-        if (b.x < R) { b.x = R; b.vx = Math.abs(b.vx) * .95; }
-        if (b.x > W - R) { b.x = W - R; b.vx = -Math.abs(b.vx) * .95; }
-        if (b.y < R) { b.y = R; b.vy = Math.abs(b.vy) * .95; }
-        if (b.y > H - R) { b.y = H - R; b.vy = -Math.abs(b.vy) * .95; }
+        if (b.x < R) { b.x = R; b.vx = Math.abs(b.vx) * REST; }
+        if (b.x > W - R) { b.x = W - R; b.vx = -Math.abs(b.vx) * REST; }
+        if (b.y < R) { b.y = R; b.vy = Math.abs(b.vy) * REST; }
+        if (b.y > H - R) { b.y = H - R; b.vy = -Math.abs(b.vy) * REST; }
         bounceRect(b);
-        b.va = b.va * .92 + b.vx * .25; b.a += b.va * k;
+        b.va = b.va * (tray ? .85 : .92) + b.vx * .25;
+        if (tray) b.va -= b.a * home * 2 * k;   // straighten up when back home
+        b.a += b.va * k;
       }
       for (let i = 0; i < bodies.length; i++) for (let j = i + 1; j < bodies.length; j++) {
         const a = bodies[i], c = bodies[j];
@@ -350,23 +404,29 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
           a.x -= nx * ov; a.y -= ny * ov; c.x += nx * ov; c.y += ny * ov;
           const rv = (c.vx - a.vx) * nx + (c.vy - a.vy) * ny;
           if (rv < 0) {
-            const imp = -rv * .95;
+            const imp = -rv * REST;
             a.vx -= nx * imp; a.vy -= ny * imp; c.vx += nx * imp; c.vy += ny * imp;
           }
         }
       }
       bodies.forEach((b) => place(b, Math.hypot(b.vx, b.vy)));
     }
+    /* tray, tilt off: everything back in its slot and still, so the loop can stop */
+    const settled = () => bodies.every((b) => Math.abs(b.vx) + Math.abs(b.vy) + Math.abs(b.va) < .02 && Math.hypot(b.hx - b.x, b.hy - b.y) < .5 && Math.abs(b.a) < .5);
     function loop(t) {
-      if (!active || !inView || document.hidden) { running = false; return; }
+      if (!on() || !inView || document.hidden) { running = false; return; }
       const dt = Math.min(.033, (t - lastT) / 1000 || .016); lastT = t;
       step(dt);
+      if (active === 'tray' && !tiltOn && settled()) {
+        bodies.forEach((b) => { b.x = b.hx; b.y = b.hy; b.vx = b.vy = b.va = b.a = 0; place(b, 0); });
+        running = false; return;
+      }
       requestAnimationFrame(loop);
     }
-    function wake() { if (!running && active && !REDUCED && inView && !document.hidden) { running = true; lastT = performance.now(); requestAnimationFrame(loop); } }
+    function wake() { if (!running && on() && !REDUCED && inView && !document.hidden) { running = true; lastT = performance.now(); requestAnimationFrame(loop); } }
 
     addEventListener('mousemove', (e) => {
-      if (!active) return;
+      if (active !== 'roam') return;
       const hb = hero.getBoundingClientRect();
       mouse.x = e.clientX - hb.left; mouse.y = e.clientY - hb.top;
     }, { passive: true });
@@ -378,22 +438,44 @@ else if (/^#(e-[a-z0-9-]+|web3|product|research|brand|web)$/i.test(location.hash
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(start);
     start();
 
-    const btn = $('#motion');
+    /* Phone tilt as gravity. #motion is the wide-screen button (a tablet with a
+       coarse pointer, roaming tiles); #tilt sits under the tray on narrow
+       screens. iOS asks for permission on the first tap. The pose the phone is
+       held in at that moment counts as level; a second tap turns tilt off and
+       the tiles go home. */
+    const tiltBtns = ['#motion', '#tilt'].map((q) => $(q)).filter(Boolean);
+    let neutral = null, listening = false;
+    function onTilt(e) {
+      if (!tiltOn) return;
+      const beta = e.beta || 0, gamma = e.gamma || 0;
+      if (!neutral) neutral = { beta, gamma };
+      const dead = (v) => (Math.abs(v) < 2 ? 0 : v - Math.sign(v) * 2);   // 2deg of hand shake ignored
+      const clamp = (v) => Math.max(-1, Math.min(1, v));
+      gTarget.x = clamp(dead(gamma - neutral.gamma) / 25) * GMAX;
+      gTarget.y = clamp(dead(beta - neutral.beta) / 25) * GMAX;
+      wake();
+    }
+    function setTilt(next) {
+      tiltOn = next; neutral = null;
+      if (!tiltOn) { gTarget.x = gTarget.y = 0; }
+      tiltBtns.forEach((b) => { b.textContent = tiltOn ? 'Tilt on' : 'Tilt'; b.setAttribute('aria-pressed', String(tiltOn)); });
+      wake();
+    }
+    const fail = (msg) => tiltBtns.forEach((b) => { b.textContent = msg; b.disabled = true; });
     if (!REDUCED && 'DeviceOrientationEvent' in window && matchMedia('(pointer: coarse)').matches) {
-      btn.hidden = false;
-      btn.addEventListener('click', async () => {
-        try {
-          if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-            const r = await DeviceOrientationEvent.requestPermission();
-            if (r !== 'granted') { btn.textContent = 'Motion blocked'; return; }
-          }
-          addEventListener('deviceorientation', (e) => {
-            const clamp = (v) => Math.max(-1, Math.min(1, v));
-            grav.x = clamp((e.gamma || 0) / 30) * .4; grav.y = clamp(((e.beta || 0) - 45) / 30) * .4;
-            wake();
-          });
-          btn.textContent = 'Motion on'; btn.disabled = true;
-        } catch (_) { btn.textContent = 'Motion unavailable'; }
+      tiltBtns.forEach((btn) => {
+        btn.hidden = false;
+        btn.addEventListener('click', async () => {
+          if (tiltOn) { setTilt(false); return; }
+          try {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+              const r = await DeviceOrientationEvent.requestPermission();
+              if (r !== 'granted') { fail('Tilt blocked'); return; }
+            }
+            if (!listening) { addEventListener('deviceorientation', onTilt); listening = true; }
+            setTilt(true);
+          } catch (_) { fail('Tilt unavailable'); }
+        });
       });
     }
   }

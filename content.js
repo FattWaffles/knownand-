@@ -26,6 +26,10 @@ window.SITE = {
   domain: 'knownand.com',
   name: 'Josie Rigali',
   studio: 'Known, and',
+  /* The top-left mark reads "Known, and <word>" and the word cycles (Josie,
+     2026-09-30). The list is the viewer's original six plus her Valued + Seen;
+     prune or reorder here. */
+  brandWords: ['Trusted', 'Seen', 'Understood', 'Valued', 'Recognized', 'Coveted', 'Relatable', 'Obvious'],
   role: 'Brand incubator and systems design engineer',   /* Josie, 2026-09-30 */
   nav: [
     { label: 'Work', url: '#work' },
@@ -201,7 +205,7 @@ window.SECURITY = {
 window.NEWSLETTER = {
   title: 'New tech, new products, what shipped.',
   placeholder: 'you@example.com',
-  button: 'Sign up',
+  button: 'Tech blog sign up',
   action: '',
   field: 'email',
   mailto: 'rigaliresearchdevelopment@gmail.com',
