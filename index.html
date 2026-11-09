@@ -156,6 +156,8 @@
      the turning poses start further right. The loop and its poster are transparent, so the panel has no fill. */
   .wordmark { position: relative; flex: none; width: var(--space-144); height: var(--space-55); padding: 0; overflow: hidden; background: transparent; color: var(--ink); text-decoration: none; }
   .logo-loop { position: absolute; width: 10.5221rem; height: 10.5221rem; left: -0.9375rem; top: -3.893rem; }
+  .wordmark { display: flex; align-items: center; width: auto; }
+  .wordmark-text { font-family: var(--font-sans); font-weight: 500; font-size: var(--t-big); line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
   /* Tabs (Josie, 2026-10-26): Koto's nav with the pills taken off. Mono capitals at 11, 34 apart, level with the top of the logo, in electric blue.
      Each link keeps a 44 tall touch target. The current section and hover are underlined. */
   .tabs { position: relative; z-index: 2; pointer-events: auto; min-width: 0; }
@@ -407,7 +409,7 @@
 <header class="topbar">
   <div class="topbar-inner">
     <!-- Logo v2 loop on transparent (sources: Website-assets/Logos-Website-2026/Oblique/): HEVC with alpha for Safari, VP9 WebM with alpha for Chrome, Edge and Firefox. Silent, loops, paused under prefers-reduced-motion; the transparent PNG poster is the still. -->
-    <a class="panel wordmark" href="#main"><video class="logo-loop" poster="media/oblique-logo-v2-poster.png" autoplay muted loop playsinline disablepictureinpicture aria-hidden="true" tabindex="-1"><source src="media/oblique-logo-v2-loop.mov" type='video/quicktime; codecs="hvc1"'><source src="media/oblique-logo-v2-loop.webm" type="video/webm"></video><span class="vh">Oblique, back to top</span></a>
+    <a class="panel wordmark" href="#main"><span class="wordmark-text">known &amp;</span><span class="vh">, back to top</span></a>
     <nav class="tabs" aria-label="Sections">
       <ul>
         <li><a href="#home" aria-current="true">Home</a></li>
